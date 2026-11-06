@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thunder Dragon</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="game">
+    <div id="scene"></div>
+
+    <header id="hud">
+      <div class="hud-box" id="location-name"></div>
+      <div class="hud-box" id="rubies">
+        <span class="ruby-icon" aria-hidden="true"></span>
+        <span>Rubiner: <span id="ruby-count">0</span>/4</span>
+      </div>
+    </header>
+
+    <p class="hud-box" id="narration" aria-live="polite"></p>
+  </main>
+
+  <!-- Plain scripts (no ES modules) so the game works when opened via file:// -->
+  <script src="js/state.js"></script>
+  <script src="js/art.js"></script>
+  <script src="js/scenes.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
