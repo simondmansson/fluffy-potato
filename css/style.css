@@ -54,17 +54,165 @@ body {
   background: linear-gradient(#3c4a47 0%, #5f6e68 50%, #26332a 50%, #1d271f 100%);
 }
 
-/* Clickable places in a scene */
-.exit {
+#scene[data-scene="forest-spruce"] {
+  background: linear-gradient(#232d2a 0%, #4a5752 50%, #2a342d 50%, #141c16 100%);
+}
+
+#scene[data-scene="forest-glade"] {
+  background: linear-gradient(#4d5b55 0%, #8f9b94 50%, #4f5d42 50%, #26331f 100%);
+}
+
+#scene[data-scene="forest-brook"] {
+  background: linear-gradient(#36433f 0%, #6c7a74 50%, #3a483d 50%, #1c271e 100%);
+}
+
+/* Clickable places and things in a scene */
+.exit,
+.pickup {
   cursor: pointer;
   outline: none;
   transition: filter 0.2s ease;
 }
 
 .exit:hover,
-.exit:focus-visible {
+.exit:focus-visible,
+.pickup:hover,
+.pickup:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 14px rgba(255, 236, 170, 0.7));
 }
+
+/* Decoration drawn on top of clickable things must not block clicks */
+.fog,
+.no-hit {
+  pointer-events: none;
+}
+
+/* Carrying the axe turns the cursor into one (hotspot on the blade edge) */
+body.has-axe #scene,
+body.has-axe #minigame {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='27' y1='29' x2='11' y2='8' stroke='%23a0754a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M9 3 L18 10 L13 16 Q5 16 2 9 Q4 5 9 3 Z' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2'/%3E%3C/svg%3E") 3 9, crosshair;
+}
+
+/* ---------- Forest quest ---------- */
+
+.pickup.taken {
+  animation: lift-away 0.5s ease-in forwards;
+}
+
+.wolf {
+  cursor: pointer;
+}
+
+.wolf-eye {
+  filter: drop-shadow(0 0 4px #ffcf4a);
+}
+
+.wolf-ruby {
+  filter: drop-shadow(0 0 5px rgba(255, 60, 80, 0.9));
+  animation: ruby-pulse 1.6s ease-in-out infinite;
+}
+
+.wolf-tail { animation: wolf-tail 0.6s ease-in-out infinite alternate; }
+.wolf.running .wolf-tail { animation-duration: 0.25s; }
+.wolf.running .wolf-body { animation: wolf-bob 0.17s ease-in-out infinite alternate; }
+.wolf.running .wolf-leg { animation: wolf-stride 0.34s ease-in-out infinite alternate; }
+.wolf.running .wolf-arm { animation: wolf-arm 0.34s ease-in-out infinite alternate; }
+.wolf.running .back { animation-delay: -0.34s; }
+.wolf.caught .wolf-body { animation: shake 0.1s linear infinite alternate; }
+
+/* Minigame overlay */
+#minigame {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 45%, #3c4a43 0%, #1f2a24 55%, #0f1511 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+#minigame.open {
+  opacity: 1;
+}
+
+#minigame[hidden] {
+  display: none;
+}
+
+#minigame svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mg-panel {
+  position: absolute;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 6px;
+  min-width: min(360px, calc(100% - 32px));
+  pointer-events: none;
+}
+
+.mg-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mg-bar {
+  flex: 1;
+  max-width: 180px;
+  height: 12px;
+  border: 1px solid var(--hud-border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.mg-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #c9a46a, #e0b44a);
+}
+
+.mg-fill.low {
+  background: linear-gradient(90deg, #a02030, #d8283f);
+}
+
+.mg-hits {
+  display: flex;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.mg-hit {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--ruby);
+  transform: rotate(45deg);
+}
+
+.mg-hit.done {
+  background: var(--ruby);
+  box-shadow: 0 0 8px rgba(216, 40, 63, 0.8);
+}
+
+.mg-arm { animation: mg-flail 0.6s ease-in-out infinite alternate; }
+.mg-arm.right { animation-delay: -0.3s; }
+.mg-crack { opacity: 0; transition: opacity 0.15s ease; }
+.mg-crack.show { opacity: 1; }
+.mg-wolf-body.hurt { animation: shake 0.07s linear 4 alternate; }
+.mg-wolf-body.snarl { animation: snarl 0.3s ease-out; }
+.mg-wolf-body.defeated .mg-eyes { opacity: 0.25; transition: opacity 1.2s ease; }
+.mg-wolf-body.defeated .mg-arm { animation-play-state: paused; }
+.mg-wolf-body.escape { animation: escape 1.2s ease-in forwards; }
+.mg-ruby.loose { animation: ruby-pop 1.6s ease-in forwards; }
+.mg-spark { animation: spark 0.5s ease-out forwards; }
+.mg-miss { animation: float-up 0.7s ease-out forwards; }
+
+#rubies.gain { animation: gain 0.6s ease-in-out 3; }
 
 .exit .exit-label {
   opacity: 0;
@@ -108,6 +256,26 @@ body {
   font-size: 1.25rem;
   color: var(--accent);
   letter-spacing: 0.04em;
+}
+
+#hud .hud-right {
+  display: flex;
+  gap: 12px;
+}
+
+#inventory {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#inventory[hidden] {
+  display: none;
+}
+
+.axe-icon {
+  width: 20px;
+  height: 20px;
 }
 
 #rubies {
@@ -181,6 +349,88 @@ body {
   50% { opacity: 0.82; }
 }
 
+@keyframes glint {
+  0%, 70%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+  80% { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+
+@keyframes lift-away {
+  to { opacity: 0; transform: translateY(-60px); }
+}
+
+@keyframes ruby-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+@keyframes wolf-tail {
+  from { transform: rotate(-10deg); }
+  to { transform: rotate(12deg); }
+}
+
+@keyframes wolf-bob {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+@keyframes wolf-stride {
+  from { transform: rotate(-26deg); }
+  to { transform: rotate(26deg); }
+}
+
+@keyframes wolf-arm {
+  from { transform: rotate(32deg); }
+  to { transform: rotate(-32deg); }
+}
+
+@keyframes shake {
+  from { transform: translateX(-4px); }
+  to { transform: translateX(4px); }
+}
+
+@keyframes snarl {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.03) translateY(-6px); }
+  100% { transform: scale(1); }
+}
+
+@keyframes mg-flail {
+  from { transform: rotate(-18deg); }
+  to { transform: rotate(16deg); }
+}
+
+@keyframes escape {
+  0% { transform: translate(0, 0); opacity: 1; }
+  20% { transform: translate(0, -20px); opacity: 1; }
+  100% { transform: translate(900px, 40px); opacity: 0; }
+}
+
+@keyframes ruby-pop {
+  0% { transform: none; opacity: 1; }
+  25% { transform: translate(0, -140px) scale(1.5) rotate(25deg); opacity: 1; }
+  100% { transform: translate(700px, -700px) scale(0.3) rotate(220deg); opacity: 0; }
+}
+
+@keyframes spark {
+  from { opacity: 1; transform: scale(0.4); }
+  to { opacity: 0; transform: scale(1.4); }
+}
+
+@keyframes float-up {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-50px); }
+}
+
+@keyframes gain {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); box-shadow: 0 0 18px rgba(216, 40, 63, 0.9); }
+}
+
+@keyframes ripple {
+  from { transform: translateX(-8px); }
+  to { transform: translateX(8px); }
+}
+
 .bolt { animation: bolt-flash 7s infinite; }
 .sky-flash { animation: sky-flash 7s infinite; }
 .storm-clouds { animation: drift 18s ease-in-out infinite alternate; }
@@ -189,6 +439,8 @@ body {
 .fog.slow { animation-duration: 40s; animation-direction: alternate-reverse; }
 .eyes { animation: blink 6s infinite; }
 .window { animation: window-flicker 3s ease-in-out infinite; }
+.glint { animation: glint 2.4s ease-in-out infinite; }
+.ripples { animation: ripple 2.5s ease-in-out infinite alternate; }
 
 .smoke circle {
   transform-box: fill-box;

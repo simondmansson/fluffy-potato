@@ -12,14 +12,15 @@ To run the game, open `index.html` directly in the browser (`file://`). No local
 
 ## Architecture
 
-Scripts are classic `<script>` tags loaded in order by `index.html`, sharing globals: `js/state.js` → `js/art.js` → `js/scenes.js` → `js/game.js`.
+Scripts are classic `<script>` tags loaded in order by `index.html`, sharing globals: `js/state.js` → `js/art.js` → `js/scenes.js` → `js/forest.js` → `js/game.js`.
 
-- **`state.js`**: the save object (`{ location, rubies: [] }`) and `loadState()` / `saveState()` under the localStorage key `thunder-dragon-save`. Storage access is wrapped in try/catch, so the game still runs when storage is blocked.
-- **`art.js`**: helpers that return SVG markup strings (`pine`, `leafy`, `treeRow`, `house`, `smoke`, `signpost`). `treeRow` uses a seeded RNG so scenes look the same on every load.
-- **`scenes.js`**: the `SCENES` registry. Each scene is `{ name, narration, svg }`, where `svg` is a template string drawn in a `0 0 1600 900` viewBox. Any element with `data-goto="<sceneId>"` is an exit. Give exits `class="exit"`, `tabindex="0"`, `role="button"` and an `aria-label` for hover styling and keyboard use.
-- **`game.js`**: renders a scene into `#scene`, updates the HUD (location name, ruby count, narration), saves the location, and handles exit clicks and Enter/Space with a fade transition. It switches `preserveAspectRatio` between `slice` (wide screens) and `meet` (narrow screens), so keep important art and exits inside roughly x 80–1520.
+- **`state.js`**: the save object (`{ location, rubies: [], items: [], forest }`) and `loadState()` / `saveState()` under the localStorage key `thunder-dragon-save`. Storage access is wrapped in try/catch, so the game still runs when storage is blocked.
+- **`art.js`**: helpers that return SVG markup strings (`pine`, `leafy`, `treeRow`, `house`, `smoke`, `signpost`, `signExit`, `fern`, `rock`, `stump`, `axeInStump`, `werewolf`, `werewolfCloseUp`). `treeRow` uses a seeded RNG so scenes look the same on every load.
+- **`scenes.js`**: the `SCENES` registry. Each scene is `{ name, narration, svg }`, where `svg` is a template string drawn in a `0 0 1600 900` viewBox. Any element with `data-goto="<sceneId>"` is an exit. Give exits `class="exit"`, `tabindex="0"`, `role="button"` and an `aria-label` for hover styling and keyboard use (`signExit()` does this for signposts).
+- **`forest.js`**: the forest quest. It attaches an `enter` hook to the four forest scenes, rolls the random axe/werewolf screens into `state.forest` on first visit, puts the stump/axe and the running werewolf into the scene's `<g class="actors">` layer, and runs the ruby minigame in the `#minigame` overlay.
+- **`game.js`**: renders a scene into `#scene`, updates the HUD (location name, ruby count, axe in inventory, narration), saves the location, and handles exit clicks and Enter/Space with a fade transition. A scene may define `enter(svg)`, called after rendering. It can return a cleanup function that runs when the scene is left. `setNarration()`, `updateHud()` and `render()` are shared globals. It switches `preserveAspectRatio` between `slice` (wide screens) and `meet` (narrow screens), so keep important art and exits inside roughly x 80–1520.
 
-To add a location: add an entry to `SCENES`, link it with a `data-goto` exit from another scene, and add a `#scene[data-scene="<id>"]` letterbox background in `css/style.css`. SVG `id`s (gradients, filters) are prefixed with the scene id. Animations are CSS classes in `style.css` and are disabled under `prefers-reduced-motion`. CSS transforms override an SVG `transform` attribute, so animate an inner `<g>` inside a positioned outer `<g>`.
+To add a location: add an entry to `SCENES`, link it with a `data-goto` exit from another scene, and add a `#scene[data-scene="<id>"]` letterbox background in `css/style.css`. SVG `id`s (gradients, filters) are prefixed with the scene id. Animations are CSS classes in `style.css` and are disabled under `prefers-reduced-motion`. Decoration drawn on top of clickable things (fog, effects) needs `class="fog"` or `class="no-hit"` so it doesn't block clicks. CSS transforms override an SVG `transform` attribute, so animate an inner `<g>` inside a positioned outer `<g>`.
 
 ## Testing
 
@@ -36,8 +37,8 @@ Thunder Dragon is a browser game. The README is the design source of truth; keep
 - **Goal:** defeat the Thunder Dragon (åskdraken) at the top of Mount Thunder. Its stolen emeralds give it extra power.
 - **Progression:** the player starts in the village at the foot of the mountain and visits four locations: the forest (skogen), the lake (sjön), the village (byn) and the cave in the mountain (grottan). At each one the player defeats a monster to earn a ruby.
 - **Rubies** are turned into armor and weapons that can withstand the emeralds' power. Collecting them unlocks the path to the dragon. The term is always "rubiner" (rubies), never "nycklar" (keys).
-- **Locations defined so far:** the forest is a dense mixed forest with thick fog, and its monster is a werewolf carrying the ruby on its belly. The other three locations are not designed yet.
-- **Implemented:** the town scene (Mount Thunder in the background) and the forest scene, linked both ways. No combat or ruby collection yet.
+- **Locations defined so far:** the forest is a dense mixed forest with thick fog, and its monster is a werewolf carrying the ruby on its chest. The other three locations are not designed yet.
+- **Implemented:** the town scene (Mount Thunder in the background) and the forest quest. The forest is four screens in a ring (`forest` Skogsstigen ↔ `forest-spruce` Granskogen ↔ `forest-glade` Gläntan ↔ `forest-brook` Bäcken ↔ back). The axe and the werewolf start in random, different screens. You catch the werewolf by its tail with the axe, then hit the swaying ruby 3 times before your grip runs out. If you fail, the werewolf flees to another screen. If you win, you get the forest ruby. Everything is mouse-driven.
 
 ## Language
 

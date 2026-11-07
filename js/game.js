@@ -6,9 +6,12 @@ const sceneEl = document.getElementById('scene');
 const locationNameEl = document.getElementById('location-name');
 const narrationEl = document.getElementById('narration');
 const rubyCountEl = document.getElementById('ruby-count');
+const inventoryEl = document.getElementById('inventory');
 
 const FADE_MS = 400;
 let transitioning = false;
+// Cleanup returned by the current scene's enter() hook (stops animations etc.).
+let leaveScene = null;
 
 // Fill the screen on landscape displays; fit the whole scene on narrow ones
 // so exits near the edges are never cropped away.
@@ -19,19 +22,40 @@ function fitScene() {
   svg.setAttribute('preserveAspectRatio', wide ? 'xMidYMid slice' : 'xMidYMid meet');
 }
 
+function setNarration(text) {
+  narrationEl.textContent = text;
+}
+
+function updateHud() {
+  rubyCountEl.textContent = state.rubies.length;
+  const hasAxe = state.items.includes('axe');
+  inventoryEl.hidden = !hasAxe;
+  // The cursor turns into an axe once the player carries one.
+  document.body.classList.toggle('has-axe', hasAxe);
+}
+
+// Scenes may define enter(svg) to add interactive content after rendering.
+// It can return a cleanup function that runs when the scene is left.
 function render(sceneId) {
+  if (leaveScene) {
+    leaveScene();
+    leaveScene = null;
+  }
+
   const scene = SCENES[sceneId];
   sceneEl.innerHTML = scene.svg;
   sceneEl.dataset.scene = sceneId;
   fitScene();
 
   locationNameEl.textContent = scene.name;
-  narrationEl.textContent = scene.narration;
-  rubyCountEl.textContent = state.rubies.length;
+  setNarration(scene.narration);
+  updateHud();
   document.title = `${scene.name} – Thunder Dragon`;
 
   state.location = sceneId;
   saveState(state);
+
+  if (scene.enter) leaveScene = scene.enter(sceneEl.querySelector('svg')) || null;
 }
 
 function goTo(sceneId) {

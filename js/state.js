@@ -6,6 +6,8 @@ function defaultState() {
   return {
     location: 'town',
     rubies: [], // ids of locations whose ruby has been won, e.g. 'forest'
+    items: [], // items the player carries, e.g. 'axe'
+    forest: null, // random layout of the forest quest, rolled on first visit (see forest.js)
   };
 }
 

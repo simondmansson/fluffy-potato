@@ -135,7 +135,7 @@ SCENES.town = {
 };
 
 SCENES.forest = {
-  name: 'Skogen',
+  name: 'Skogsstigen',
   narration:
     'Dimman ligger tjock mellan granarna och björkarna. Det är svårt att se längre än några steg. ' +
     'Någonstans i dimman hörs ett ylande…',
@@ -197,18 +197,215 @@ SCENES.forest = {
   ${leafy(1620, 900, 600, '#1d2b21', '#2a2219')}
   ${pine(1270, 890, 480, '#223228', '#241d15')}
 
+  <!-- Way back to the village (exit) -->
+  ${signExit('town', 250, 780, '← Till byn', 'Tillbaka till byn')}
+  ${signExit('forest-spruce', 660, 590, 'Granskogen ↑', 'Gå in i granskogen', { width: 210 })}
+  ${signExit('forest-brook', 1330, 780, 'Bäcken →', 'Gå till bäcken', { width: 180 })}
+
+  <!-- Axe and werewolf are added here by forest.js -->
+  <g class="actors"></g>
+
   <g class="fog slow" filter="url(#forest-blur)" fill="#dfe6e2" opacity="0.35">
     <ellipse cx="800" cy="860" rx="700" ry="60"/>
   </g>
+</svg>`,
+};
 
-  <!-- Way back to the village (exit) -->
-  <g class="exit" data-goto="town" tabindex="0" role="button" aria-label="Gå tillbaka till byn">
-    <rect x="120" y="580" width="260" height="200" fill="transparent"/>
-    ${signpost(250, 780, '← Till byn', { width: 200 })}
-    <g class="exit-label">
-      <rect x="130" y="600" width="240" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
-      <text x="250" y="627" font-size="22" text-anchor="middle" fill="#f3ecd8">Tillbaka till byn</text>
-    </g>
+// Shared defs for the forest screens. Ids are prefixed with the scene id.
+function forestDefs(id, sky0, sky1, ground0, ground1) {
+  return `
+  <defs>
+    <linearGradient id="${id}-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${sky0}"/>
+      <stop offset="1" stop-color="${sky1}"/>
+    </linearGradient>
+    <linearGradient id="${id}-ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${ground0}"/>
+      <stop offset="1" stop-color="${ground1}"/>
+    </linearGradient>
+    <filter id="${id}-blur" x="-20%" y="-100%" width="140%" height="300%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>`;
+}
+
+// The forest is a 2x2 grid of screens:
+//   Granskogen (NW)  –  Gläntan (NE)
+//   Skogsstigen (SW) –  Bäcken (SE)
+
+SCENES['forest-spruce'] = {
+  name: 'Granskogen',
+  narration:
+    'Höga granar står tätt som väggar. Mellan stammarna är det nästan mörkt, och dimman ringlar längs marken.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Den mörka granskogen">
+  ${forestDefs('forest-spruce', '#232d2a', '#55635d', '#46524a', '#141c16')}
+
+  <rect width="1600" height="900" fill="url(#forest-spruce-sky)"/>
+  <rect y="460" width="1600" height="440" fill="url(#forest-spruce-ground)"/>
+
+  ${treeRow({ seed: 5, count: 52, x0: -40, x1: 1640, y0: 460, y1: 510, h0: 230, h1: 330, pineColor: '#66746e', leafColor: '#6c7a73', trunk: '#5e6a64', pineShare: 0.95 })}
+  <g class="fog slow" filter="url(#forest-spruce-blur)" fill="#bfc9c4" opacity="0.5">
+    <ellipse cx="500" cy="470" rx="560" ry="60"/>
+    <ellipse cx="1250" cy="480" rx="520" ry="60"/>
+  </g>
+
+  ${treeRow({ seed: 17, count: 30, x0: -40, x1: 1640, y0: 580, y1: 640, h0: 380, h1: 500, pineColor: '#36463d', leafColor: '#3f5045', trunk: '#2e3a30', pineShare: 0.9 })}
+  <g class="fog" filter="url(#forest-spruce-blur)" fill="#cdd6d2" opacity="0.45">
+    <ellipse cx="350" cy="650" rx="460" ry="50"/>
+    <ellipse cx="1150" cy="640" rx="500" ry="55"/>
+  </g>
+
+  ${fern(420, 790, 1.1, '#2f4a33')}
+  ${fern(980, 760, 0.9, '#36523a')}
+  ${fern(1180, 840, 1.3, '#2a432e')}
+  ${rock(760, 700, 120, 60, '#4e5752')}
+
+  <!-- Huge trunks in the foreground -->
+  <rect x="20" y="0" width="100" height="900" fill="#1d1712"/>
+  <path d="M0,900 Q60,850 70,800 Q80,850 150,900 Z" fill="#1d1712"/>
+  <rect x="1490" y="0" width="120" height="900" fill="#1b1611"/>
+  <path d="M1440,900 Q1500,860 1540,800 Q1560,860 1600,900 Z" fill="#1b1611"/>
+  ${pine(1380, 930, 760, '#17241b', '#1b1611')}
+
+  ${signExit('forest', 290, 820, '↓ Stigen', 'Tillbaka till stigen', { width: 170 })}
+  ${signExit('forest-glade', 1300, 760, 'Gläntan →', 'Gå till gläntan', { width: 190 })}
+
+  <g class="actors"></g>
+
+  <g class="fog slow" filter="url(#forest-spruce-blur)" fill="#dfe6e2" opacity="0.3">
+    <ellipse cx="800" cy="860" rx="700" ry="60"/>
+  </g>
+</svg>`,
+};
+
+SCENES['forest-glade'] = {
+  name: 'Gläntan',
+  narration:
+    'En liten glänta öppnar sig mitt i skogen. Svagt ljus silar ner genom dimman över mossiga stenar och en omkullfallen stam.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En glänta i skogen">
+  ${forestDefs('forest-glade', '#4d5b55', '#a2ada6', '#6f7d5e', '#26331f')}
+
+  <rect width="1600" height="900" fill="url(#forest-glade-sky)"/>
+  <rect y="500" width="1600" height="400" fill="url(#forest-glade-ground)"/>
+
+  ${treeRow({ seed: 29, count: 48, x0: -40, x1: 1640, y0: 490, y1: 530, h0: 170, h1: 260, pineColor: '#8b9891', leafColor: '#92a097', trunk: '#86928c' })}
+  <g class="fog slow" filter="url(#forest-glade-blur)" fill="#d6ddd9" opacity="0.55">
+    <ellipse cx="800" cy="500" rx="800" ry="60"/>
+  </g>
+
+  <!-- Light shafts -->
+  <g fill="#f4f1dc" opacity="0.12">
+    <polygon points="620,0 720,0 900,700 700,700"/>
+    <polygon points="860,0 920,0 1080,680 960,680"/>
+  </g>
+
+  ${treeRow({ seed: 41, count: 9, x0: -40, x1: 380, y0: 600, y1: 650, h0: 300, h1: 420, pineColor: '#46594d', leafColor: '#526656', trunk: '#3b463c' })}
+  ${treeRow({ seed: 43, count: 9, x0: 1220, x1: 1640, y0: 600, y1: 650, h0: 300, h1: 420, pineColor: '#46594d', leafColor: '#526656', trunk: '#3b463c' })}
+  <g class="fog" filter="url(#forest-glade-blur)" fill="#dde3df" opacity="0.4">
+    <ellipse cx="300" cy="650" rx="420" ry="50"/>
+    <ellipse cx="1300" cy="650" rx="420" ry="50"/>
+  </g>
+
+  ${rock(1010, 720, 240, 150, '#636c66')}
+  ${rock(1110, 735, 110, 60, '#58615b')}
+
+  <!-- Fallen log -->
+  <g>
+    <rect x="300" y="700" width="290" height="46" rx="20" fill="#4d3a28" transform="rotate(-6 445 723)"/>
+    <ellipse cx="584" cy="708" rx="16" ry="24" fill="#9a7650" transform="rotate(-6 584 708)"/>
+    <ellipse cx="584" cy="708" rx="8" ry="13" fill="none" stroke="#6f5236" stroke-width="2" transform="rotate(-6 584 708)"/>
+    <path d="M330,712 q40,-20 90,-8 q50,-14 90,-6" fill="none" stroke="#4f6b3a" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <!-- Mushrooms -->
+  <g>
+    <rect x="796" y="700" width="6" height="14" fill="#efe6d0"/><ellipse cx="799" cy="700" rx="13" ry="7" fill="#b8322e"/>
+    <rect x="830" y="716" width="6" height="12" fill="#efe6d0"/><ellipse cx="833" cy="716" rx="11" ry="6" fill="#b8322e"/>
+    <rect x="862" y="704" width="5" height="11" fill="#efe6d0"/><ellipse cx="864" cy="704" rx="10" ry="5" fill="#c23a32"/>
+  </g>
+
+  ${fern(200, 820, 1.2, '#36523a')}
+  ${fern(1440, 860, 1.3, '#2f4a33')}
+  ${leafy(-40, 920, 600, '#1d2b21', '#2a2219')}
+  ${pine(1580, 930, 680, '#18261d', '#241d15')}
+
+  ${signExit('forest-spruce', 280, 770, '← Granskogen', 'Tillbaka till granskogen', { width: 220 })}
+  ${signExit('forest-brook', 1340, 830, '↓ Bäcken', 'Gå ner till bäcken', { width: 170 })}
+
+  <g class="actors"></g>
+
+  <g class="fog slow" filter="url(#forest-glade-blur)" fill="#e6ebe8" opacity="0.3">
+    <ellipse cx="800" cy="870" rx="700" ry="55"/>
+  </g>
+</svg>`,
+};
+
+SCENES['forest-brook'] = {
+  name: 'Bäcken',
+  narration:
+    'En kall bäck porlar fram mellan stenarna. En gammal spång leder över vattnet, och dimman ligger lågt över ytan.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bäcken i skogen">
+  ${forestDefs('forest-brook', '#36433f', '#7a8882', '#56645a', '#1c271e')}
+
+  <rect width="1600" height="900" fill="url(#forest-brook-sky)"/>
+  <rect y="480" width="1600" height="420" fill="url(#forest-brook-ground)"/>
+
+  ${treeRow({ seed: 53, count: 46, x0: -40, x1: 1640, y0: 470, y1: 520, h0: 170, h1: 250, pineColor: '#7e8c86', leafColor: '#86948d', trunk: '#78857f' })}
+  <g class="fog slow" filter="url(#forest-brook-blur)" fill="#c9d2ce" opacity="0.55">
+    <ellipse cx="500" cy="490" rx="560" ry="60"/>
+    <ellipse cx="1250" cy="480" rx="520" ry="60"/>
+  </g>
+
+  <!-- The brook -->
+  <path fill="#5d7a83" d="M790,520 C780,560 730,600 745,640 C770,700 600,770 540,900 L880,900 C900,800 960,720 920,650 C885,600 835,560 820,520 Z"/>
+  <path fill="#7d9ba3" opacity="0.6" d="M800,540 C795,575 760,610 770,640 C790,690 660,770 620,900 L700,900 C730,790 830,700 810,640 C800,605 815,570 812,540 Z"/>
+  <g class="ripples" stroke="#c8dde2" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.7">
+    <path d="M760,620 q20,-6 40,0"/>
+    <path d="M700,740 q30,-8 60,0"/>
+    <path d="M640,840 q40,-10 80,0"/>
+  </g>
+
+  ${treeRow({ seed: 61, count: 22, x0: -40, x1: 1640, y0: 600, y1: 650, h0: 280, h1: 400, pineColor: '#4a5d52', leafColor: '#56695b', trunk: '#3f4a40' })}
+  <g class="fog" filter="url(#forest-brook-blur)" fill="#d4dcd8" opacity="0.45">
+    <ellipse cx="300" cy="650" rx="460" ry="50"/>
+    <ellipse cx="1200" cy="640" rx="480" ry="55"/>
+  </g>
+
+  <!-- Stones in and along the water -->
+  <g fill="#6c7470">
+    <ellipse cx="700" cy="800" rx="34" ry="14"/>
+    <ellipse cx="850" cy="760" rx="26" ry="11"/>
+    <ellipse cx="560" cy="870" rx="40" ry="16"/>
+    <ellipse cx="930" cy="690" rx="22" ry="9"/>
+  </g>
+
+  <!-- Footbridge over the brook -->
+  <g>
+    <polygon points="650,690 990,676 994,702 652,718" fill="#6b4f33"/>
+    <path d="M700,689 l2,26 M760,687 l2,26 M820,684 l2,25 M880,682 l2,25 M940,679 l2,25" stroke="#4a3522" stroke-width="3"/>
+    <path d="M656,692 L654,652 M988,678 L986,638 M654,654 L986,640" stroke="#4a3522" stroke-width="6" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- Reeds -->
+  <g stroke="#3d5a35" stroke-width="4" stroke-linecap="round">
+    <path d="M520,860 l-6,-60 M532,862 l2,-70 M544,860 l8,-56"/>
+    <path d="M920,840 l-4,-58 M932,842 l4,-66 M944,840 l10,-52"/>
+  </g>
+
+  ${fern(1180, 820, 1.2, '#2f4a33')}
+  ${pine(40, 930, 700, '#18261d', '#241d15')}
+  ${leafy(1620, 900, 620, '#1d2b21', '#2a2219')}
+
+  ${signExit('forest', 290, 770, '← Stigen', 'Tillbaka till stigen', { width: 170 })}
+  ${signExit('forest-glade', 1080, 600, 'Gläntan ↑', 'Gå upp till gläntan', { width: 190 })}
+
+  <g class="actors"></g>
+
+  <g class="fog slow" filter="url(#forest-brook-blur)" fill="#dfe6e2" opacity="0.35">
+    <ellipse cx="800" cy="860" rx="700" ry="60"/>
   </g>
 </svg>`,
 };
