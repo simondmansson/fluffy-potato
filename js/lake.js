@@ -18,6 +18,7 @@ const BITE_WINDOW = 1.1; // seconds the player has to strike once it bites
 const HARPOON_HITS = 3; // hits needed to knock the ruby loose
 const LINE_SECONDS = 18; // how long the fishing line holds
 const LINE_MISS_PENALTY = 0.1; // line strength lost per missed throw
+const THROW_COOLDOWN = 0.7; // seconds before the harpoon can be thrown again; clicks in between are ignored
 const SQUID_DIVE_DEPTH = 360; // how far it sinks when it dives
 
 // Message shown instead of the scene narration on the next lake render.
@@ -444,6 +445,7 @@ function startHarpoonFight() {
   let over = false;
   let raf = 0;
   let last = performance.now();
+  let readyAt = 0; // time (ms) the next throw is allowed
 
   function tick(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -490,6 +492,10 @@ function startHarpoonFight() {
 
   svg.addEventListener('click', (e) => {
     if (over) return;
+    // Still hauling the harpoon back: ignore the click, so spam-clicking doesn't pile up hits.
+    const now = performance.now();
+    if (now < readyAt) return;
+    readyAt = now + THROW_COOLDOWN * 1000;
     const p = svgPoint(svg, e);
     throwHarpoon(p);
     if (e.target.closest('.mg-ruby-target')) {

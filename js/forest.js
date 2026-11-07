@@ -28,6 +28,7 @@ const WOLF_SCALE = { far: 0.85, near: 1.15 };
 const RUBY_HITS = 3; // hits needed to knock the ruby off
 const GRIP_SECONDS = 15; // how long the player can hold the tail
 const MISS_PENALTY = 0.12; // grip lost per missed swing
+const SWING_COOLDOWN = 0.6; // seconds before the axe can swing again; clicks in between are ignored
 
 // Message shown instead of the scene narration on the next forest render.
 let forestNotice = '';
@@ -317,6 +318,7 @@ function startRubyFight() {
   let over = false;
   let raf = 0;
   let last = performance.now();
+  let readyAt = 0; // time (ms) the next swing is allowed
 
   function tick(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
@@ -342,6 +344,10 @@ function startRubyFight() {
 
   svg.addEventListener('click', (e) => {
     if (over) return;
+    // Still swinging: ignore the click, so spam-clicking doesn't pile up hits.
+    const now = performance.now();
+    if (now < readyAt) return;
+    readyAt = now + SWING_COOLDOWN * 1000;
     const p = svgPoint(svg, e);
     if (e.target.closest('.mg-ruby-target')) {
       hits++;
