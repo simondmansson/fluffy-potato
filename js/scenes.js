@@ -7,7 +7,7 @@ SCENES.town = {
   name: 'Byn',
   narration:
     'Du står i byn vid foten av Mount Thunder. Högst upp på berget mullrar åskan, där bor draken. ' +
-    'Västerut ligger den dimmiga skogen.',
+    'Västerut ligger den dimmiga skogen, och österut glittrar sjön.',
   svg: `
 <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Byn vid foten av Mount Thunder">
   <defs>
@@ -125,7 +125,17 @@ SCENES.town = {
 
   ${house(1200, 805, 140, 95, '#bfa57d', '#6b2f2a', { chimney: true })}
   ${house(1380, 775, 115, 82, '#cdb892', '#4f3324')}
-  ${house(1480, 835, 110, 80, '#d3c09a', '#713a2b')}
+
+  <!-- Lake (exit) -->
+  <g class="exit" data-goto="lake" tabindex="0" role="button" aria-label="Gå till sjön">
+    <rect x="1200" y="700" width="420" height="200" fill="transparent"/>
+    <path fill="#9b8458" d="M1150,812 C1300,826 1450,846 1640,852 L1640,880 C1450,880 1290,858 1140,826 Z"/>
+    ${signpost(1420, 880, 'Sjön →', { width: 140 })}
+    <g class="exit-label">
+      <rect x="1280" y="690" width="200" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="1380" y="717" font-size="22" text-anchor="middle" fill="#f3ecd8">Gå till sjön</text>
+    </g>
+  </g>
 
   <!-- Small trees in the village -->
   ${leafy(820, 800, 90, '#3f6a35')}
@@ -406,6 +416,193 @@ SCENES['forest-brook'] = {
 
   <g class="fog slow" filter="url(#forest-brook-blur)" fill="#dfe6e2" opacity="0.35">
     <ellipse cx="800" cy="860" rx="700" ry="60"/>
+  </g>
+</svg>`,
+};
+
+// ---------- The lake ----------
+
+// Far shore seen across the lake: the range, Mount Thunder and the village.
+// Drawn with the shoreline at y = 0 so it can be mirrored in the water.
+function lakeFarShore() {
+  return `
+    <polygon fill="#4a4d6c" points="0,0 0,-60 120,-110 240,-70 380,-130 500,-84 620,-104 760,-70 1300,-80 1420,-120 1520,-90 1600,-110 1600,0"/>
+    <polygon fill="#3a3d58" points="600,0 760,-110 860,-200 940,-284 1000,-330 1060,-276 1150,-186 1270,-92 1420,0"/>
+    <polygon fill="#262839" opacity="0.6" points="1000,-330 1060,-276 1150,-186 1270,-92 1420,0 1110,0 1050,-170 1020,-280"/>
+    <polygon fill="#e9ecf5" points="1000,-330 1030,-300 1052,-278 1036,-268 1020,-282 1006,-262 990,-282 970,-264 954,-276 976,-300"/>
+    ${treeRow({ seed: 71, count: 70, x0: -40, x1: 1640, y0: -2, y1: 4, h0: 22, h1: 46, pineColor: '#1f2b30', leafColor: '#243237', trunk: '#1f2b30', pineShare: 0.7 })}
+    ${house(330, 2, 40, 26, '#c9b48f', '#7a3b2e', { chimney: true })}
+    ${house(390, 4, 34, 22, '#d8c7a3', '#5d3a2a')}
+    <rect x="452" y="-36" width="34" height="40" fill="#e2d6bd"/>
+    <polygon points="448,-36 469,-52 490,-36" fill="#4c3b4f"/>
+    <rect x="462" y="-62" width="14" height="26" fill="#e2d6bd"/>
+    <polygon points="460,-62 469,-84 478,-62" fill="#4c3b4f"/>
+    <circle class="window" cx="469" cy="-48" r="3" fill="#ffd977"/>
+    ${house(510, 3, 42, 28, '#bfa57d', '#6b2f2a', { chimney: true })}
+    ${house(570, 4, 32, 22, '#cdb892', '#4f3324')}
+    <rect x="0" y="0" width="1600" height="6" fill="#1b2229"/>`;
+}
+
+// Sky, far shore and mirror-still water down to the bottom of the screen.
+// horizon is the screen y of the far shoreline.
+function lakeBackdrop(id, horizon) {
+  const rand = seededRandom(horizon);
+  let shimmer = '';
+  for (let i = 0; i < 40; i++) {
+    const y = horizon + 14 + rand() * (900 - horizon);
+    const len = 20 + rand() * 90 * ((y - horizon) / (900 - horizon) + 0.3);
+    shimmer += `M${(rand() * 1600).toFixed(0)},${y.toFixed(0)} l${len.toFixed(0)},0 `;
+  }
+  return `
+  <defs>
+    <linearGradient id="${id}-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#151832"/>
+      <stop offset="0.6" stop-color="#3b3f6b"/>
+      <stop offset="1" stop-color="#8a7fa8"/>
+    </linearGradient>
+    <linearGradient id="${id}-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6d6894"/>
+      <stop offset="0.35" stop-color="#3a4670"/>
+      <stop offset="1" stop-color="#18233c"/>
+    </linearGradient>
+    <filter id="${id}-blur" x="-50%" y="-200%" width="200%" height="500%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <filter id="${id}-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="${id}-murk" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+    <clipPath id="${id}-above-water"><rect x="-200" y="-300" width="400" height="300"/></clipPath>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#${id}-sky)"/>
+  <rect class="sky-flash" width="1600" height="900" fill="#e8e6ff"/>
+  <g fill="#e8e6ff" opacity="0.7">
+    <circle cx="140" cy="70" r="1.6"/><circle cx="330" cy="150" r="1.2"/><circle cx="520" cy="50" r="1.8"/>
+    <circle cx="1280" cy="60" r="1.6"/><circle cx="1450" cy="150" r="1.2"/><circle cx="240" cy="250" r="1.4"/>
+  </g>
+  <g class="storm-clouds">
+    <g filter="url(#${id}-blur)" fill="#262842">
+      <ellipse cx="900" cy="${horizon - 330}" rx="190" ry="36"/>
+      <ellipse cx="1120" cy="${horizon - 350}" rx="200" ry="40"/>
+    </g>
+  </g>
+  <g class="bolt" filter="url(#${id}-glow)">
+    <polyline points="1130,${horizon - 340} 1108,${horizon - 296} 1128,${horizon - 292} 1100,${horizon - 230}" fill="none" stroke="#fff6b0" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+  <g transform="translate(0 ${horizon})">${lakeFarShore()}</g>
+
+  <rect y="${horizon}" width="1600" height="${900 - horizon}" fill="url(#${id}-water)"/>
+  <g transform="translate(0 ${horizon + 6}) scale(1 -1)" opacity="0.3">${lakeFarShore()}</g>
+  <path class="ripples" d="${shimmer}" stroke="#b9c3e6" stroke-width="2.5" stroke-linecap="round" opacity="0.3"/>`;
+}
+
+SCENES.lake = {
+  name: 'Sjön',
+  narration:
+    'Sjön ligger stor och spegelblank. På andra sidan vattnet syns byn och Mount Thunder, ' +
+    'och vid bryggan guppar en roddbåt.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Sjön, med byn och berget i bakgrunden">
+  ${lakeBackdrop('lake', 470)}
+
+  <!-- A tentacle far out on the lake is added here by lake.js -->
+  <g class="lake-far no-hit"></g>
+
+  <!-- The shore -->
+  <defs>
+    <linearGradient id="lake-shore" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a7b5a"/>
+      <stop offset="0.25" stop-color="#4f6a3a"/>
+      <stop offset="1" stop-color="#22351b"/>
+    </linearGradient>
+  </defs>
+  <path fill="#b5a57d" d="M0,724 C200,712 420,732 620,770 C780,800 900,840 990,900 L0,900 Z"/>
+  <path fill="url(#lake-shore)" d="M0,740 C200,728 400,748 590,786 C740,816 840,852 900,900 L0,900 Z"/>
+  ${rock(700, 812, 70, 30, '#6c7470', '#5a7a44')}
+  ${rock(620, 860, 110, 46, '#5f6763', '#4f6b3a')}
+  <g stroke="#3d5a35" stroke-width="4" stroke-linecap="round">
+    <path d="M760,820 l-6,-64 M772,822 l2,-76 M784,820 l8,-58 M796,824 l12,-50"/>
+    <path d="M40,750 l-4,-50 M52,752 l4,-58 M64,750 l10,-44"/>
+  </g>
+
+  ${pine(1560, 640, 260, '#1c2a24', '#241d15')}
+  ${boathouse(150, 750, 280, 170)}
+
+  <!-- The dock -->
+  <g>
+    <rect x="1124" y="632" width="10" height="34" fill="#3a2a1c"/>
+    <rect x="1228" y="632" width="10" height="34" fill="#3a2a1c"/>
+    <polygon points="1120,630 1240,630 1450,900 1050,900" fill="#8a6a46"/>
+    <polygon points="1120,630 1240,630 1240,640 1120,640" fill="#5e4630"/>
+    <path d="M1112,670 L1270,670 M1102,712 L1302,712 M1090,764 L1342,764 M1074,828 L1392,828" stroke="#5e4630" stroke-width="4"/>
+    <path d="M1150,630 L1130,900 M1180,630 L1200,900 M1210,630 L1290,900" stroke="#6e5238" stroke-width="2"/>
+  </g>
+
+  <!-- The rowboat (exit once the player has the rod and the harpoon, see lake.js) -->
+  <g class="exit lake-boat-exit" tabindex="0" role="button" aria-label="Ro ut med båten">
+    <rect x="800" y="630" width="320" height="110" fill="transparent"/>
+    <path d="M1100,676 Q1112,690 1126,650" fill="none" stroke="#c9b48a" stroke-width="3"/>
+    ${rowboat(960, 708)}
+    <g class="exit-label">
+      <rect x="830" y="580" width="260" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="960" y="607" font-size="22" text-anchor="middle" fill="#f3ecd8">Ro ut med båten</text>
+    </g>
+  </g>
+
+  ${signExit('town', 600, 800, '← Till byn', 'Tillbaka till byn', { width: 170 })}
+
+  <!-- The fishing rod and the harpoon are added here by lake.js -->
+  <g class="actors"></g>
+</svg>`,
+};
+
+SCENES['lake-boat'] = {
+  name: 'Ute på sjön',
+  narration:
+    'Du ror ut på den spegelblanka sjön. Åran tar dig tillbaka till stranden.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ute på sjön i roddbåten">
+  ${lakeBackdrop('lake-boat', 390)}
+
+  <!-- The squid's shadow swims here (lake.js) -->
+  <g class="lake-under no-hit"></g>
+
+  <!-- Clicking the water casts the float -->
+  <rect class="lake-cast" x="0" y="396" width="1600" height="504" fill="transparent"/>
+
+  <!-- Float and fishing line (lake.js) -->
+  <g class="actors"></g>
+
+  <!-- The rod, held over the side of the boat -->
+  <g class="no-hit">
+    <polygon points="1478,930 1494,926 1234,328 1228,330" fill="#5b3d22"/>
+    <circle cx="1432" cy="820" r="16" fill="#3e4a52" stroke="#1f262b" stroke-width="3"/>
+  </g>
+
+  <!-- The boat, seen from the stern -->
+  <g class="no-hit">
+    <path d="M150,900 C420,850 700,770 800,738 C900,770 1180,850 1450,900 Z" fill="#5a3e26"/>
+    <path d="M330,900 C520,860 720,790 800,760 C880,790 1080,860 1270,900 Z" fill="#46301d"/>
+    <path d="M520,900 C620,860 740,800 800,775 M1080,900 C980,860 860,800 800,775" stroke="#5a3e26" stroke-width="4" fill="none"/>
+    <path d="M150,900 C420,850 700,770 800,738 C900,770 1180,850 1450,900" fill="none" stroke="#7a5232" stroke-width="20" stroke-linejoin="round"/>
+    <path d="M160,892 C420,842 700,762 800,730 C900,762 1180,842 1440,892" fill="none" stroke="#a0754a" stroke-width="4"/>
+    <polygon points="788,736 800,700 812,736" fill="#7a5232"/>
+  </g>
+
+  <!-- The oar: row back to the shore -->
+  <g class="exit" data-goto="lake" tabindex="0" role="button" aria-label="Ro tillbaka till stranden">
+    <polygon points="90,700 620,830 620,900 90,860" fill="transparent"/>
+    <line x1="600" y1="872" x2="200" y2="782" stroke="#c39a66" stroke-width="12" stroke-linecap="round"/>
+    <ellipse cx="160" cy="772" rx="70" ry="20" transform="rotate(13 160 772)" fill="#c39a66" stroke="#8a6a46" stroke-width="3"/>
+    <rect x="356" y="822" width="16" height="30" fill="#3e4a52" transform="rotate(13 364 837)"/>
+    <g class="exit-label">
+      <rect x="170" y="680" width="300" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="320" y="707" font-size="22" text-anchor="middle" fill="#f3ecd8">Ro tillbaka till stranden</text>
+    </g>
   </g>
 </svg>`,
 };

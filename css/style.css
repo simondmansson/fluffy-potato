@@ -66,6 +66,14 @@ body {
   background: linear-gradient(#36433f 0%, #6c7a74 50%, #3a483d 50%, #1c271e 100%);
 }
 
+#scene[data-scene="lake"] {
+  background: linear-gradient(#151832 0%, #6a6590 52%, #3a4670 52%, #18233c 100%);
+}
+
+#scene[data-scene="lake-boat"] {
+  background: linear-gradient(#151832 0%, #7a7099 43%, #4a5580 43%, #18233c 100%);
+}
+
 /* Clickable places and things in a scene */
 .exit,
 .pickup {
@@ -87,9 +95,10 @@ body {
   pointer-events: none;
 }
 
-/* Carrying the axe turns the cursor into one (hotspot on the blade edge) */
-body.has-axe #scene,
-body.has-axe #minigame {
+/* Carrying the axe turns the cursor into one (hotspot on the blade edge).
+   Not at the lake, where the rod and the harpoon are what the player uses. */
+body.has-axe #scene:not([data-scene^="lake"]),
+body.has-axe #minigame:not(.lake) {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='27' y1='29' x2='11' y2='8' stroke='%23a0754a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M9 3 L18 10 L13 16 Q5 16 2 9 Q4 5 9 3 Z' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2'/%3E%3C/svg%3E") 3 9, crosshair;
 }
 
@@ -119,6 +128,55 @@ body.has-axe #minigame {
 .wolf.running .wolf-arm { animation: wolf-arm 0.34s ease-in-out infinite alternate; }
 .wolf.running .back { animation-delay: -0.34s; }
 .wolf.caught .wolf-body { animation: shake 0.1s linear infinite alternate; }
+
+/* ---------- Lake quest ---------- */
+
+.lake-cast,
+.bobber {
+  cursor: pointer;
+}
+
+/* The tentacle rises out of the water far out now and then */
+.tentacle-peek { animation: tentacle-peek 9s ease-in-out infinite; }
+.peek-rings { opacity: 0; animation: peek-rings 9s ease-out infinite; }
+
+.squid-glow {
+  opacity: 0.55;
+  filter: blur(3px);
+  animation: ruby-pulse 1.6s ease-in-out infinite;
+}
+
+.squid-arms { animation: squid-arms 1.1s ease-in-out infinite alternate; transform-origin: -40px 0; }
+.squid-shadow { opacity: 0.8; }
+.squid-shadow.hooked { transition: opacity 0.8s ease; opacity: 1; }
+.squid-shadow.hooked .squid-swim { animation: shake 0.08s linear infinite alternate; }
+
+.bobber-float { animation: bob 1.8s ease-in-out infinite alternate; }
+.bobber-ring { opacity: 0; }
+.bobber.cast .bobber-ring { animation: ring 1s ease-out; }
+.bobber.nibble .bobber-float { animation: nibble 0.35s ease-in-out; }
+.bobber.nibble .bobber-ring { animation: ring 0.8s ease-out; }
+.bobber.bite .bobber-float,
+.bobber.hooked .bobber-float { animation: none; transform: translateY(16px); opacity: 0.35; }
+.bobber.bite .bobber-ring { animation: ring 0.5s ease-out infinite; }
+
+#minigame.lake {
+  background: linear-gradient(#1a1d3a 0%, #8a7fa8 71%, #3f5f86 71%, #14243a 100%);
+}
+
+/* Holding the harpoon in the lake minigame (hotspot on the tip) */
+#minigame.lake {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='29' y1='29' x2='10' y2='10' stroke='%23a0754a' stroke-width='3.5' stroke-linecap='round'/%3E%3Cpolygon points='2,2 15,7 11,9 9,11 7,15' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, crosshair;
+}
+
+.mg-tentacle { animation: mg-tentacle 1.3s ease-in-out infinite alternate; }
+.mg-tentacle.right { animation-delay: -0.65s; }
+.mg-squid-body.hurt { animation: shake 0.07s linear 4 alternate; }
+.mg-squid-body.defeated { animation: sink 2.4s ease-in forwards; }
+.mg-squid-body.defeated .mg-eyes { opacity: 0.25; transition: opacity 1.2s ease; }
+.mg-squid-body.defeated .mg-tentacle { animation-play-state: paused; }
+.mg-squid-body.escape { animation: sink 1s ease-in forwards; }
+.mg-throw { animation: throw 0.35s ease-out forwards; }
 
 /* Minigame overlay */
 #minigame {
@@ -279,14 +337,21 @@ body.has-axe #minigame {
 #inventory {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 14px;
 }
 
-#inventory[hidden] {
+#inventory[hidden],
+.inv-item[hidden] {
   display: none;
 }
 
-.axe-icon {
+.inv-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.item-icon {
   width: 20px;
   height: 20px;
 }
@@ -555,6 +620,54 @@ body.has-axe #minigame {
   50% { transform: scale(1.15); box-shadow: 0 0 18px rgba(216, 40, 63, 0.9); }
 }
 
+@keyframes tentacle-peek {
+  0%, 55%, 100% { transform: translateY(80px); }
+  65%, 78% { transform: translateY(0); }
+}
+
+@keyframes peek-rings {
+  0%, 58% { opacity: 0; transform: scale(0.5); }
+  64% { opacity: 0.7; }
+  90%, 100% { opacity: 0; transform: scale(1.6); }
+}
+
+@keyframes squid-arms {
+  from { transform: scale(1, 0.7); }
+  to { transform: scale(1.06, 1.15); }
+}
+
+@keyframes bob {
+  from { transform: translateY(-1px); }
+  to { transform: translateY(2px); }
+}
+
+@keyframes nibble {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(7px); }
+}
+
+@keyframes ring {
+  from { opacity: 0.8; transform: scale(0.4); }
+  to { opacity: 0; transform: scale(1.8); }
+}
+
+@keyframes mg-tentacle {
+  from { transform: rotate(-14deg); }
+  to { transform: rotate(18deg); }
+}
+
+@keyframes sink {
+  0% { transform: translateY(0); opacity: 1; }
+  15% { transform: translateY(-20px); opacity: 1; }
+  100% { transform: translateY(520px); opacity: 0.2; }
+}
+
+@keyframes throw {
+  0% { transform: translateX(-260px); opacity: 1; }
+  60% { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(0); opacity: 0; }
+}
+
 @keyframes ripple {
   from { transform: translateX(-8px); }
   to { transform: translateX(8px); }
@@ -590,5 +703,7 @@ body.has-axe #minigame {
 
 @media (max-width: 600px) {
   #location-name { font-size: 1rem; }
+  /* Icons only, so the HUD fits on narrow screens */
+  .inv-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   #narration { font-size: 0.95rem; }
 }

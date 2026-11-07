@@ -288,3 +288,221 @@ function werewolfCloseUp() {
   <g class="mg-fx no-hit"></g>
 </svg>`;
 }
+
+// ---------- The lake ----------
+
+// Red boathouse with its gable facing the viewer. (x, groundY) is the bottom-left corner.
+function boathouse(x, groundY, w, h) {
+  const top = groundY - h;
+  const ridge = top - h * 0.55;
+  let boards = '';
+  for (let i = 1; i < 10; i++) boards += `M${x + (w * i) / 10},${top} L${x + (w * i) / 10},${groundY} `;
+  const dw = w * 0.5;
+  const dx = x + (w - dw) / 2;
+  const dh = h * 0.72;
+  return `
+    <rect x="${x}" y="${top}" width="${w}" height="${h}" fill="#9b2f24"/>
+    <path d="${boards}" stroke="#7e2219" stroke-width="3"/>
+    <polygon points="${x},${top} ${x + w / 2},${ridge} ${x + w},${top}" fill="#9b2f24"/>
+    <rect x="${x + w / 2 - 18}" y="${ridge + h * 0.2}" width="36" height="30" fill="#26303a" stroke="#efe9dc" stroke-width="5"/>
+    <polyline points="${x - 16},${top + 6} ${x + w / 2},${ridge - 6} ${x + w + 16},${top + 6}" fill="none" stroke="#3a3436" stroke-width="18" stroke-linejoin="round"/>
+    <polyline points="${x - 4},${top + 6} ${x + w / 2},${ridge + 6} ${x + w + 4},${top + 6}" fill="none" stroke="#efe9dc" stroke-width="5"/>
+    <rect x="${x}" y="${top}" width="8" height="${h}" fill="#efe9dc"/>
+    <rect x="${x + w - 8}" y="${top}" width="8" height="${h}" fill="#efe9dc"/>
+    <rect x="${dx}" y="${groundY - dh}" width="${dw}" height="${dh}" fill="#7e2219" stroke="#efe9dc" stroke-width="5"/>
+    <path d="M${dx + dw / 2},${groundY - dh} L${dx + dw / 2},${groundY}
+             M${dx},${groundY - dh} L${dx + dw / 2},${groundY} L${dx + dw},${groundY - dh}" stroke="#efe9dc" stroke-width="4" fill="none"/>
+    <rect x="${x - 6}" y="${groundY - 6}" width="${w + 12}" height="10" fill="#4a3a2c"/>`;
+}
+
+// Rowboat in side view, bow to the right. (x, y) is the middle of the waterline.
+function rowboat(x, y) {
+  const hull = 'M-140,-36 L140,-36 C132,-14 120,0 106,4 L-106,4 C-122,0 -134,-14 -140,-36 Z';
+  return `
+  <g transform="translate(${x} ${y})">
+    <g transform="translate(0 8) scale(1 -1)" opacity="0.25"><path d="${hull}" fill="#7a5232"/></g>
+    <line x1="-30" y1="-46" x2="-120" y2="10" stroke="#b08a5a" stroke-width="6" stroke-linecap="round"/>
+    <path d="${hull}" fill="#7a5232"/>
+    <path d="M-140,-36 L140,-36 L136,-27 L-136,-27 Z" fill="#e8e0cc"/>
+    <path d="M-126,-12 L128,-12" stroke="#5e3d22" stroke-width="3"/>
+    <path d="M140,-36 L150,-50" stroke="#5e3d22" stroke-width="6" stroke-linecap="round"/>
+    <line x1="30" y1="-46" x2="120" y2="12" stroke="#c39a66" stroke-width="6" stroke-linecap="round"/>
+    <ellipse cx="124" cy="14" rx="18" ry="6" fill="#c39a66" transform="rotate(32 124 14)"/>
+  </g>`;
+}
+
+// Fishing rod leaning against a wall. (x, y) is the butt of the rod on the ground.
+function rodLeaning(x, y) {
+  return `
+    <rect x="${x - 30}" y="${y - 240}" width="110" height="250" fill="transparent"/>
+    <line x1="${x}" y1="${y}" x2="${x + 46}" y2="${y - 228}" stroke="#5b3d22" stroke-width="7" stroke-linecap="round"/>
+    <line x1="${x + 24}" y1="${y - 110}" x2="${x + 46}" y2="${y - 228}" stroke="#a0754a" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="${x + 9}" cy="${y - 46}" r="11" fill="#3e4a52" stroke="#1f262b" stroke-width="2"/>
+    <path d="M${x + 46},${y - 228} Q${x + 58},${y - 170} ${x + 60},${y - 120}" fill="none" stroke="#e8e8e8" stroke-width="1.5" opacity="0.8"/>
+    <path d="M${x + 52},${y - 128} a8,8 0 0 0 16,0 Z" fill="#f4f1e8"/>
+    <path d="M${x + 52},${y - 128} a8,8 0 0 1 16,0 Z" fill="#d8283f"/>
+    <path d="M${x + 60},${y - 120} l0,14 q0,8 -7,6" fill="none" stroke="#cfd6dc" stroke-width="2.5" stroke-linecap="round"/>`;
+}
+
+// Harpoon lying on the dock with a coil of rope. (x, y) is the middle of the shaft.
+function harpoonLying(x, y) {
+  return `
+    <rect x="${x - 120}" y="${y - 50}" width="240" height="90" fill="transparent"/>
+    <ellipse cx="${x - 70}" cy="${y + 14}" rx="34" ry="12" fill="none" stroke="#c9b48a" stroke-width="6"/>
+    <ellipse cx="${x - 70}" cy="${y + 12}" rx="22" ry="7" fill="none" stroke="#b39d72" stroke-width="5"/>
+    <line x1="${x - 100}" y1="${y + 14}" x2="${x + 70}" y2="${y - 16}" stroke="#7a5230" stroke-width="8" stroke-linecap="round"/>
+    <line x1="${x - 96}" y1="${y + 11}" x2="${x + 66}" y2="${y - 18}" stroke="#a0754a" stroke-width="2.5" stroke-linecap="round"/>
+    <g transform="translate(${x + 70} ${y - 16}) rotate(-10)">
+      <polygon points="0,-4 34,-3 56,0 34,3 0,4" fill="#aab4bc" stroke="#4a4f55" stroke-width="2" stroke-linejoin="round"/>
+      <polygon points="30,-3 18,-14 24,-3" fill="#aab4bc" stroke="#4a4f55" stroke-width="1.5"/>
+      <polygon points="30,3 18,14 24,3" fill="#aab4bc" stroke="#4a4f55" stroke-width="1.5"/>
+      <g transform="translate(46 0)"><g class="glint"><path d="M0,-12 L2.2,-2.2 L12,0 L2.2,2.2 L0,12 L-2.2,2.2 L-12,0 L-2.2,-2.2 Z" fill="#fff"/></g></g>
+    </g>`;
+}
+
+// A tentacle that now and then curls up out of the water far out on the lake.
+// Needs a clipPath with id="<clipId>" that hides everything below y = 0.
+function tentaclePeek(x, y, clipId) {
+  return `
+  <g transform="translate(${x} ${y})">
+    <g clip-path="url(#${clipId})">
+      <g class="tentacle-peek">
+        <path d="M-10,10 C-14,-20 -6,-50 12,-62 C26,-70 34,-56 26,-48 C18,-42 12,-50 16,-54 C4,-46 4,-20 10,10 Z" fill="#4a2f4c"/>
+      </g>
+    </g>
+    <g class="peek-rings" fill="none" stroke="#c8d3ea" stroke-width="2">
+      <ellipse rx="26" ry="5"/><ellipse rx="44" ry="8" opacity="0.6"/>
+    </g>
+  </g>`;
+}
+
+// The giant squid seen from above as a shadow under the water, swimming towards +x.
+// (0, 0) is its middle. Needs the blur filter with id="<filterId>".
+function squidShadow(filterId) {
+  let arms = '';
+  for (let i = 0; i < 8; i++) {
+    const spread = (i - 3.5) * 9;
+    arms += `<path d="M-40,${spread * 0.4} C-80,${spread * 0.9} -120,${spread * 1.4} -${150 + (i % 3) * 18},${spread * 1.7}"/>`;
+  }
+  return `
+  <g filter="url(#${filterId})">
+    <g class="squid-arms" fill="none" stroke="#0b1521" stroke-width="9" stroke-linecap="round">${arms}</g>
+    <ellipse cx="-30" cy="0" rx="26" ry="22" fill="#0b1521"/>
+    <ellipse cx="50" cy="0" rx="80" ry="28" fill="#0b1521"/>
+    <polygon points="110,0 140,-26 150,0 140,26" fill="#0b1521"/>
+  </g>
+  <circle class="squid-glow" cx="-28" cy="0" r="7" fill="#ff3a55"/>`;
+}
+
+// Red and white fishing float. (0, 0) is the waterline.
+function bobber() {
+  return `
+    <g class="bobber-ring" fill="none" stroke="#d7e3ee" stroke-width="2"><ellipse rx="24" ry="6"/></g>
+    <g class="bobber-float">
+      <path d="M-11,-2 a11,11 0 0 0 22,0 Z" fill="#f4f1e8"/>
+      <path d="M-11,-2 a11,11 0 0 1 22,0 Z" fill="#d8283f"/>
+      <line x1="0" y1="-13" x2="0" y2="-28" stroke="#222" stroke-width="2.5"/>
+    </g>`;
+}
+
+// The giant squid rising out of the lake, for the harpoon minigame.
+// The squid (.mg-squid) is moved by lake.js; (0, 0) is its middle at the waterline.
+// The ruby (.mg-ruby-target) is what the player must hit, and the water in
+// front (.mg-water) catches throws that miss.
+function giantSquidCloseUp() {
+  const skin = '#7a4b78';
+  const dark = '#55304f';
+  const light = '#a87aa0';
+  const arm = (d, w) => `<path d="${d}" fill="none" stroke="${skin}" stroke-width="${w}" stroke-linecap="round"/>`;
+  const tentacle = `
+        <path d="M0,0 C-60,-40 -120,-140 -190,-210" fill="none" stroke="${skin}" stroke-width="22" stroke-linecap="round"/>
+        <ellipse cx="-206" cy="-226" rx="34" ry="20" transform="rotate(-48 -206 -226)" fill="${skin}"/>
+        <g fill="${light}"><circle cx="-198" cy="-214" r="5"/><circle cx="-214" cy="-232" r="5"/><circle cx="-226" cy="-246" r="4"/></g>`;
+  const crack = (d) => `<path class="mg-crack" d="${d}" fill="none" stroke="#fff4f4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  let shimmer = '';
+  const rand = seededRandom(77);
+  for (let i = 0; i < 26; i++) {
+    const sx = rand() * 1600;
+    const sy = 640 + rand() * 250;
+    const len = 30 + rand() * 70;
+    shimmer += `M${sx.toFixed(0)},${sy.toFixed(0)} l${len.toFixed(0)},0 `;
+  }
+  return `
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jättebläckfisken på nära håll">
+  <defs>
+    <linearGradient id="mgl-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a1d3a"/>
+      <stop offset="1" stop-color="#8a7fa8"/>
+    </linearGradient>
+    <linearGradient id="mgl-water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3f5f86"/>
+      <stop offset="1" stop-color="#14243a"/>
+    </linearGradient>
+    <filter id="mgl-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <g class="no-hit">
+    <rect width="1600" height="640" fill="url(#mgl-sky)"/>
+    <polygon fill="#4a4d6c" points="0,640 0,580 200,540 380,590 560,560 760,600 1000,550 1200,590 1400,540 1600,580 1600,640"/>
+    <polygon fill="#3a3d58" points="1060,640 1200,520 1270,470 1340,520 1480,640"/>
+    <polygon fill="#e9ecf5" points="1270,470 1300,496 1286,504 1272,494 1258,506 1244,496"/>
+  </g>
+
+  <g class="mg-squid" transform="translate(800 980)">
+    <g class="mg-squid-body">
+      <g transform="translate(-90 -120)"><g class="mg-tentacle">${tentacle}</g></g>
+      <g transform="translate(90 -120) scale(-1 1)"><g class="mg-tentacle right">${tentacle}</g></g>
+
+      ${arm('M-90,-110 C-140,-40 -170,60 -150,200', 30)}
+      ${arm('M-50,-100 C-80,-20 -90,90 -70,240', 30)}
+      ${arm('M50,-100 C80,-20 90,90 70,240', 30)}
+      ${arm('M90,-110 C140,-40 170,60 150,200', 30)}
+      ${arm('M-20,-100 C-30,0 -20,120 -10,250', 26)}
+      ${arm('M20,-100 C30,0 20,120 10,250', 26)}
+
+      <path fill="${dark}" d="M0,-520 L-130,-420 L-80,-400 L0,-450 L80,-400 L130,-420 Z"/>
+      <path fill="${skin}" d="M0,-500 C-64,-500 -100,-420 -104,-330 C-108,-260 -112,-220 -118,-180 L118,-180 C112,-220 108,-260 104,-330 C100,-420 64,-500 0,-500 Z"/>
+      <g fill="${dark}" opacity="0.6">
+        <ellipse cx="-50" cy="-420" rx="10" ry="7"/><ellipse cx="40" cy="-440" rx="8" ry="6"/>
+        <ellipse cx="60" cy="-360" rx="12" ry="8"/><ellipse cx="-70" cy="-340" rx="9" ry="6"/>
+        <ellipse cx="10" cy="-390" rx="7" ry="5"/>
+      </g>
+      <ellipse cx="0" cy="-160" rx="134" ry="74" fill="${skin}"/>
+      <path d="M-90,-120 Q0,-80 90,-120" fill="none" stroke="${dark}" stroke-width="5" opacity="0.6"/>
+      <g class="mg-eyes" filter="url(#mgl-glow)">
+        <circle cx="-84" cy="-170" r="30" fill="#f2e6a0"/>
+        <circle cx="84" cy="-170" r="30" fill="#f2e6a0"/>
+      </g>
+      <rect x="-104" y="-176" width="40" height="12" rx="6" fill="#1a1208"/>
+      <rect x="64" y="-176" width="40" height="12" rx="6" fill="#1a1208"/>
+
+      <g transform="translate(0 -262)">
+        <g class="mg-ruby">
+          <circle r="54" fill="#2a1f2a" stroke="#b39a5e" stroke-width="6"/>
+          <g filter="url(#mgl-glow)">
+            <polygon points="0,-44 36,0 0,44 -36,0" fill="#d8283f"/>
+          </g>
+          <polygon points="0,-44 36,0 0,0" fill="#ff7084"/>
+          <polygon points="0,0 0,44 -36,0" fill="#8e1426"/>
+          <polygon points="-8,-28 -18,-11 -11,-11" fill="#ffd6dc"/>
+          ${crack('M-4,-36 L4,-16 L-8,-4 L2,10')}
+          ${crack('M28,-6 L11,4 L17,18 L4,30')}
+          ${crack('M-28,4 L-11,9 L-17,24 L-2,36')}
+          <circle class="mg-ruby-target" r="70" fill="transparent"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <g class="mg-water">
+    <path d="M0,640 Q50,630 100,640 T200,640 T300,640 T400,640 T500,640 T600,640 T700,640 T800,640 T900,640 T1000,640 T1100,640 T1200,640 T1300,640 T1400,640 T1500,640 T1600,640 L1600,900 L0,900 Z" fill="url(#mgl-water)" opacity="0.9"/>
+    <path class="ripples no-hit" d="${shimmer}" stroke="#a9bfdc" stroke-width="3" stroke-linecap="round" opacity="0.35"/>
+  </g>
+
+  <path class="mg-line no-hit" d="" fill="none" stroke="#e8e8e8" stroke-width="2" opacity="0.8"/>
+  <g class="mg-fx no-hit"></g>
+</svg>`;
+}

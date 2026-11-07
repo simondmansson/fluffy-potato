@@ -32,8 +32,13 @@ function updateHud() {
   playerNameEl.textContent = state.name;
   playerNameEl.hidden = !state.name;
   rubyCountEl.textContent = state.rubies.length;
+  let carrying = false;
+  inventoryEl.querySelectorAll('.inv-item').forEach((el) => {
+    el.hidden = !state.items.includes(el.dataset.item);
+    if (!el.hidden) carrying = true;
+  });
+  inventoryEl.hidden = !carrying;
   const hasAxe = state.items.includes('axe');
-  inventoryEl.hidden = !hasAxe;
   // The cursor turns into an axe once the player carries one.
   document.body.classList.toggle('has-axe', hasAxe);
 }
@@ -107,8 +112,11 @@ function describeClickTarget(target) {
   if (exit) return `exit → ${exit.dataset.goto}`;
   const part = el.closest('[data-part]');
   if (part) return `werewolf ${part.dataset.part}`;
-  if (el.closest('.pickup')) return 'axe';
+  const pickup = el.closest('.pickup');
+  if (pickup) return `pickup ${pickup.dataset.item}`;
   if (el.closest('.mg-ruby-target')) return 'ruby';
+  if (el.closest('.bobber')) return 'float';
+  if (el.closest('.lake-cast, .mg-water')) return 'water';
   const cls = el.getAttribute('class');
   return cls ? `<${el.tagName.toLowerCase()} class="${cls}">` : `<${el.tagName.toLowerCase()}>`;
 }

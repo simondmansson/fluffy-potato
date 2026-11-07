@@ -126,7 +126,7 @@ function placeAxe(actors, spot) {
 
   actors.insertAdjacentHTML(
     'beforeend',
-    `<g class="pickup" tabindex="0" role="button" aria-label="Ta yxan">${axeInStump(spot.x, spot.y)}</g>`
+    `<g class="pickup" data-item="axe" tabindex="0" role="button" aria-label="Ta yxan">${axeInStump(spot.x, spot.y)}</g>`
   );
   const axe = actors.lastElementChild;
 
