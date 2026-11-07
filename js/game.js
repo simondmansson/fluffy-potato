@@ -40,7 +40,13 @@ function updateHud() {
 
 // Scenes may define enter(svg) to add interactive content after rendering.
 // It can return a cleanup function that runs when the scene is left.
+// Own-property check, so ids like "__proto__" or "constructor" from a save don't count.
+function hasScene(id) {
+  return typeof id === 'string' && Object.prototype.hasOwnProperty.call(SCENES, id);
+}
+
 function render(sceneId) {
+  if (!hasScene(sceneId)) sceneId = 'town';
   if (leaveScene) {
     leaveScene();
     leaveScene = null;
@@ -63,7 +69,7 @@ function render(sceneId) {
 }
 
 function goTo(sceneId) {
-  if (transitioning || !SCENES[sceneId]) return;
+  if (transitioning || !hasScene(sceneId)) return;
   transitioning = true;
   sceneEl.classList.add('fading');
   setTimeout(() => {
@@ -135,8 +141,6 @@ if (DEBUG_CLICKS) {
 
 // ---------- Start screen ----------
 
-const MAX_NAME_LENGTH = 20;
-
 const startEl = document.getElementById('start');
 const startForm = document.getElementById('new-game-form');
 const nameInput = document.getElementById('name-input');
@@ -176,7 +180,7 @@ function showStartScreen() {
     document.getElementById('overwrite-note').hidden = false;
     continueBtn.addEventListener('click', () => {
       closeStartScreen(
-        SCENES[state.location] ? state.location : 'town',
+        hasScene(state.location) ? state.location : 'town',
         state.name ? `Välkommen tillbaka, ${state.name}!` : 'Välkommen tillbaka!'
       );
     });
@@ -187,7 +191,7 @@ function showStartScreen() {
 
   startForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = nameInput.value.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME_LENGTH);
+    const name = normalizeName(nameInput.value);
     if (!name) {
       nameInput.value = '';
       nameInput.focus();

@@ -82,24 +82,29 @@ function smoke(x, y) {
     </g>`;
 }
 
+// Escape text for use inside SVG markup (element text or attribute values).
+function escapeXml(text) {
+  return String(text).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
 // Wooden signpost. (x, groundY) is the foot of the post.
 function signpost(x, groundY, text, { width = 170 } = {}) {
   const boardY = groundY - 120;
   return `
     <rect x="${x - 6}" y="${boardY}" width="12" height="120" fill="#5b3d22"/>
     <rect x="${x - width / 2}" y="${boardY}" width="${width}" height="46" rx="5" fill="#c9a46a" stroke="#5b3d22" stroke-width="4"/>
-    <text class="sign-text" x="${x}" y="${boardY + 31}" font-size="26" text-anchor="middle">${text}</text>`;
+    <text class="sign-text" x="${x}" y="${boardY + 31}" font-size="26" text-anchor="middle">${escapeXml(text)}</text>`;
 }
 
 // Clickable signpost exit with a hover label. (x, groundY) is the foot of the post.
 function signExit(target, x, groundY, text, label, { width = 200 } = {}) {
   return `
-  <g class="exit" data-goto="${target}" tabindex="0" role="button" aria-label="${label}">
+  <g class="exit" data-goto="${escapeXml(target)}" tabindex="0" role="button" aria-label="${escapeXml(label)}">
     <rect x="${x - width / 2 - 20}" y="${groundY - 140}" width="${width + 40}" height="150" fill="transparent"/>
     ${signpost(x, groundY, text, { width })}
     <g class="exit-label">
       <rect x="${x - 130}" y="${groundY - 190}" width="260" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
-      <text x="${x}" y="${groundY - 163}" font-size="22" text-anchor="middle" fill="#f3ecd8">${label}</text>
+      <text x="${x}" y="${groundY - 163}" font-size="22" text-anchor="middle" fill="#f3ecd8">${escapeXml(label)}</text>
     </g>
   </g>`;
 }

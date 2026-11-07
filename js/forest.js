@@ -52,7 +52,15 @@ function wolfDefeated() {
 // They never start in the same screen, so the player has to explore.
 function forestQuest() {
   const q = state.forest;
-  const valid = q && AXE_SPOTS[q.axeScene] && AXE_SPOTS[q.axeScene][q.axeSpot] && AXE_SPOTS[q.wolfScene];
+  // Checked against the constant lists, so prototype keys like "constructor" never pass.
+  const valid =
+    q &&
+    FOREST_SCENES.includes(q.axeScene) &&
+    FOREST_SCENES.includes(q.wolfScene) &&
+    q.axeScene !== q.wolfScene &&
+    Number.isInteger(q.axeSpot) &&
+    q.axeSpot >= 0 &&
+    q.axeSpot < AXE_SPOTS[q.axeScene].length;
   if (!valid) {
     const axeScene = randomItem(FOREST_SCENES);
     state.forest = {
