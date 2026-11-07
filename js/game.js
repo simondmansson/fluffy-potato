@@ -7,6 +7,7 @@ const locationNameEl = document.getElementById('location-name');
 const narrationEl = document.getElementById('narration');
 const rubyCountEl = document.getElementById('ruby-count');
 const inventoryEl = document.getElementById('inventory');
+const playerNameEl = document.getElementById('player-name');
 
 const FADE_MS = 400;
 let transitioning = false;
@@ -27,6 +28,9 @@ function setNarration(text) {
 }
 
 function updateHud() {
+  // textContent only: the name is typed by the player and must never be parsed as markup.
+  playerNameEl.textContent = state.name;
+  playerNameEl.hidden = !state.name;
   rubyCountEl.textContent = state.rubies.length;
   const hasAxe = state.items.includes('axe');
   inventoryEl.hidden = !hasAxe;
@@ -129,4 +133,69 @@ if (DEBUG_CLICKS) {
   );
 }
 
-render(SCENES[state.location] ? state.location : 'town');
+// ---------- Start screen ----------
+
+const MAX_NAME_LENGTH = 20;
+
+const startEl = document.getElementById('start');
+const startForm = document.getElementById('new-game-form');
+const nameInput = document.getElementById('name-input');
+
+// Replace the current state with a fresh game for a new character.
+function newGame(name) {
+  Object.keys(state).forEach((key) => delete state[key]);
+  Object.assign(state, defaultState(), { name });
+  saveState(state);
+}
+
+let started = false;
+
+function closeStartScreen(sceneId, greeting) {
+  if (started) return;
+  started = true;
+  startEl.classList.add('closing');
+  render(sceneId);
+  setNarration(`${greeting} ${narrationEl.textContent}`);
+  setTimeout(() => {
+    startEl.hidden = true;
+    startEl.querySelector('.start-bg').innerHTML = ''; // drop the duplicate town SVG ids
+  }, FADE_MS);
+}
+
+function showStartScreen() {
+  // The town, dimmed, as a backdrop. Its markup is a static template from scenes.js.
+  const bg = startEl.querySelector('.start-bg');
+  bg.innerHTML = SCENES.town.svg;
+  bg.querySelector('svg').setAttribute('preserveAspectRatio', 'xMidYMid slice');
+
+  if (hasSave()) {
+    const continueBtn = document.getElementById('continue-btn');
+    continueBtn.textContent = state.name ? `Fortsätt som ${state.name}` : 'Fortsätt';
+    document.getElementById('start-continue').hidden = false;
+    document.getElementById('new-game-btn').textContent = 'Nytt spel';
+    document.getElementById('overwrite-note').hidden = false;
+    continueBtn.addEventListener('click', () => {
+      closeStartScreen(
+        SCENES[state.location] ? state.location : 'town',
+        state.name ? `Välkommen tillbaka, ${state.name}!` : 'Välkommen tillbaka!'
+      );
+    });
+    continueBtn.focus();
+  } else {
+    nameInput.focus();
+  }
+
+  startForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = nameInput.value.replace(/\s+/g, ' ').trim().slice(0, MAX_NAME_LENGTH);
+    if (!name) {
+      nameInput.value = '';
+      nameInput.focus();
+      return;
+    }
+    newGame(name);
+    closeStartScreen('town', `Välkommen, ${name}!`);
+  });
+}
+
+showStartScreen();

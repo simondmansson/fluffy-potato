@@ -12,7 +12,10 @@
     <div id="minigame" hidden></div>
 
     <header id="hud">
-      <div class="hud-box" id="location-name"></div>
+      <div class="hud-box hud-left">
+        <div id="location-name"></div>
+        <div id="player-name" hidden></div>
+      </div>
       <div class="hud-right">
         <div class="hud-box" id="inventory" hidden>
           <svg class="axe-icon" viewBox="0 0 32 32" aria-hidden="true">
@@ -29,6 +32,26 @@
     </header>
 
     <p class="hud-box" id="narration" aria-live="polite"></p>
+
+    <section id="start" aria-labelledby="start-title">
+      <div class="start-bg" aria-hidden="true" inert></div>
+      <div class="start-panel hud-box">
+        <h1 id="start-title">Thunder Dragon</h1>
+        <p class="start-tagline">Samla rubinerna och besegra åskdraken på toppen av Mount Thunder.</p>
+
+        <div id="start-continue" hidden>
+          <button type="button" class="start-btn" id="continue-btn">Fortsätt</button>
+          <p class="start-or">eller börja ett nytt äventyr</p>
+        </div>
+
+        <form id="new-game-form" autocomplete="off">
+          <label for="name-input">Vad heter din hjälte?</label>
+          <input id="name-input" name="name" type="text" maxlength="20" placeholder="Skriv ett namn" required>
+          <button type="submit" class="start-btn" id="new-game-btn">Starta spelet</button>
+          <p class="start-note" id="overwrite-note" hidden>Ditt sparade spel skrivs över.</p>
+        </form>
+      </div>
+    </section>
   </main>
 
   <!-- Plain scripts (no ES modules) so the game works when opened via file:// -->

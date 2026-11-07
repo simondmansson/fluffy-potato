@@ -9,6 +9,8 @@ Thunder dragon bor längst upp på Mount Thunder. Han har stulna emeralder på r
 
 ## Gameplay
 
+Spelet börjar med en startskärm där spelaren namnger sin hjälte. Namnet visas i spelet och sparas. Finns ett sparat spel kan man fortsätta där man slutade, eller börja ett nytt spel med en ny hjälte (då skrivs det sparade spelet över).
+
 Spelaren börjar i byn vid Mount Thunders fot, därifrån ger han sig ut till 4a platser för att samla rubiner, dessa är skogen, sjön, byn, grottan i berget. På varje plats ska spelare besegra ett monster för att få en rubin.
 
 ### Skogen

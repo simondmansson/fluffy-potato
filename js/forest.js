@@ -378,7 +378,11 @@ function startRubyFight() {
       saveState(state);
       updateHud();
       restartAnimation(document.getElementById('rubies'), 'gain');
-      setNarration('Rubinen lossnar och flyger iväg! Varulven ylar och sjunker ihop… Du har vunnit skogens rubin!');
+      setNarration(
+        'Rubinen lossnar och flyger iväg! Varulven ylar och sjunker ihop… ' +
+          (state.name ? `Bra jobbat, ${state.name}! ` : '') +
+          'Du har vunnit skogens rubin!'
+      );
       forestNotice =
         'Varulven är besegrad! Utan rubinen förlorade den sin kraft och smög tyst bort in i dimman. Skogens rubin är din.';
       setTimeout(close, 2600);

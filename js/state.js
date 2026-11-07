@@ -4,6 +4,7 @@ const SAVE_KEY = 'thunder-dragon-save';
 
 function defaultState() {
   return {
+    name: '', // the player's character name, chosen on the start screen
     location: 'town',
     rubies: [], // ids of locations whose ruby has been won, e.g. 'forest'
     items: [], // items the player carries, e.g. 'axe'
@@ -21,6 +22,15 @@ function loadState() {
     // Storage blocked or save corrupted: start a new game.
   }
   return defaultState();
+}
+
+// True if a saved game exists (so the start screen can offer "continue").
+function hasSave() {
+  try {
+    return localStorage.getItem(SAVE_KEY) !== null;
+  } catch (e) {
+    return false;
+  }
 }
 
 function saveState(state) {
