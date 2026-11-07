@@ -85,4 +85,48 @@ sceneEl.addEventListener('keydown', (e) => {
 
 window.addEventListener('resize', fitScene);
 
+// ---------- Debug: log every mouse click ----------
+
+const DEBUG_CLICKS = true;
+
+// Short name for what was clicked, using the game's own markers.
+function describeClickTarget(target) {
+  const el = target instanceof Element ? target : null;
+  if (!el) return 'nothing';
+  const exit = el.closest('[data-goto]');
+  if (exit) return `exit → ${exit.dataset.goto}`;
+  const part = el.closest('[data-part]');
+  if (part) return `werewolf ${part.dataset.part}`;
+  if (el.closest('.pickup')) return 'axe';
+  if (el.closest('.mg-ruby-target')) return 'ruby';
+  const cls = el.getAttribute('class');
+  return cls ? `<${el.tagName.toLowerCase()} class="${cls}">` : `<${el.tagName.toLowerCase()}>`;
+}
+
+if (DEBUG_CLICKS) {
+  // Capture phase, so the click is logged before any handler re-renders the scene.
+  document.addEventListener(
+    'click',
+    (e) => {
+      const minigame = document.getElementById('minigame');
+      const inMinigame = !minigame.hidden;
+      const svg = (inMinigame ? minigame : sceneEl).querySelector('svg');
+      let scenePoint = null;
+      if (svg && svg.getScreenCTM()) {
+        const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg.getScreenCTM().inverse());
+        scenePoint = { x: Math.round(p.x), y: Math.round(p.y) };
+      }
+      console.log('[click]', describeClickTarget(e.target), {
+        scene: state.location,
+        minigame: inMinigame,
+        screen: { x: e.clientX, y: e.clientY },
+        svg: scenePoint,
+        button: e.button,
+        target: e.target,
+      });
+    },
+    true
+  );
+}
+
 render(SCENES[state.location] ? state.location : 'town');
