@@ -25,6 +25,10 @@ Skogen består av fyra platser som hänger ihop i en ring: Skogsstigen (vid byn)
 - Tar greppet slut sliter varulven sig loss och springer till en annan av skogens platser.
 - När rubinen slås loss är varulven besegrad och spelaren får skogens rubin.
 
+## Sjön
+
+Sjön är stor och spegelblank, i bakgrunden syns byn och berget.
+I sjön simmar en jättebläckfisk som har rubinen i pannan. Spelaren måste ta fiskespöt och harpunen vid sjökanten, ro ut med båten och fiska efter bläckfisken. När spelaren fått napp ska de försöka få loss rubinen med harpunen.
 
 ### Tech stack
 

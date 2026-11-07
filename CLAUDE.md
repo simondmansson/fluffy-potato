@@ -34,11 +34,6 @@ Test the game in a browser with the Playwright MCP tools (`mcp__plugin_playwrigh
 
 Thunder Dragon is a browser game. The README is the design source of truth; keep it in sync when the design changes.
 
-- **Goal:** defeat the Thunder Dragon (åskdraken) at the top of Mount Thunder. Its stolen emeralds give it extra power.
-- **Progression:** the player starts in the village at the foot of the mountain and visits four locations: the forest (skogen), the lake (sjön), the village (byn) and the cave in the mountain (grottan). At each one the player defeats a monster to earn a ruby.
-- **Rubies** are turned into armor and weapons that can withstand the emeralds' power. Collecting them unlocks the path to the dragon. The term is always "rubiner" (rubies), never "nycklar" (keys).
-- **Locations defined so far:** the forest is a dense mixed forest with thick fog, and its monster is a werewolf carrying the ruby on its chest. The other three locations are not designed yet.
-- **Implemented:** a start screen where the player names their character (shown in the HUD and greetings), the town scene (Mount Thunder in the background) and the forest quest. The forest is four screens in a ring (`forest` Skogsstigen ↔ `forest-spruce` Granskogen ↔ `forest-glade` Gläntan ↔ `forest-brook` Bäcken ↔ back). The axe and the werewolf start in random, different screens. You catch the werewolf by its tail with the axe, then hit the swaying ruby 3 times before your grip runs out. If you fail, the werewolf flees to another screen. If you win, you get the forest ruby. Everything is mouse-driven.
 
 ## Language
 
