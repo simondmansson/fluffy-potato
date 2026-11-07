@@ -532,6 +532,11 @@ SCENES.lake = {
   ${pine(1560, 640, 260, '#1c2a24', '#241d15')}
   ${boathouse(150, 750, 280, 170)}
 
+  <!-- A note on the boathouse wall: how to catch the squid (lake.js) -->
+  <g class="readable lake-note" tabindex="0" role="button" aria-label="Läs lappen på sjöboden">
+    ${pinnedNote(188, 616)}
+  </g>
+
   <!-- The dock -->
   <g>
     <rect x="1124" y="632" width="10" height="34" fill="#3a2a1c"/>

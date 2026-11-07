@@ -315,6 +315,24 @@ function boathouse(x, groundY, w, h) {
     <rect x="${x - 6}" y="${groundY - 6}" width="${w + 12}" height="10" fill="#4a3a2c"/>`;
 }
 
+// Paper note nailed to a wall, with scribbles and a little squid doodle.
+// (x, y) is the nail at the top centre.
+function pinnedNote(x, y) {
+  return `
+    <rect x="${x - 34}" y="${y - 14}" width="68" height="90" fill="transparent"/>
+    <g transform="rotate(-5 ${x} ${y})">
+      <path d="M${x - 24},${y - 4} L${x + 24},${y - 4} L${x + 24},${y + 52} L${x + 16},${y + 62} L${x - 24},${y + 62} Z" fill="#efe6cf" stroke="#b9a986" stroke-width="1.5"/>
+      <path d="M${x + 24},${y + 52} L${x + 16},${y + 52} L${x + 16},${y + 62} Z" fill="#cfc2a2"/>
+      <path d="M${x - 17},${y + 8} l30,0 M${x - 17},${y + 15} l24,0 M${x - 17},${y + 22} l32,0 M${x - 17},${y + 29} l20,0"
+            stroke="#5a4a3a" stroke-width="2" stroke-linecap="round"/>
+      <ellipse cx="${x - 6}" cy="${y + 41}" rx="7" ry="5" fill="none" stroke="#7a3b3b" stroke-width="1.8"/>
+      <path d="M${x - 11},${y + 45} l-2,8 M${x - 7},${y + 46} l0,8 M${x - 3},${y + 46} l1,8 M${x + 1},${y + 44} l3,7"
+            stroke="#7a3b3b" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M${x - 6},${y + 37} l-2.5,3 l2.5,3 l2.5,-3 Z" fill="#d8283f"/>
+    </g>
+    <circle cx="${x}" cy="${y}" r="3" fill="#4a4f55"/>`;
+}
+
 // Rowboat in side view, bow to the right. (x, y) is the middle of the waterline.
 function rowboat(x, y) {
   const hull = 'M-140,-36 L140,-36 C132,-14 120,0 106,4 L-106,4 C-122,0 -134,-14 -140,-36 Z';

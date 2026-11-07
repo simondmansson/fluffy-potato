@@ -33,6 +33,7 @@ I sjön simmar en jättebläckfisk som har rubinen i pannan. Spelaren måste ta 
 Sjön består av två platser: Sjön (stranden, österut från byn) och Ute på sjön.
 
 - På stranden står fiskespöt lutat mot den röda sjöboden och harpunen ligger på bryggan. Båten går bara att ro ut med när spelaren har båda.
+- På sjöbodens vägg sitter en lapp från en gammal fiskare. Klickar man på den läser man hur man fångar bläckfisken.
 - Ute på sjön syns bläckfiskens skugga glida under ytan. Spelaren klickar på vattnet för att kasta ut flötet. Landar det nära skuggan simmar bläckfisken dit och nafsar några gånger, sedan kommer nappet och flötet dras under.
 - Vid nappet måste spelaren klicka direkt för att dra till. Klickar man medan den nafsar skräms den iväg, och väntar man för länge sliter den av betet.
 - Sedan börjar ett minispel: bläckfisken stiger upp ur vattnet och dyker då och då. Spelaren kastar harpunen och ska träffa rubinen i pannan tre gånger innan linan brister. Är rubinen under vattnet blir det plask. Varje miss sliter på linan, och varje träff gör att bläckfisken rör sig och dyker snabbare.

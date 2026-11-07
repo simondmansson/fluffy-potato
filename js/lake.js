@@ -52,6 +52,7 @@ function lakeShoreNarration() {
   const parts = [takeNotice(SCENES.lake.narration)];
   if (!squidDefeated()) {
     parts.push('Långt ute bryter något stort vattenytan.');
+    parts.push('En lapp sitter fastspikad på sjöboden.');
     if (hasLakeTools()) parts.push('Du har fiskespöt och harpunen – ro ut med båten!');
     else if (!hasItem('rod') && !hasItem('harpoon')) parts.push('Vid sjöboden står ett fiskespö, och på bryggan ligger en harpun.');
     else parts.push(missingToolsText());
@@ -84,8 +85,24 @@ function placeTool(actors, item, markup, label, onTake) {
   });
 }
 
+// What the note on the boathouse wall says.
+const LAKE_NOTE =
+  'På lappen står det, med darrig handstil: »Till den som vill fånga jättebläckfisken! ' +
+  'Ro ut och kasta flötet nära skuggan under ytan. Den nafsar först – vänta! ' +
+  'Dra till först när flötet dras under ordentligt. När den stiger upp: kasta harpunen mot rubinen i pannan, ' +
+  'men bara när den är ovanför vattnet. Tre träffar, innan linan brister. Lycka till! /Gamle fiskarn«';
+
 SCENES.lake.enter = (svg) => {
   const actors = svg.querySelector('.actors');
+
+  const note = svg.querySelector('.lake-note');
+  note.addEventListener('click', () => setNarration(LAKE_NOTE));
+  note.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setNarration(LAKE_NOTE);
+    }
+  });
   const boat = svg.querySelector('.lake-boat-exit');
 
   // The boat only becomes an exit once both tools are carried.

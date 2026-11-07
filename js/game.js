@@ -116,6 +116,7 @@ function describeClickTarget(target) {
   if (pickup) return `pickup ${pickup.dataset.item}`;
   if (el.closest('.mg-ruby-target')) return 'ruby';
   if (el.closest('.bobber')) return 'float';
+  if (el.closest('.readable')) return 'note';
   if (el.closest('.lake-cast, .mg-water')) return 'water';
   const cls = el.getAttribute('class');
   return cls ? `<${el.tagName.toLowerCase()} class="${cls}">` : `<${el.tagName.toLowerCase()}>`;

@@ -76,7 +76,8 @@ body {
 
 /* Clickable places and things in a scene */
 .exit,
-.pickup {
+.pickup,
+.readable {
   cursor: pointer;
   outline: none;
   transition: filter 0.2s ease;
@@ -85,7 +86,9 @@ body {
 .exit:hover,
 .exit:focus-visible,
 .pickup:hover,
-.pickup:focus-visible {
+.pickup:focus-visible,
+.readable:hover,
+.readable:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 14px rgba(255, 236, 170, 0.7));
 }
 
