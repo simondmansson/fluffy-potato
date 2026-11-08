@@ -633,6 +633,7 @@ SCENES['lake-boat'] = {
 //                              – (rakt fram) Avgrunden (återvändsgränd)
 //                              – (höger) Benhålan – Spindelgången – Spindelnästet
 // Every screen but the mouth is pitch dark; cave.js lets the torch light it up around the pointer.
+// The way back (caveBack) is drawn after caveDarkness() so it stays visible in the dark.
 
 // Shared defs and back wall, walls and floor of a cave passage. Ids are prefixed with the scene id.
 function caveBackdrop(id, seed, { rock0 = '#2b241e', rock1 = '#14100d', floor = '#3a3128' } = {}) {
@@ -757,8 +758,8 @@ SCENES['cave-fork'] = {
   ${caveOpening('cave-bones', 1220, 640, 210, 280, 'Den högra gången')}
   ${stalactites(113, '#211b16', { count: 5, y: 900, h0: 50, h1: 120, up: true })}
   ${rock(600, 760, 120, 50, '#3a322b', '#2e2a22')}
-  ${caveBack('cave', 'Tillbaka mot mynningen')}
   ${caveDarkness('cave-fork')}
+  ${caveBack('cave', 'Tillbaka mot mynningen')}
 </svg>`,
 };
 
@@ -776,8 +777,8 @@ SCENES['cave-drip'] = {
   </g>
   ${stalactites(125, '#2f2e2c', { count: 9, y: 900, h0: 60, h1: 200, up: true })}
   ${caveOpening('cave-bones', 1250, 630, 200, 270, 'En smal gång')}
-  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
   ${caveDarkness('cave-drip')}
+  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
 </svg>`,
 };
 
@@ -792,8 +793,8 @@ SCENES['cave-chasm'] = {
   <path d="M-800,610 C200,600 600,640 800,650 C1000,640 1400,600 2400,610 L2400,780 C1400,740 1000,760 800,770 C600,760 200,740 -800,780 Z" fill="#000"/>
   <path d="M-800,780 C200,740 600,760 800,770 C1000,760 1400,740 2400,780 L2400,800 C1400,760 1000,782 800,790 C600,782 200,760 -800,800 Z" fill="#4a3e33"/>
   ${stalactites(133, '#1a1511', { count: 7, y: 610, h0: 30, h1: 90, up: true })}
-  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
   ${caveDarkness('cave-chasm')}
+  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
 </svg>`,
 };
 
@@ -810,8 +811,8 @@ SCENES['cave-bones'] = {
   ${bones(1080, 800, 0.8)}
   ${bones(330, 820, 0.9)}
   ${cobweb(250, 0, 1)}
-  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
   ${caveDarkness('cave-bones')}
+  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
 </svg>`,
 };
 
@@ -830,8 +831,8 @@ SCENES['cave-webs'] = {
   ${cobweb(250, 0, 1.3)}
   ${cobweb(1350, 0, 1.3, -1)}
   ${bones(1100, 800, 0.8)}
-  ${caveBack('cave-bones', 'Tillbaka till benhålan')}
   ${caveDarkness('cave-webs')}
+  ${caveBack('cave-bones', 'Tillbaka till benhålan')}
   <!-- Eyes glowing in the dark far inside -->
   <g class="eyes no-hit" fill="#ff5a3c">
     <circle cx="780" cy="420" r="4"/><circle cx="796" cy="420" r="4"/>
@@ -855,7 +856,7 @@ SCENES['cave-nest'] = {
   <!-- The spider and the ruby are added here by cave.js -->
   <g class="actors"></g>
 
-  ${caveBack('cave-webs', 'Tillbaka till spindelgången')}
   ${caveDarkness('cave-nest', [], 0.93)}
+  ${caveBack('cave-webs', 'Tillbaka till spindelgången')}
 </svg>`,
 };
