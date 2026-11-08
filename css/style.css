@@ -475,6 +475,100 @@ body.has-torch #scene[data-scene^="cave"] {
   height: 20px;
 }
 
+/* Hero menu: switch between saved heroes */
+.hero-menu {
+  position: relative;
+  pointer-events: auto;
+}
+
+#hero-btn {
+  font: inherit;
+  color: var(--hud-text);
+  height: 100%;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+#hero-btn:hover,
+#hero-btn:focus-visible,
+#hero-btn[aria-expanded="true"] {
+  border-color: var(--accent);
+  outline: none;
+}
+
+#hero-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 230px;
+  max-width: calc(100vw - 32px);
+  padding: 6px;
+  background: rgba(14, 16, 32, 0.95);
+}
+
+#hero-list[hidden] {
+  display: none;
+}
+
+#hero-players {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-player,
+.hero-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  color: var(--hud-text);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 7px 10px;
+  cursor: pointer;
+}
+
+.hero-player:hover,
+.hero-player:focus-visible,
+.hero-new:hover,
+.hero-new:focus-visible {
+  background: rgba(224, 180, 74, 0.15);
+  border-color: var(--hud-border);
+  outline: none;
+}
+
+.hero-player.current .hero-name {
+  color: var(--accent);
+}
+
+.hero-player.current .hero-name::before {
+  content: "✓ ";
+}
+
+.hero-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hero-rubies {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.hero-new {
+  margin-top: 4px;
+  border-top: 1px solid var(--hud-border);
+  border-radius: 0 0 4px 4px;
+  color: var(--accent);
+}
+
 #rubies {
   display: flex;
   align-items: center;
@@ -556,7 +650,6 @@ body.has-torch #scene[data-scene^="cave"] {
   line-height: 1.5;
 }
 
-#start-continue[hidden],
 .start-note[hidden] {
   display: none;
 }
@@ -609,6 +702,38 @@ body.has-torch #scene[data-scene^="cave"] {
 .start-btn:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 10px rgba(255, 236, 170, 0.5));
   outline: none;
+}
+
+#start-players {
+  display: grid;
+  gap: 8px;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.start-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  text-align: left;
+}
+
+#new-game-form[hidden],
+#start-continue[hidden],
+#full-note[hidden],
+.start-link[hidden] {
+  display: none;
+}
+
+.start-link {
+  margin-top: 16px;
+  font: inherit;
+  color: var(--accent);
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .start-note {
@@ -876,6 +1001,7 @@ body.has-torch #scene[data-scene^="cave"] {
   /* Icons only, so the HUD fits on narrow screens */
   .inv-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   #narration { font-size: 0.95rem; }
+  #hero-btn { padding: 8px 10px; }
   .riddle-question { font-size: 1.3rem; }
   .riddle-choice { font-size: 1.1rem; }
 }
