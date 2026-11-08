@@ -153,18 +153,57 @@ if (DEBUG_CLICKS) {
   );
 }
 
-// ---------- Start screen ----------
+// ---------- Heroes: start screen and switching ----------
 
 const startEl = document.getElementById('start');
 const startForm = document.getElementById('new-game-form');
 const nameInput = document.getElementById('name-input');
+const startPlayersEl = document.getElementById('start-players');
+const startCancel = document.getElementById('start-cancel');
+const heroBtn = document.getElementById('hero-btn');
+const heroList = document.getElementById('hero-list');
+const heroPlayersEl = document.getElementById('hero-players');
+const minigameEl = document.getElementById('minigame');
 
-// Replace the current state with a fresh game for a new character.
-function newGame(name) {
+// Replace the current state with another hero's (or a fresh) game.
+function useState(next) {
   Object.keys(state).forEach((key) => delete state[key]);
-  Object.assign(state, defaultState(), { name });
+  Object.assign(state, next);
+  // Messages left for the next render belong to the previous hero.
+  forestNotice = '';
+  lakeNotice = '';
+  caveNotice = '';
+  lumberjackIntro = false;
+}
+
+// Start a fresh game for a new character, saved next to the other heroes.
+function newGame(name) {
+  useState({ ...defaultState(), id: newPlayerId(), name });
   saveState(state);
   lumberjackIntro = true; // the lumberjack runs in and tells his story (forest.js)
+}
+
+function welcomeBack(name) {
+  return name ? `Välkommen tillbaka, ${name}!` : 'Välkommen tillbaka!';
+}
+
+function rubyText(n) {
+  return `${n}/4 rubiner`;
+}
+
+// A button for one saved hero. The name is typed by a player: textContent only.
+function heroButton(p, className) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = className;
+  const name = document.createElement('span');
+  name.className = 'hero-name';
+  name.textContent = p.name || 'Namnlös hjälte';
+  const rubies = document.createElement('span');
+  rubies.className = 'hero-rubies';
+  rubies.textContent = rubyText(p.rubies);
+  btn.append(name, rubies);
+  return btn;
 }
 
 let started = false;
@@ -181,40 +220,136 @@ function closeStartScreen(sceneId, greeting) {
   }, FADE_MS);
 }
 
-function showStartScreen() {
+// Shows the start screen: continue with a saved hero, or name a new one.
+// `inGame` is true when it is opened from the hero menu while playing.
+function openStartScreen(inGame) {
+  started = false;
+  startEl.hidden = false;
+  startEl.classList.remove('closing');
   // The town, dimmed, as a backdrop. Its markup is a static template from scenes.js.
   const bg = startEl.querySelector('.start-bg');
   bg.innerHTML = SCENES.town.svg;
   bg.querySelector('svg').setAttribute('preserveAspectRatio', 'xMidYMid slice');
 
-  if (hasSave()) {
-    const continueBtn = document.getElementById('continue-btn');
-    continueBtn.textContent = state.name ? `Fortsätt som ${state.name}` : 'Fortsätt';
-    document.getElementById('start-continue').hidden = false;
-    document.getElementById('new-game-btn').textContent = 'Nytt spel';
-    document.getElementById('overwrite-note').hidden = false;
-    continueBtn.addEventListener('click', () => {
-      closeStartScreen(
-        hasScene(state.location) ? state.location : 'town',
-        state.name ? `Välkommen tillbaka, ${state.name}!` : 'Välkommen tillbaka!'
-      );
+  // The hero played last comes first.
+  const players = listPlayers().sort((a, b) => (b.id === state.id) - (a.id === state.id));
+  startPlayersEl.innerHTML = '';
+  players.forEach((p) => {
+    const btn = heroButton(p, 'start-btn start-hero');
+    btn.addEventListener('click', () => {
+      if (p.id !== state.id) {
+        const saved = loadPlayer(p.id);
+        if (!saved) return;
+        useState(saved);
+        saveState(state); // now the current hero
+      }
+      closeStartScreen(hasScene(state.location) ? state.location : 'town', welcomeBack(state.name));
     });
-    continueBtn.focus();
-  } else {
-    nameInput.focus();
-  }
-
-  startForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const name = normalizeName(nameInput.value);
-    if (!name) {
-      nameInput.value = '';
-      nameInput.focus();
-      return;
-    }
-    newGame(name);
-    closeStartScreen('town', `Välkommen, ${name}!`);
+    startPlayersEl.appendChild(btn);
   });
+  document.getElementById('start-continue').hidden = players.length === 0;
+  const full = players.length >= MAX_PLAYERS;
+  startForm.hidden = full;
+  document.getElementById('full-note').hidden = !full;
+  document.getElementById('new-game-btn').textContent = players.length ? 'Ny hjälte' : 'Starta spelet';
+  startCancel.hidden = !inGame;
+  nameInput.value = '';
+
+  if (inGame && !full) nameInput.focus();
+  else if (players.length) startPlayersEl.firstElementChild.focus();
+  else nameInput.focus();
 }
 
-showStartScreen();
+startForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = normalizeName(nameInput.value);
+  if (!name) {
+    nameInput.value = '';
+    nameInput.focus();
+    return;
+  }
+  newGame(name);
+  closeStartScreen('town', `Välkommen, ${name}!`);
+});
+
+// Back to the game from the start screen opened in the hero menu, without switching.
+startCancel.addEventListener('click', () => {
+  if (started) return;
+  started = true;
+  startEl.classList.add('closing');
+  setTimeout(() => {
+    startEl.hidden = true;
+    startEl.querySelector('.start-bg').innerHTML = '';
+  }, FADE_MS);
+});
+
+// ---------- Hero menu (top right) ----------
+
+function closeHeroMenu() {
+  heroList.hidden = true;
+  heroBtn.setAttribute('aria-expanded', 'false');
+}
+
+function openHeroMenu() {
+  heroPlayersEl.innerHTML = '';
+  listPlayers().forEach((p) => {
+    const li = document.createElement('li');
+    const btn = heroButton(p, 'hero-player');
+    if (p.id === state.id) {
+      btn.classList.add('current');
+      btn.setAttribute('aria-current', 'true');
+    }
+    btn.addEventListener('click', () => switchHero(p.id));
+    li.appendChild(btn);
+    heroPlayersEl.appendChild(li);
+  });
+  heroList.hidden = false;
+  heroBtn.setAttribute('aria-expanded', 'true');
+  heroPlayersEl.querySelector('button').focus();
+}
+
+// Leave the current hero's game (it is already saved) and continue another hero's.
+function switchHero(id) {
+  closeHeroMenu();
+  if (id === state.id || transitioning || !minigameEl.hidden) return;
+  const saved = loadPlayer(id);
+  if (!saved) return;
+  transitioning = true;
+  sceneEl.classList.add('fading');
+  setTimeout(() => {
+    useState(saved);
+    saveState(state); // now the current hero
+    render(state.location);
+    setNarration(`${welcomeBack(state.name)} ${narrationEl.textContent}`);
+    sceneEl.classList.remove('fading');
+    transitioning = false;
+  }, FADE_MS);
+}
+
+heroBtn.addEventListener('click', () => {
+  // Not in the middle of a minigame: it runs on the current hero's game.
+  if (!minigameEl.hidden) {
+    setNarration('Du kan inte byta hjälte mitt i en strid!');
+    return;
+  }
+  if (heroList.hidden) openHeroMenu();
+  else closeHeroMenu();
+});
+
+document.getElementById('hero-new').addEventListener('click', () => {
+  closeHeroMenu();
+  openStartScreen(true);
+});
+
+document.addEventListener('click', (e) => {
+  if (!heroList.hidden && !e.target.closest('.hero-menu')) closeHeroMenu();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !heroList.hidden) {
+    closeHeroMenu();
+    heroBtn.focus();
+  }
+});
+
+openStartScreen(false);

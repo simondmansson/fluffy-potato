@@ -55,6 +55,15 @@
           <span class="ruby-icon" aria-hidden="true"></span>
           <span>Rubiner: <span id="ruby-count">0</span>/4</span>
         </div>
+        <div class="hero-menu">
+          <button type="button" class="hud-box" id="hero-btn" aria-haspopup="true" aria-expanded="false" aria-controls="hero-list">
+            Byt hjälte <span aria-hidden="true">▾</span>
+          </button>
+          <div class="hud-box" id="hero-list" hidden>
+            <ul id="hero-players"></ul>
+            <button type="button" class="hero-new" id="hero-new">+ Ny hjälte</button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -67,16 +76,18 @@
         <p class="start-tagline">Samla rubinerna och besegra åskdraken på toppen av Mount Thunder.</p>
 
         <div id="start-continue" hidden>
-          <button type="button" class="start-btn" id="continue-btn">Fortsätt</button>
+          <p class="start-or">Fortsätt med en hjälte</p>
+          <div id="start-players"></div>
           <p class="start-or">eller börja ett nytt äventyr</p>
         </div>
 
         <form id="new-game-form" autocomplete="off">
-          <label for="name-input">Vad heter din hjälte?</label>
+          <label for="name-input">Vad heter din nya hjälte?</label>
           <input id="name-input" name="name" type="text" maxlength="20" placeholder="Skriv ett namn" required>
           <button type="submit" class="start-btn" id="new-game-btn">Starta spelet</button>
-          <p class="start-note" id="overwrite-note" hidden>Ditt sparade spel skrivs över.</p>
         </form>
+        <p class="start-note" id="full-note" hidden>Det finns redan 8 hjältar – fortsätt med en av dem.</p>
+        <button type="button" class="start-link" id="start-cancel" hidden>Tillbaka till spelet</button>
       </div>
     </section>
   </main>

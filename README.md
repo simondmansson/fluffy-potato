@@ -9,7 +9,9 @@ Thunder dragon bor längst upp på Mount Thunder. Han har stulna emeralder på r
 
 ## Gameplay
 
-Spelet börjar med en startskärm där spelaren namnger sin hjälte. Namnet visas i spelet och sparas. Finns ett sparat spel kan man fortsätta där man slutade, eller börja ett nytt spel med en ny hjälte (då skrivs det sparade spelet över).
+Spelet börjar med en startskärm där spelaren namnger sin hjälte. Namnet visas i spelet och sparas. Flera hjältar kan sparas samtidigt (upp till 8), var och en med sitt eget spel. Finns sparade hjältar visar startskärmen dem, med antal rubiner, så man kan fortsätta där man slutade med någon av dem eller börja ett nytt äventyr med en ny hjälte.
+
+Uppe till höger finns menyn »Byt hjälte«. Där väljer man en annan sparad hjälte och fortsätter direkt där den var, eller väljer »Ny hjälte« för att skapa en till. Mitt i en strid (ett minispel) går det inte att byta hjälte.
 
 Spelaren börjar i byn vid Mount Thunders fot. När ett nytt spel startar kommer en skogshuggare springande från skogen och berättar att varulven har tagit hans yxa och sprungit in i skogen med den. Skogshuggaren stannar sedan kvar i byn, och klickar man på honom säger han något om hur det går med yxan och varulven. Från byn ger spelaren sig ut till 4a platser för att samla rubiner, dessa är skogen, sjön, byn, grottan i berget. På varje plats ska spelare besegra ett monster för att få en rubin.
 
