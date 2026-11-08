@@ -21,6 +21,20 @@ const NEST_RUBY = { x: 1010, y: 520 };
 // Message shown instead of the scene narration on the next cave render.
 let caveNotice = '';
 
+// Set when the spider gives up on the player: the next time the nest is drawn the web has
+// let go. Otherwise the player gets caught in the web on entering the nest.
+let nestFreed = false;
+
+const WEB_CAUGHT =
+  'Du tar ett steg in i salen – och fastnar! Klibbiga trådar lindar sig kring armar och ben, ' +
+  'och ju mer du sliter, desto hårdare sitter du fast. Nätet darrar, och uppifrån mörkret firar sig ' +
+  'en jättespindel sakta ner mot dig. Bredvid henne glimmar rubinen, invirad i silke. ' +
+  '»Sssså, något har fastnat i mitt nät«, väser hon. Klicka på spindeln för att prata med henne.';
+
+const WEB_STUCK =
+  'Du sliter och drar, men trådarna sitter som lim – du kommer inte loss! ' +
+  'Spindeln fnissar: »Ingen lämnar mitt näste förrän mina räknegåtor är besvarade.«';
+
 function spiderDefeated() {
   return state.rubies.includes('cave');
 }
@@ -164,12 +178,22 @@ SCENES['cave-nest'].enter = (svg) => {
 
   onActivate(actors.querySelector('.spider-target'), () => startRiddles());
 
-  setNarration(
-    caveNarration(
-      'cave-nest',
-      'Mitt i nätet hänger en jättespindel, och bredvid den glimmar rubinen, invirad i silke. Klicka på spindeln för att prata med den.'
-    )
-  );
+  const freed = nestFreed;
+  nestFreed = false;
+  if (freed) {
+    setNarration(caveNarration('cave-nest', 'Spindeln hänger i nätet och väntar. Klicka på henne för att försöka igen.'));
+    return null;
+  }
+
+  // Caught in the web: the way back doesn't work until the spider has been dealt with.
+  const back = svg.querySelector('.cave-back');
+  delete back.dataset.goto;
+  back.setAttribute('aria-label', 'Försök slita dig loss');
+  back.querySelector('.exit-label text').textContent = 'Du sitter fast i nätet!';
+  onActivate(back, () => setNarration(WEB_STUCK));
+  svg.querySelector('.nest-web').classList.add('caught');
+
+  setNarration(caveNotice ? caveNarration('cave-nest') : WEB_CAUGHT);
   return null;
 };
 
@@ -353,7 +377,9 @@ function startRiddles() {
       body.classList.add('angry');
       setNarration(`Fel igen – ${lastSum}! Spindeln fräser och klättrar upp i mörkret.`);
       caveNotice =
-        'Spindeln tappade tålamodet och kröp upp i taket. Hon har kommit ner igen nu – klicka på henne för att försöka en gång till.';
+        'Spindeln tappade tålamodet och kröp upp i taket. Nätet slaknar, och till slut sliter du dig loss! ' +
+        'Nu kan du gå tillbaka – eller klicka på spindeln, som redan kommit ner igen, för att försöka en gång till.';
+      nestFreed = true;
       setTimeout(close, 2200);
     }
   }

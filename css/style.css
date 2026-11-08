@@ -207,6 +207,9 @@ body.has-torch #scene[data-scene^="cave"] {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='22' y1='30' x2='14' y2='14' stroke='%238a5e36' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M11 2 C9 6 5 8 7 12 C8 14 12 14 14 12 C16 9 13 7 11 2 Z' fill='%23f07a1a'/%3E%3Cpath d='M11 7 C10 9 8 10 9 12 C10 13 12 13 13 11 C13 10 12 9 11 7 Z' fill='%23ffc94a'/%3E%3C/svg%3E") 11 9, crosshair;
 }
 
+/* The web trembles while the player is caught in it */
+.nest-web.caught { animation: web-tremble 0.5s ease-in-out 3; }
+
 .chalk {
   font-family: "Comic Sans MS", "Chalkboard SE", "Segoe Print", cursive;
   letter-spacing: 0.04em;
@@ -966,6 +969,12 @@ body.has-torch #scene[data-scene^="cave"] {
 @keyframes lj-wave {
   from { transform: rotate(-150deg); }
   to { transform: rotate(-110deg); }
+}
+
+@keyframes web-tremble {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(5px); }
+  60% { transform: translateY(-3px); }
 }
 
 @keyframes ripple {

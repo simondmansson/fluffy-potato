@@ -50,10 +50,10 @@ Grottan består av sju platser: Grottans mynning, Vägskälet, Droppstensgrottan
 
 - Vid mynningen sitter en fackla i en järnhållare på väggen. Utan facklan går det inte att gå in i mörkret.
 - Alla gångar innanför mynningen är kolsvarta. Facklan lyser upp en cirkel runt muspekaren, så spelaren måste lysa runt för att hitta öppningarna till nästa gång. Ledtrådar i texten (prasslande, spindelväv, röda ögon) visar vägen. Vägen tillbaka är markerad med en kritpil och ordet »Tillbaka« nere på vänster vägg, och den syns alltid, även i mörkret.
-- I nästet hänger spindeln i ett stort nät med rubinen invirad i silke bredvid sig. Klickar man på spindeln börjar ett minispel.
+- När spelaren går in i nästet fastnar hen i det stora spindelnätet, och spindeln firar sig ner med rubinen invirad i silke bredvid sig. Medan spelaren sitter fast går det inte att gå tillbaka. Klickar man på spindeln börjar ett minispel.
 - Spindeln ställer räknegåtor (plus, minus och till sist gånger), och spelaren väljer rätt svar bland fyra. Inget tal i frågan eller svaret är större än 100, och frågorna blir svårare för varje rätt svar.
 - Varje rätt svar får spindeln att trassla in sig när hon räknar på benen, och en av trådarna runt rubinen går av. Fem rätta svar och rubinen faller ner till spelaren.
-- Fel svar visar det rätta svaret och kostar spindelns tålamod. Efter tre fel klättrar spindeln upp i taket och spelaren får börja om.
+- Fel svar visar det rätta svaret och kostar spindelns tålamod. Efter tre fel klättrar spindeln upp i taket, nätet slaknar och spelaren slits loss. Då kan spelaren gå tillbaka eller försöka igen.
 - När rubinen är vunnen skickas spelaren automatiskt tillbaka till byn med grottans rubin. Går man in i nästet igen hänger nätet tomt.
 
 ### Tech stack
