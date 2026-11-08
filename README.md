@@ -70,6 +70,13 @@ Byn har två platser till: Kyrkan och Kryptan (under kyrkan).
 - Tar modet slut trollar trollkarlen ut spelaren ur kyrkan till byn, och spelaren kan gå in och försöka igen.
 - När rubinen slås loss har spelaren byns rubin och alla fyra rubinerna. Trollkarlen åker på semester igen, och spelaren hamnar i byn. På kyrkdörren sitter då en ny semesterlapp.
 
+## Mobil
+
+Spelet går att spela på mobilen, både upprätt och på tvären (på tvären blir bilden störst, och det tipsas om det när mobilen hålls upprätt).
+
+- Uppe i hörnen visas platsen, rubinerna och menyn »Byt hjälte«. På smala skärmar visas bara ikoner för sakerna man bär, på en egen rad.
+- Trycker man på berättartexten fälls den ihop till en rad, så att den inte skymmer bilden. Tryck igen för att visa hela texten. Ny text visas alltid i sin helhet.
+
 ### Tech stack
 
 Plain html, javascript and css. Runs in the browser and progress is saved to local storage.

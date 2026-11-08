@@ -2,7 +2,8 @@
 <html lang="sv">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0f1c">
   <title>Thunder Dragon</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -63,7 +64,7 @@
         </div>
         <div class="hud-box" id="rubies">
           <span class="ruby-icon" aria-hidden="true"></span>
-          <span>Rubiner: <span id="ruby-count">0</span>/4</span>
+          <span><span class="rubies-label">Rubiner: </span><span id="ruby-count">0</span>/4</span>
         </div>
         <div class="hero-menu">
           <button type="button" class="hud-box" id="hero-btn" aria-haspopup="true" aria-expanded="false" aria-controls="hero-list">
@@ -77,7 +78,7 @@
       </div>
     </header>
 
-    <p class="hud-box" id="narration" aria-live="polite"></p>
+    <p class="hud-box" id="narration" aria-live="polite" title="Tryck för att fälla ihop eller visa texten"></p>
 
     <section id="start" aria-labelledby="start-title">
       <div class="start-bg" aria-hidden="true" inert></div>
@@ -96,6 +97,7 @@
           <input id="name-input" name="name" type="text" maxlength="20" placeholder="Skriv ett namn" required>
           <button type="submit" class="start-btn" id="new-game-btn">Starta spelet</button>
         </form>
+        <p class="rotate-hint">↻ Spelet blir störst med mobilen på tvären.</p>
         <p class="start-note" id="full-note" hidden>Det finns redan 8 hjältar – fortsätt med en av dem.</p>
         <button type="button" class="start-link" id="start-cancel" hidden>Tillbaka till spelet</button>
       </div>
