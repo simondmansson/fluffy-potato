@@ -120,6 +120,7 @@ function describeClickTarget(target) {
   if (el.closest('.bobber')) return 'float';
   if (el.closest('.readable')) return 'note';
   if (el.closest('.spider-target')) return 'spider';
+  if (el.closest('.npc')) return 'lumberjack';
   if (el.closest('.riddle-choice')) return `answer ${el.closest('.riddle-choice').textContent}`;
   if (el.closest('.lake-cast, .mg-water')) return 'water';
   const cls = el.getAttribute('class');
@@ -163,6 +164,7 @@ function newGame(name) {
   Object.keys(state).forEach((key) => delete state[key]);
   Object.assign(state, defaultState(), { name });
   saveState(state);
+  lumberjackIntro = true; // the lumberjack runs in and tells his story (forest.js)
 }
 
 let started = false;

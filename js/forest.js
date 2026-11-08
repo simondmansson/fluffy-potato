@@ -96,7 +96,7 @@ function forestNarration(id) {
     }
   }
   if (!hasItem('axe') && q.axeScene === id) {
-    parts.push('Något blänker till i dimman.');
+    parts.push('Något blänker till i dimman – kan det vara skogshuggarens yxa?');
   }
   return parts.join(' ');
 }
@@ -119,6 +119,61 @@ FOREST_SCENES.forEach((id) => {
   SCENES[id].enter = (svg) => forestEnter(id, svg);
 });
 
+// ---------- The lumberjack in the village ----------
+
+// Where the lumberjack stands in the village (his feet), and where he runs in from.
+const LUMBERJACK_SPOT = { x: 520, y: 782 };
+const LUMBERJACK_WALK_MS = 2400; // how long he takes to run in from the forest
+
+// Set by game.js when a new game starts: the lumberjack then runs in and tells his story.
+let lumberjackIntro = false;
+
+const LUMBERJACK_PLEA =
+  'En skogshuggare kommer springande från skogen, alldeles andfådd: »Hjälp! Varulven har tagit min yxa ' +
+  'och sprungit in i den dimmiga skogen med den! Hitta yxan – med den kan du slå loss rubinen från varulvens bröst.«';
+
+function lumberjackLine() {
+  if (wolfDefeated()) {
+    return '»Tack, tack!«, säger skogshuggaren. »Nu kan jag gå till skogen utan att vara rädd. Behåll yxan, du behöver den mer än jag.«';
+  }
+  if (hasItem('axe')) {
+    return '»Du har hittat min yxa!«, säger skogshuggaren. »Behåll den tills varulven är besegrad – fånga den i svansen!«';
+  }
+  return '»Varulven har tagit min yxa«, säger skogshuggaren och vrider sina händer. »Den sprang in i skogen västerut. Snälla, hitta den!«';
+}
+
+SCENES.town.enter = (svg) => {
+  const actors = svg.querySelector('.actors');
+  actors.insertAdjacentHTML(
+    'beforeend',
+    `<g class="npc" tabindex="0" role="button" aria-label="Prata med skogshuggaren"
+        transform="translate(${LUMBERJACK_SPOT.x} ${LUMBERJACK_SPOT.y})">
+      <g class="lj-walk"><g class="lumberjack">
+        <rect x="-45" y="-225" width="90" height="235" fill="transparent"/>
+        ${lumberjack()}
+      </g></g>
+    </g>`
+  );
+  const npc = actors.lastElementChild;
+  npc.addEventListener('click', () => setNarration(lumberjackLine()));
+  npc.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      setNarration(lumberjackLine());
+    }
+  });
+
+  if (!lumberjackIntro) return null;
+  lumberjackIntro = false;
+  // A new game: he runs in from the forest road and tells the player what happened.
+  npc.classList.add('arriving');
+  const timer = setTimeout(() => {
+    npc.classList.remove('arriving');
+    setNarration(LUMBERJACK_PLEA);
+  }, LUMBERJACK_WALK_MS);
+  return () => clearTimeout(timer);
+};
+
 // ---------- The axe ----------
 
 function placeAxe(actors, spot) {
@@ -140,8 +195,8 @@ function placeAxe(actors, spot) {
     setTimeout(() => axe.remove(), 500);
     setNarration(
       wolfDefeated() || state.forest.wolfScene !== state.location
-        ? 'Du drar loss en yxa ur en gammal stubbe! Med den kan du slå loss rubinen från varulvens bröst.'
-        : 'Du drar loss en yxa ur en gammal stubbe! Nu kan du ta dig an varulven – fånga den i svansen!'
+        ? 'Där är skogshuggarens yxa, fastkilad i en gammal stubbe – varulven måste ha lämnat den här! Med den kan du slå loss rubinen från varulvens bröst.'
+        : 'Där är skogshuggarens yxa, fastkilad i en gammal stubbe – varulven måste ha lämnat den här! Nu kan du ta dig an varulven – fånga den i svansen!'
     );
   };
   axe.addEventListener('click', take);

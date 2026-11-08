@@ -11,10 +11,10 @@ Thunder dragon bor längst upp på Mount Thunder. Han har stulna emeralder på r
 
 Spelet börjar med en startskärm där spelaren namnger sin hjälte. Namnet visas i spelet och sparas. Finns ett sparat spel kan man fortsätta där man slutade, eller börja ett nytt spel med en ny hjälte (då skrivs det sparade spelet över).
 
-Spelaren börjar i byn vid Mount Thunders fot, därifrån ger han sig ut till 4a platser för att samla rubiner, dessa är skogen, sjön, byn, grottan i berget. På varje plats ska spelare besegra ett monster för att få en rubin.
+Spelaren börjar i byn vid Mount Thunders fot. När ett nytt spel startar kommer en skogshuggare springande från skogen och berättar att varulven har tagit hans yxa och sprungit in i skogen med den. Skogshuggaren stannar sedan kvar i byn, och klickar man på honom säger han något om hur det går med yxan och varulven. Från byn ger spelaren sig ut till 4a platser för att samla rubiner, dessa är skogen, sjön, byn, grottan i berget. På varje plats ska spelare besegra ett monster för att få en rubin.
 
 ### Skogen
-Skogen är en tät blandskog med en tjock dimma. I skogen springer varulven runt med rubinen på bröstet. I skogen måste spelaren hitta en yxa, sedan måste de fånga varulvens svans och slå av rubinen på bröstet för att stoppa den.
+Skogen är en tät blandskog med en tjock dimma. I skogen springer varulven runt med rubinen på bröstet. I skogen måste spelaren hitta skogshuggarens yxa, som varulven har lämnat fastkilad i en stubbe, sedan måste de fånga varulvens svans och slå av rubinen på bröstet för att stoppa den.
 
 Skogen består av fyra platser som hänger ihop i en ring: Skogsstigen (vid byn), Granskogen, Gläntan och Bäcken. Yxan (fastkilad i en stubbe) och varulven hamnar på slumpvisa platser i början av varje spel, aldrig på samma plats. Står man bredvid varulvens plats hör man tunga steg.
 

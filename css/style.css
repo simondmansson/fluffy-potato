@@ -82,7 +82,8 @@ body {
 .exit,
 .pickup,
 .readable,
-.spider-target {
+.spider-target,
+.npc {
   cursor: pointer;
   outline: none;
   transition: filter 0.2s ease;
@@ -95,7 +96,9 @@ body {
 .readable:hover,
 .readable:focus-visible,
 .spider-target:hover,
-.spider-target:focus-visible {
+.spider-target:focus-visible,
+.npc:hover,
+.npc:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 14px rgba(255, 236, 170, 0.7));
 }
 
@@ -111,6 +114,15 @@ body.has-axe #scene:not([data-scene^="lake"]):not([data-scene^="cave"]),
 body.has-axe #minigame:not(.lake):not(.cave) {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='27' y1='29' x2='11' y2='8' stroke='%23a0754a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M9 3 L18 10 L13 16 Q5 16 2 9 Q4 5 9 3 Z' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2'/%3E%3C/svg%3E") 3 9, crosshair;
 }
+
+/* ---------- The lumberjack in the village ---------- */
+
+.lj-arm.wave { animation: lj-wave 0.9s ease-in-out infinite alternate; }
+.npc.arriving .lj-walk { animation: lj-run-in 2.4s ease-out both; }
+.npc.arriving .lumberjack { animation: wolf-bob 0.18s ease-in-out infinite alternate; }
+.npc.arriving .lj-leg { animation: wolf-stride 0.36s ease-in-out infinite alternate; }
+.npc.arriving .lj-leg.back { animation-delay: -0.36s; }
+.npc.arriving .lj-arm { animation: wolf-arm 0.36s ease-in-out infinite alternate; }
 
 /* ---------- Forest quest ---------- */
 
@@ -814,6 +826,16 @@ body.has-torch #scene[data-scene^="cave"] {
   0% { transform: none; opacity: 1; }
   20% { transform: translateY(-20px) scale(1.2); opacity: 1; }
   100% { transform: translateY(500px) scale(1.6) rotate(90deg); opacity: 0; }
+}
+
+@keyframes lj-run-in {
+  from { transform: translateX(-560px); }
+  to { transform: translateX(0); }
+}
+
+@keyframes lj-wave {
+  from { transform: rotate(-150deg); }
+  to { transform: rotate(-110deg); }
 }
 
 @keyframes ripple {

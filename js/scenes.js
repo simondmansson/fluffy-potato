@@ -153,6 +153,9 @@ SCENES.town = {
   ${leafy(820, 800, 90, '#3f6a35')}
   ${leafy(1180, 790, 70, '#467339')}
   ${pine(1520, 760, 110, '#2a4a2c')}
+
+  <!-- The lumberjack is added here by forest.js -->
+  <g class="actors"></g>
 </svg>`,
 };
 
