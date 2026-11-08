@@ -41,8 +41,9 @@ function updateHud() {
   const hasAxe = state.items.includes('axe');
   // The cursor turns into an axe once the player carries one.
   document.body.classList.toggle('has-axe', hasAxe);
-  // In the cave the cursor is the torch instead.
+  // In the cave the cursor is the torch instead, and in the church the magic sword.
   document.body.classList.toggle('has-torch', state.items.includes('torch'));
+  document.body.classList.toggle('has-sword', state.items.includes('sword'));
 }
 
 // Scenes may define enter(svg) to add interactive content after rendering.
@@ -120,6 +121,8 @@ function describeClickTarget(target) {
   if (el.closest('.bobber')) return 'float';
   if (el.closest('.readable')) return 'note';
   if (el.closest('.spider-target')) return 'spider';
+  if (el.closest('.wizard-target')) return 'wizard';
+  if (el.closest('.church-door')) return 'church door';
   if (el.closest('.npc')) return 'lumberjack';
   if (el.closest('.riddle-choice')) return `answer ${el.closest('.riddle-choice').textContent}`;
   if (el.closest('.lake-cast, .mg-water')) return 'water';
@@ -173,6 +176,7 @@ function useState(next) {
   forestNotice = '';
   lakeNotice = '';
   caveNotice = '';
+  churchNotice = '';
   nestFreed = false;
   lumberjackIntro = false;
 }
