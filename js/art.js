@@ -587,16 +587,20 @@ function caveOpening(target, x, y, w, h, label) {
   </g>`;
 }
 
-// The way back, behind the player: a chalk arrow on the floor at the bottom of the screen.
+// The way back: a chalk arrow and the word »Tillbaka« on the left wall, which the player drew
+// on the way in. Drawn above the darkness so it can always be seen, and kept clear of the
+// narration box at the bottom of the screen.
 function caveBack(target, label) {
   return `
-  <g class="exit" data-goto="${escapeXml(target)}" tabindex="0" role="button" aria-label="${escapeXml(label)}">
-    <rect x="560" y="790" width="480" height="110" fill="transparent"/>
-    <path d="M800,800 L800,864 M774,840 L800,868 L826,840" fill="none" stroke="#d8d2c4" stroke-width="7"
-          stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+  <g class="exit cave-back" data-goto="${escapeXml(target)}" tabindex="0" role="button" aria-label="${escapeXml(label)}">
+    <rect x="100" y="652" width="300" height="160" fill="transparent"/>
+    <g fill="none" stroke="#e6e0d2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" opacity="0.75">
+      <path d="M360,706 L150,706 M192,668 L150,706 L192,744"/>
+    </g>
+    <text class="chalk" x="252" y="790" font-size="36" text-anchor="middle" fill="#e6e0d2" opacity="0.75">Tillbaka</text>
     <g class="exit-label">
-      <rect x="660" y="740" width="280" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
-      <text x="800" y="767" font-size="22" text-anchor="middle" fill="#f3ecd8">${escapeXml(label)}</text>
+      <rect x="110" y="606" width="300" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="260" y="633" font-size="22" text-anchor="middle" fill="#f3ecd8">${escapeXml(label)}</text>
     </g>
   </g>`;
 }

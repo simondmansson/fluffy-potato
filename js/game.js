@@ -173,6 +173,7 @@ function useState(next) {
   forestNotice = '';
   lakeNotice = '';
   caveNotice = '';
+  nestFreed = false;
   lumberjackIntro = false;
 }
 
