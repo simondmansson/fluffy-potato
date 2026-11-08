@@ -7,7 +7,7 @@ SCENES.town = {
   name: 'Byn',
   narration:
     'Du står i byn vid foten av Mount Thunder. Högst upp på berget mullrar åskan, där bor draken. ' +
-    'Västerut ligger den dimmiga skogen, och österut glittrar sjön.',
+    'Västerut ligger den dimmiga skogen, österut glittrar sjön, och vid bergets fot gapar en mörk grotta.',
   svg: `
 <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Byn vid foten av Mount Thunder">
   <defs>
@@ -91,6 +91,18 @@ SCENES.town = {
 
   <!-- Road from the village to the forest -->
   <path fill="#9b8458" d="M860,900 C820,830 650,785 470,758 C430,752 395,748 360,746 L355,760 C400,765 560,800 720,900 Z"/>
+
+  <!-- Cave at the foot of the mountain (exit) -->
+  <g class="exit" data-goto="cave" tabindex="0" role="button" aria-label="Gå till grottan">
+    <rect x="560" y="520" width="260" height="230" fill="transparent"/>
+    <path fill="#8a7650" d="M560,760 C590,720 640,690 676,660 L708,660 C690,690 650,730 620,762 Z"/>
+    ${caveMouth(692, 662)}
+    ${signpost(760, 748, 'Grottan', { width: 140 })}
+    <g class="exit-label">
+      <rect x="592" y="490" width="200" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="692" y="517" font-size="22" text-anchor="middle" fill="#f3ecd8">Gå till grottan</text>
+    </g>
+  </g>
 
   <!-- Forest (exit) -->
   <g class="exit" data-goto="forest" tabindex="0" role="button" aria-label="Gå till skogen">
@@ -609,5 +621,238 @@ SCENES['lake-boat'] = {
       <text x="320" y="707" font-size="22" text-anchor="middle" fill="#f3ecd8">Ro tillbaka till stranden</text>
     </g>
   </g>
+</svg>`,
+};
+
+// ---------- The cave ----------
+// The cave is a small maze of dark passages:
+//   Grottans mynning – Vägskälet – (vänster) Droppstensgrottan – Benhålan
+//                              – (rakt fram) Avgrunden (återvändsgränd)
+//                              – (höger) Benhålan – Spindelgången – Spindelnästet
+// Every screen but the mouth is pitch dark; cave.js lets the torch light it up around the pointer.
+
+// Shared defs and back wall, walls and floor of a cave passage. Ids are prefixed with the scene id.
+function caveBackdrop(id, seed, { rock0 = '#2b241e', rock1 = '#14100d', floor = '#3a3128' } = {}) {
+  const rand = seededRandom(seed);
+  let cracks = '';
+  for (let i = 0; i < 18; i++) {
+    const x = 120 + rand() * 1360;
+    const y = 80 + rand() * 480;
+    cracks += `M${x.toFixed(0)},${y.toFixed(0)} l${(rand() * 40 - 20).toFixed(0)},${(20 + rand() * 40).toFixed(0)} l${(rand() * 30 - 15).toFixed(0)},${(10 + rand() * 30).toFixed(0)} `;
+  }
+  return `
+  <defs>
+    <linearGradient id="${id}-rock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${rock1}"/>
+      <stop offset="0.55" stop-color="${rock0}"/>
+      <stop offset="1" stop-color="${rock1}"/>
+    </linearGradient>
+    <linearGradient id="${id}-floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${floor}"/>
+      <stop offset="1" stop-color="#0f0c09"/>
+    </linearGradient>
+    <filter id="${id}-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="-800" width="3200" height="900" fill="url(#${id}-rock)"/>
+  <path d="${cracks}" fill="none" stroke="#0c0907" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+  <path d="M-800,640 C200,600 600,590 800,590 C1000,590 1400,600 2400,640 L2400,900 L-800,900 Z" fill="url(#${id}-floor)"/>
+  <path d="M-800,0 L250,0 C190,200 150,420 130,620 C110,760 70,850 20,900 L-800,900 Z" fill="#110d0a"/>
+  <path d="M2400,0 L1350,0 C1410,200 1450,420 1470,620 C1490,760 1530,850 1580,900 L2400,900 Z" fill="#110d0a"/>
+  ${stalactites(seed + 1, '#18130f', { count: 16, h0: 40, h1: 160 })}`;
+}
+
+// The darkness over a cave passage. The torch (cave.js) lights a circle in it around the
+// pointer; `glows` are fixed spots that light themselves, as [x, y, r].
+function caveDarkness(id, glows = [], opacity = 0.97) {
+  const holes = glows.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="url(#${id}-light)"/>`).join('');
+  return `
+  <defs>
+    <radialGradient id="${id}-light">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset="0.45" stop-color="#000"/>
+      <stop offset="0.8" stop-color="#000" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="${id}-warm">
+      <stop offset="0" stop-color="#ffb050" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ffb050" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="${id}-dark" maskUnits="userSpaceOnUse" x="-800" y="-100" width="3200" height="1100">
+      <rect x="-800" y="-100" width="3200" height="1100" fill="#fff"/>
+      ${holes}
+      <g class="torch-light" transform="translate(800 640)"><g class="torch-flicker"><circle r="300" fill="url(#${id}-light)"/></g></g>
+    </mask>
+  </defs>
+  <g class="cave-dark no-hit">
+    <rect x="-800" y="-100" width="3200" height="1100" fill="#030204" opacity="${opacity}" mask="url(#${id}-dark)"/>
+    <g class="torch-light" transform="translate(800 640)"><g class="torch-flicker"><circle r="300" fill="url(#${id}-warm)"/></g></g>
+  </g>`;
+}
+
+SCENES.cave = {
+  name: 'Grottans mynning',
+  narration:
+    'Du står precis innanför grottans mynning vid bergets fot. Dagsljuset når bara några steg in, ' +
+    'sedan försvinner gången in i kolsvart mörker.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Grottans mynning">
+  ${caveBackdrop('cave', 101, { rock0: '#4a4038', rock1: '#1e1915', floor: '#5a4c3e' })}
+  <defs>
+    <radialGradient id="cave-deep" cx="0.5" cy="0.6" r="0.5">
+      <stop offset="0" stop-color="#000"/>
+      <stop offset="0.6" stop-color="#000" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cave-daylight">
+      <stop offset="0" stop-color="#cfd8f0" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#cfd8f0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cave-torchglow">
+      <stop offset="0" stop-color="#ffb050" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#ffb050" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Daylight falling in from the mouth, behind the player on the left -->
+  <ellipse cx="-60" cy="560" rx="760" ry="620" fill="url(#cave-daylight)" class="no-hit"/>
+  <ellipse cx="860" cy="470" rx="340" ry="300" fill="url(#cave-deep)"/>
+
+  <!-- The passage into the dark (exit once the player has the torch, see cave.js) -->
+  <g class="exit cave-deeper" tabindex="0" role="button" aria-label="Gå in i mörkret">
+    <path d="M700,640 C690,480 760,330 860,320 C960,330 1030,480 1020,640 Z" fill="#000"/>
+    <g class="exit-label">
+      <rect x="720" y="440" width="280" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="860" y="467" font-size="22" text-anchor="middle" fill="#f3ecd8">Gå in i mörkret</text>
+    </g>
+  </g>
+
+  ${stalactites(103, '#3a322b', { count: 6, y: 900, h0: 40, h1: 110, up: true })}
+  ${rock(420, 760, 180, 90, '#4f463d', '#3e4a33')}
+  ${rock(1180, 720, 120, 60, '#463e36', '#3e4a33')}
+  ${cobweb(1350, 0, 1.2, -1)}
+
+  <!-- Way back out to the village -->
+  ${signExit('town', 260, 820, '← Till byn', 'Ut till byn', { width: 170 })}
+
+  <!-- The torch is added here by cave.js -->
+  <g class="actors"></g>
+</svg>`,
+};
+
+SCENES['cave-fork'] = {
+  name: 'Vägskälet',
+  narration: 'Gången delar sig i tre. Mörkret är tätt, och någonstans droppar vatten.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ett vägskäl i grottan">
+  ${caveBackdrop('cave-fork', 111)}
+  ${caveOpening('cave-drip', 380, 640, 210, 280, 'Den vänstra gången')}
+  ${caveOpening('cave-chasm', 800, 600, 170, 230, 'Gången rakt fram')}
+  ${caveOpening('cave-bones', 1220, 640, 210, 280, 'Den högra gången')}
+  ${stalactites(113, '#211b16', { count: 5, y: 900, h0: 50, h1: 120, up: true })}
+  ${rock(600, 760, 120, 50, '#3a322b', '#2e2a22')}
+  ${caveBack('cave', 'Tillbaka mot mynningen')}
+  ${caveDarkness('cave-fork')}
+</svg>`,
+};
+
+SCENES['cave-drip'] = {
+  name: 'Droppstensgrottan',
+  narration: 'Droppstenar hänger från taket, och en liten svart sjö blänker i mörkret. Plopp… plopp…',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En grotta med droppstenar och en underjordisk sjö">
+  ${caveBackdrop('cave-drip', 121, { rock0: '#28282a', rock1: '#121214', floor: '#34332f' })}
+  ${stalactites(123, '#2c2b2a', { count: 22, h0: 80, h1: 260 })}
+  <ellipse cx="640" cy="720" rx="360" ry="70" fill="#0d1820"/>
+  <ellipse cx="640" cy="712" rx="320" ry="52" fill="#16283a" opacity="0.8"/>
+  <g class="drip-rings no-hit" fill="none" stroke="#7aa0c0" stroke-width="2">
+    <ellipse cx="600" cy="712" rx="30" ry="6"/><ellipse cx="600" cy="712" rx="56" ry="11" opacity="0.6"/>
+  </g>
+  ${stalactites(125, '#2f2e2c', { count: 9, y: 900, h0: 60, h1: 200, up: true })}
+  ${caveOpening('cave-bones', 1250, 630, 200, 270, 'En smal gång')}
+  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
+  ${caveDarkness('cave-drip')}
+</svg>`,
+};
+
+SCENES['cave-chasm'] = {
+  name: 'Avgrunden',
+  narration:
+    'Gången tar plötsligt slut vid en djup avgrund. Du sparkar ner en sten – du hör den aldrig slå i botten. ' +
+    'Här kommer du inte vidare.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En avgrund i grottan">
+  ${caveBackdrop('cave-chasm', 131)}
+  <path d="M-800,610 C200,600 600,640 800,650 C1000,640 1400,600 2400,610 L2400,780 C1400,740 1000,760 800,770 C600,760 200,740 -800,780 Z" fill="#000"/>
+  <path d="M-800,780 C200,740 600,760 800,770 C1000,760 1400,740 2400,780 L2400,800 C1400,760 1000,782 800,790 C600,782 200,760 -800,800 Z" fill="#4a3e33"/>
+  ${stalactites(133, '#1a1511', { count: 7, y: 610, h0: 30, h1: 90, up: true })}
+  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
+  ${caveDarkness('cave-chasm')}
+</svg>`,
+};
+
+SCENES['cave-bones'] = {
+  name: 'Benhålan',
+  narration: 'Gamla ben ligger utspridda över golvet. Något stort har ätit här…',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En grotta full av gamla ben">
+  ${caveBackdrop('cave-bones', 141, { rock0: '#30261f', rock1: '#150f0c', floor: '#3e3228' })}
+  ${caveOpening('cave-webs', 400, 630, 220, 290, 'Den vänstra gången')}
+  ${spiderWeb(400, 450, 110, { spokes: 10, rings: 5, opacity: 0.35 })}
+  ${caveOpening('cave-drip', 1220, 630, 190, 250, 'Den högra gången')}
+  ${bones(760, 740)}
+  ${bones(1080, 800, 0.8)}
+  ${bones(330, 820, 0.9)}
+  ${cobweb(250, 0, 1)}
+  ${caveBack('cave-fork', 'Tillbaka till vägskälet')}
+  ${caveDarkness('cave-bones')}
+</svg>`,
+};
+
+SCENES['cave-webs'] = {
+  name: 'Spindelgången',
+  narration: 'Tjocka spindelnät hänger överallt och klibbar mot ansiktet. Längre in prasslar något.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En gång full av spindelnät">
+  ${caveBackdrop('cave-webs', 151, { rock0: '#2a2422', rock1: '#110d0c', floor: '#36302b' })}
+  ${caveOpening('cave-nest', 800, 620, 240, 320, 'Gå längre in')}
+  ${spiderWeb(330, 330, 200, { spokes: 12, rings: 7, opacity: 0.35 })}
+  ${spiderWeb(1300, 380, 230, { spokes: 14, rings: 8, opacity: 0.35 })}
+  ${cocoon(520, 300)}
+  ${cocoon(1080, 250, 1.2)}
+  ${cocoon(1180, 360, 0.8)}
+  ${cobweb(250, 0, 1.3)}
+  ${cobweb(1350, 0, 1.3, -1)}
+  ${bones(1100, 800, 0.8)}
+  ${caveBack('cave-bones', 'Tillbaka till benhålan')}
+  ${caveDarkness('cave-webs')}
+  <!-- Eyes glowing in the dark far inside -->
+  <g class="eyes no-hit" fill="#ff5a3c">
+    <circle cx="780" cy="420" r="4"/><circle cx="796" cy="420" r="4"/>
+    <circle cx="770" cy="412" r="2.5"/><circle cx="806" cy="412" r="2.5"/>
+  </g>
+</svg>`,
+};
+
+SCENES['cave-nest'] = {
+  name: 'Spindelnästet',
+  narration: 'Du kommer in i en stor grottsal. Ett enormt spindelnät spänner från vägg till vägg.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Spindelns näste">
+  ${caveBackdrop('cave-nest', 161, { rock0: '#2c2420', rock1: '#100c0a', floor: '#3a302a' })}
+  ${spiderWeb(800, 380, 520, { spokes: 16, rings: 9, opacity: 0.4, cls: 'nest-web' })}
+  ${cocoon(300, 420, 1.1)}
+  ${cocoon(1320, 460)}
+  ${bones(420, 790)}
+  ${bones(1200, 760, 0.9)}
+
+  <!-- The spider and the ruby are added here by cave.js -->
+  <g class="actors"></g>
+
+  ${caveBack('cave-webs', 'Tillbaka till spindelgången')}
+  ${caveDarkness('cave-nest', [], 0.93)}
 </svg>`,
 };

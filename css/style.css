@@ -74,10 +74,15 @@ body {
   background: linear-gradient(#151832 0%, #7a7099 43%, #4a5580 43%, #18233c 100%);
 }
 
+#scene[data-scene^="cave"] {
+  background: #050404;
+}
+
 /* Clickable places and things in a scene */
 .exit,
 .pickup,
-.readable {
+.readable,
+.spider-target {
   cursor: pointer;
   outline: none;
   transition: filter 0.2s ease;
@@ -88,7 +93,9 @@ body {
 .pickup:hover,
 .pickup:focus-visible,
 .readable:hover,
-.readable:focus-visible {
+.readable:focus-visible,
+.spider-target:hover,
+.spider-target:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 14px rgba(255, 236, 170, 0.7));
 }
 
@@ -99,9 +106,9 @@ body {
 }
 
 /* Carrying the axe turns the cursor into one (hotspot on the blade edge).
-   Not at the lake, where the rod and the harpoon are what the player uses. */
-body.has-axe #scene:not([data-scene^="lake"]),
-body.has-axe #minigame:not(.lake) {
+   Not at the lake or in the cave, where other tools are what the player uses. */
+body.has-axe #scene:not([data-scene^="lake"]):not([data-scene^="cave"]),
+body.has-axe #minigame:not(.lake):not(.cave) {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='27' y1='29' x2='11' y2='8' stroke='%23a0754a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M9 3 L18 10 L13 16 Q5 16 2 9 Q4 5 9 3 Z' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2'/%3E%3C/svg%3E") 3 9, crosshair;
 }
 
@@ -180,6 +187,103 @@ body.has-axe #minigame:not(.lake) {
 .mg-squid-body.defeated .mg-tentacle { animation-play-state: paused; }
 .mg-squid-body.escape { animation: sink 1s ease-in forwards; }
 .mg-throw { animation: throw 0.35s ease-out forwards; }
+
+/* ---------- Cave quest ---------- */
+
+/* Carrying the torch in the cave turns the cursor into one (hotspot on the flame) */
+body.has-torch #scene[data-scene^="cave"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='22' y1='30' x2='14' y2='14' stroke='%238a5e36' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M11 2 C9 6 5 8 7 12 C8 14 12 14 14 12 C16 9 13 7 11 2 Z' fill='%23f07a1a'/%3E%3Cpath d='M11 7 C10 9 8 10 9 12 C10 13 12 13 13 11 C13 10 12 9 11 7 Z' fill='%23ffc94a'/%3E%3C/svg%3E") 11 9, crosshair;
+}
+
+.flame { animation: flame 0.5s ease-in-out infinite alternate; }
+.torch-flicker { animation: torch-flicker 0.9s ease-in-out infinite alternate; }
+.drip-rings { opacity: 0; animation: peek-rings 3s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.nest-spider { animation: spider-hang 3.2s ease-in-out infinite alternate; }
+.nest-spider .spider-leg,
+.mg-spider-body .spider-leg { animation: spider-leg 1.4s ease-in-out infinite alternate; }
+.spider-leg.leg-1 { animation-delay: -0.35s; }
+.spider-leg.leg-2 { animation-delay: -0.7s; }
+.spider-leg.leg-3 { animation-delay: -1.05s; }
+.spider-eyes { filter: drop-shadow(0 0 4px #ff5a3c); }
+
+#minigame.cave {
+  background: #050404;
+}
+
+.mg-spider { animation: spider-hang 3.2s ease-in-out infinite alternate; }
+.mg-spider-body.confused { animation: spider-confused 0.9s ease-in-out; }
+.mg-spider-body.hiss { animation: snarl 0.4s ease-out; }
+.mg-spider-body.angry { animation: spider-climb 1.6s ease-in forwards; }
+.mg-thread { transition: opacity 0.4s ease; }
+.mg-thread.snapped { opacity: 0; }
+#minigame.cave .mg-ruby { animation: ruby-pulse 1.6s ease-in-out infinite; }
+#minigame.cave .mg-ruby.fall { animation: ruby-fall 1.6s ease-in forwards; }
+
+.mg-panel.riddle-panel {
+  pointer-events: auto;
+  min-width: min(440px, calc(100% - 32px));
+  text-align: center;
+}
+
+.riddle-question {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: 1.7rem;
+  color: var(--accent);
+}
+
+.riddle-choices {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.riddle-choice {
+  font: inherit;
+  font-size: 1.35rem;
+  padding: 8px 4px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  background: linear-gradient(#6b4a1c, #4a3112);
+  color: var(--hud-text);
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.riddle-choice:hover:not(:disabled),
+.riddle-choice:focus-visible {
+  filter: brightness(1.3) drop-shadow(0 0 10px rgba(255, 236, 170, 0.5));
+  outline: none;
+}
+
+.riddle-choice:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.riddle-choice.right {
+  opacity: 1;
+  background: linear-gradient(#3f7a3a, #24511f);
+  border-color: #9fe08a;
+}
+
+.riddle-choice.wrong {
+  opacity: 1;
+  background: linear-gradient(#8a2a2a, #5a1616);
+  border-color: #ff8a8a;
+}
+
+.mg-hit.patience {
+  border-color: var(--accent);
+  border-radius: 50%;
+  transform: none;
+}
+
+.mg-hit.patience.done {
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(224, 180, 74, 0.8);
+}
 
 /* Minigame overlay */
 #minigame {
@@ -671,6 +775,47 @@ body.has-axe #minigame:not(.lake) {
   100% { transform: translateX(0); opacity: 0; }
 }
 
+@keyframes flame {
+  from { transform: scale(1, 1); }
+  to { transform: scale(0.92, 1.1); }
+}
+
+@keyframes torch-flicker {
+  0% { transform: scale(1); }
+  40% { transform: scale(0.96); }
+  70% { transform: scale(1.03); }
+  100% { transform: scale(0.98); }
+}
+
+@keyframes spider-hang {
+  from { transform: translateY(-8px); }
+  to { transform: translateY(8px); }
+}
+
+@keyframes spider-leg {
+  from { transform: rotate(-3deg); }
+  to { transform: rotate(3deg); }
+}
+
+@keyframes spider-confused {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-12deg); }
+  45% { transform: rotate(10deg); }
+  70% { transform: rotate(-6deg); }
+}
+
+@keyframes spider-climb {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(20px); }
+  100% { transform: translateY(-500px); }
+}
+
+@keyframes ruby-fall {
+  0% { transform: none; opacity: 1; }
+  20% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(500px) scale(1.6) rotate(90deg); opacity: 0; }
+}
+
 @keyframes ripple {
   from { transform: translateX(-8px); }
   to { transform: translateX(8px); }
@@ -709,4 +854,6 @@ body.has-axe #minigame:not(.lake) {
   /* Icons only, so the HUD fits on narrow screens */
   .inv-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   #narration { font-size: 0.95rem; }
+  .riddle-question { font-size: 1.3rem; }
+  .riddle-choice { font-size: 1.1rem; }
 }

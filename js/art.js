@@ -524,3 +524,241 @@ function giantSquidCloseUp() {
   <g class="mg-fx no-hit"></g>
 </svg>`;
 }
+
+// ---------- The cave ----------
+
+// Cave mouth in the side of the mountain, seen from the village. (x, y) is the bottom centre.
+function caveMouth(x, y) {
+  return `
+    <path d="M${x - 92},${y + 6} C${x - 96},${y - 50} ${x - 70},${y - 104} ${x - 10},${y - 110}
+             C${x + 50},${y - 112} ${x + 92},${y - 60} ${x + 96},${y + 6} Z" fill="#3c3d52"/>
+    <path d="M${x - 64},${y + 4} C${x - 66},${y - 40} ${x - 44},${y - 80} ${x - 6},${y - 84}
+             C${x + 36},${y - 86} ${x + 64},${y - 44} ${x + 66},${y + 4} Z" fill="#07060c"/>
+    <path d="M${x - 40},${y + 4} C${x - 38},${y - 30} ${x - 20},${y - 52} ${x},${y - 54}
+             C${x + 22},${y - 54} ${x + 40},${y - 28} ${x + 42},${y + 4} Z" fill="#000"/>
+    <path d="M${x - 46},${y - 66} l8,20 l6,-16 M${x + 20},${y - 80} l6,22 l7,-18" fill="#3c3d52"/>
+    ${rock(x - 104, y + 14, 70, 40, '#4a4c62', '#3e5a33')}
+    ${rock(x + 112, y + 16, 84, 46, '#44465c', '#3e5a33')}`;
+}
+
+// Burning torch, upright. (0, 0) is the bottom of the handle; the flame tip is near (0, -150).
+function torch() {
+  return `
+    <rect x="-7" y="-96" width="14" height="96" rx="4" fill="#6b4626"/>
+    <rect x="-7" y="-96" width="4" height="96" fill="#8a5e36"/>
+    <rect x="-11" y="-106" width="22" height="18" rx="3" fill="#4a3a2a"/>
+    <path d="M-11,-100 l22,0 M-11,-94 l22,0" stroke="#2a2018" stroke-width="2"/>
+    <g transform="translate(0 -106)">
+      <g class="flame">
+        <path d="M0,-50 C-8,-34 -22,-24 -20,-8 C-18,4 -8,8 0,8 C8,8 18,4 20,-8 C22,-24 8,-30 4,-40 C2,-30 -4,-28 0,-50 Z" fill="#f07a1a"/>
+        <path d="M0,-30 C-6,-20 -12,-14 -10,-4 C-8,4 -4,6 0,6 C4,6 8,4 10,-4 C12,-14 4,-20 0,-30 Z" fill="#ffc94a"/>
+        <ellipse cx="0" cy="0" rx="5" ry="6" fill="#fff3c0"/>
+      </g>
+    </g>`;
+}
+
+// Torch in an iron bracket on the cave wall. (x, y) is where the bracket is fixed.
+function torchOnWall(x, y) {
+  return `
+    <rect x="${x - 50}" y="${y - 190}" width="100" height="230" fill="transparent"/>
+    <circle cx="${x}" cy="${y - 150}" r="120" fill="url(#cave-torchglow)" class="no-hit"/>
+    <path d="M${x - 16},${y + 20} L${x + 16},${y + 20} M${x},${y + 20} L${x},${y - 30} M${x - 14},${y - 30} L${x + 14},${y - 30}"
+          stroke="#2b2a2e" stroke-width="7" stroke-linecap="round"/>
+    <g transform="translate(${x} ${y + 6})">${torch()}</g>`;
+}
+
+// Opening into another passage, drawn as a dark arch. (x, y) is the bottom centre.
+// It is an exit to `target`; the hover label sits inside the opening, where the torch lights it.
+function caveOpening(target, x, y, w, h, label) {
+  const l = x - w / 2;
+  const r = x + w / 2;
+  return `
+  <g class="exit" data-goto="${escapeXml(target)}" tabindex="0" role="button" aria-label="${escapeXml(label)}">
+    <path d="M${l - 26},${y + 8} C${l - 34},${y - h * 0.6} ${x - w * 0.3},${y - h - 30} ${x},${y - h - 26}
+             C${x + w * 0.3},${y - h - 30} ${r + 34},${y - h * 0.6} ${r + 26},${y + 8} Z" fill="#4a4036"/>
+    <path d="M${l},${y} C${l - 6},${y - h * 0.6} ${x - w * 0.3},${y - h} ${x},${y - h}
+             C${x + w * 0.3},${y - h} ${r + 6},${y - h * 0.6} ${r},${y} Z" fill="#0a0806"/>
+    <path d="M${l + w * 0.2},${y} C${l + w * 0.18},${y - h * 0.5} ${x - w * 0.12},${y - h * 0.75} ${x},${y - h * 0.75}
+             C${x + w * 0.12},${y - h * 0.75} ${r - w * 0.18},${y - h * 0.5} ${r - w * 0.2},${y} Z" fill="#000"/>
+    <g class="exit-label">
+      <rect x="${x - 140}" y="${y - h / 2 - 22}" width="280" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="${x}" y="${y - h / 2 + 5}" font-size="22" text-anchor="middle" fill="#f3ecd8">${escapeXml(label)}</text>
+    </g>
+  </g>`;
+}
+
+// The way back, behind the player: a chalk arrow on the floor at the bottom of the screen.
+function caveBack(target, label) {
+  return `
+  <g class="exit" data-goto="${escapeXml(target)}" tabindex="0" role="button" aria-label="${escapeXml(label)}">
+    <rect x="560" y="790" width="480" height="110" fill="transparent"/>
+    <path d="M800,800 L800,864 M774,840 L800,868 L826,840" fill="none" stroke="#d8d2c4" stroke-width="7"
+          stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+    <g class="exit-label">
+      <rect x="660" y="740" width="280" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="800" y="767" font-size="22" text-anchor="middle" fill="#f3ecd8">${escapeXml(label)}</text>
+    </g>
+  </g>`;
+}
+
+// Stalactites hanging from the ceiling and stalagmites rising from the floor.
+function stalactites(seed, color, { count = 14, y = 0, h0 = 40, h1 = 150, up = false } = {}) {
+  const rand = seededRandom(seed);
+  let svg = '';
+  for (let i = 0; i < count; i++) {
+    const x = rand() * 1600;
+    const w = 14 + rand() * 30;
+    const h = h0 + rand() * (h1 - h0);
+    const tip = up ? y - h : y + h;
+    svg += `<polygon points="${(x - w).toFixed(0)},${y} ${(x + w).toFixed(0)},${y} ${(x + w * 0.2).toFixed(0)},${tip.toFixed(0)}" fill="${color}"/>`;
+  }
+  return svg;
+}
+
+// A spider web centred at (x, y) with radius r.
+function spiderWeb(x, y, r, { spokes = 12, rings = 6, opacity = 0.4, cls = '' } = {}) {
+  let d = '';
+  const pts = [];
+  for (let i = 0; i < spokes; i++) {
+    const a = (i / spokes) * Math.PI * 2 + 0.2;
+    const k = 0.85 + ((i * 37) % 10) / 33; // uneven spokes
+    pts.push([Math.cos(a) * r * k, Math.sin(a) * r * k]);
+    d += `M${x},${y} L${(x + pts[i][0]).toFixed(1)},${(y + pts[i][1]).toFixed(1)} `;
+  }
+  for (let j = 1; j <= rings; j++) {
+    const f = j / (rings + 0.5);
+    d += 'M';
+    for (let i = 0; i <= spokes; i++) {
+      const p = pts[i % spokes];
+      const sag = i % 2 ? 0.94 : 1;
+      d += `${(x + p[0] * f * sag).toFixed(1)},${(y + p[1] * f * sag).toFixed(1)} `;
+    }
+  }
+  return `<path class="${cls}" d="${d}" fill="none" stroke="#e8e4dc" stroke-width="2" opacity="${opacity}"/>`;
+}
+
+// Corner cobweb in the top-left corner at (x, y), mirrored with flip = -1.
+function cobweb(x, y, s, flip = 1) {
+  let d = '';
+  for (let i = 0; i <= 4; i++) {
+    const a = (i / 4) * (Math.PI / 2);
+    d += `M${x},${y} l${(Math.cos(a) * 160 * s * flip).toFixed(1)},${(Math.sin(a) * 160 * s).toFixed(1)} `;
+  }
+  for (let j = 1; j <= 4; j++) {
+    const r = j * 36 * s;
+    d += `M${x + r * flip},${y} Q${x + r * 0.62 * flip},${y + r * 0.38} ${x + r * 0.707 * flip},${y + r * 0.707} `;
+    d += `Q${x + r * 0.38 * flip},${y + r * 0.62} ${x},${y + r} `;
+  }
+  return `<path d="${d}" fill="none" stroke="#e8e4dc" stroke-width="2" opacity="0.4"/>`;
+}
+
+// Old bones on the cave floor around (x, y).
+function bones(x, y, s = 1) {
+  const bone = (bx, by, len, rot) => `
+    <g transform="translate(${bx} ${by}) rotate(${rot}) scale(${s})">
+      <rect x="${-len / 2}" y="-4" width="${len}" height="8" rx="3" fill="#d9d0bc"/>
+      <circle cx="${-len / 2}" cy="-5" r="6" fill="#d9d0bc"/><circle cx="${-len / 2}" cy="5" r="6" fill="#d9d0bc"/>
+      <circle cx="${len / 2}" cy="-5" r="6" fill="#d9d0bc"/><circle cx="${len / 2}" cy="5" r="6" fill="#d9d0bc"/>
+    </g>`;
+  return `
+    ${bone(x - 50, y, 70, 12)}
+    ${bone(x + 40, y + 14, 56, -30)}
+    <g transform="translate(${x + 10} ${y - 18}) scale(${s})">
+      <path d="M-26,0 C-28,-30 28,-30 26,0 L18,14 L-18,14 Z" fill="#e2dac6"/>
+      <ellipse cx="-10" cy="-4" rx="7" ry="8" fill="#1a1410"/>
+      <ellipse cx="10" cy="-4" rx="7" ry="8" fill="#1a1410"/>
+      <path d="M-10,14 l0,6 M0,14 l0,6 M10,14 l0,6" stroke="#1a1410" stroke-width="3"/>
+    </g>`;
+}
+
+// Silk cocoon hanging from a thread at (x, y).
+function cocoon(x, y, s = 1) {
+  return `
+    <line x1="${x}" y1="0" x2="${x}" y2="${y - 40 * s}" stroke="#e8e4dc" stroke-width="2" opacity="0.5"/>
+    <ellipse cx="${x}" cy="${y}" rx="${18 * s}" ry="${42 * s}" fill="#cfc8b8" opacity="0.85"/>
+    <path d="M${x - 16 * s},${y - 20 * s} l${32 * s},${10 * s} M${x - 18 * s},${y} l${36 * s},${8 * s} M${x - 15 * s},${y + 20 * s} l${30 * s},${8 * s}"
+          stroke="#a69f90" stroke-width="2"/>`;
+}
+
+// The giant spider, seen from the front, head down. (0, 0) is the middle of its head;
+// the legs reach about 190 out to the sides. Legs are inner <g>s so CSS can twitch them.
+function spider() {
+  const body = '#2a1f2a';
+  const legs = [
+    'M-22,40 L-80,30 L-112,140',
+    'M-30,28 L-122,-10 L-182,70',
+    'M-30,16 L-122,-62 L-186,-12',
+    'M-24,4 L-90,-112 L-150,-124',
+  ];
+  const side = (flip) =>
+    legs
+      .map(
+        (d, i) => `<g class="spider-leg leg-${i}"><path d="${d}" transform="scale(${flip} 1)" fill="none" stroke="${body}" stroke-width="10"
+             stroke-linecap="round" stroke-linejoin="round"/></g>`
+      )
+      .join('');
+  return `
+    <g class="spider-legs">${side(1)}${side(-1)}</g>
+    <ellipse cx="0" cy="-58" rx="62" ry="70" fill="${body}"/>
+    <path d="M-24,-96 L0,-80 L24,-96 M-30,-66 L0,-48 L30,-66 M-22,-38 L0,-24 L22,-38" fill="none" stroke="#8e1426" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <ellipse cx="0" cy="24" rx="40" ry="34" fill="${body}"/>
+    <path d="M-12,52 q-4,16 6,22 M12,52 q4,16 -6,22" fill="none" stroke="#c9c0a8" stroke-width="5" stroke-linecap="round"/>
+    <g class="spider-eyes" fill="#ff5a3c">
+      <circle cx="-11" cy="22" r="7.5"/><circle cx="11" cy="22" r="7.5"/>
+      <circle cx="-26" cy="12" r="4.5"/><circle cx="26" cy="12" r="4.5"/>
+      <circle cx="-8" cy="6" r="4"/><circle cx="8" cy="6" r="4"/>
+      <circle cx="-22" cy="30" r="3.5"/><circle cx="22" cy="30" r="3.5"/>
+    </g>
+    <g fill="#ffe0d0"><circle cx="-13" cy="19" r="2.2"/><circle cx="9" cy="19" r="2.2"/></g>`;
+}
+
+// The ruby wrapped in silk, hanging from threads. (0, 0) is the middle of the ruby.
+// The threads (.mg-thread) are listed from (x, y) points relative to the ruby.
+function rubyInSilk(anchors, glowFilter) {
+  const threads = anchors
+    .map(([ax, ay]) => `<line class="mg-thread" x1="0" y1="0" x2="${ax}" y2="${ay}" stroke="#eee8dc" stroke-width="3" opacity="0.75"/>`)
+    .join('');
+  return `
+    ${threads}
+    <g class="mg-ruby">
+      <g filter="url(#${glowFilter})"><polygon points="0,-40 32,0 0,40 -32,0" fill="#d8283f"/></g>
+      <polygon points="0,-40 32,0 0,0" fill="#ff7084"/>
+      <polygon points="0,0 0,40 -32,0" fill="#8e1426"/>
+      <polygon points="-7,-26 -16,-10 -10,-10" fill="#ffd6dc"/>
+      <path d="M-30,-6 L30,10 M-26,14 L24,-16 M-14,-30 L18,32" stroke="#eee8dc" stroke-width="2.5" opacity="0.6"/>
+    </g>`;
+}
+
+// The spider in its web, close up, for the riddle minigame. The spider (.mg-spider)
+// sways in its web; the ruby (.mg-ruby) hangs from threads (.mg-thread) beside it.
+function giantSpiderCloseUp() {
+  return `
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Jättespindeln i sitt nät">
+  <defs>
+    <radialGradient id="mgc-bg" cx="0.5" cy="0.55" r="0.65">
+      <stop offset="0" stop-color="#3a2c22"/>
+      <stop offset="0.6" stop-color="#16100c"/>
+      <stop offset="1" stop-color="#050404"/>
+    </radialGradient>
+    <filter id="mgc-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g class="no-hit">
+    <rect x="-800" width="3200" height="900" fill="url(#mgc-bg)"/>
+    ${stalactites(91, '#0e0a08', { count: 18, h0: 60, h1: 200 })}
+    ${spiderWeb(800, 480, 620, { spokes: 16, rings: 9, opacity: 0.3 })}
+  </g>
+  <g transform="translate(800 520)">
+    <g class="mg-spider">
+      <line x1="0" y1="-120" x2="0" y2="-700" stroke="#eee8dc" stroke-width="3" opacity="0.6"/>
+      <g transform="scale(2.1)"><g class="mg-spider-body">${spider()}</g></g>
+    </g>
+  </g>
+  <g transform="translate(1250 600)">
+    ${rubyInSilk([[-140, -180], [60, -230], [170, -60], [120, 150], [-150, 90]], 'mgc-glow')}
+  </g>
+  <g class="mg-fx no-hit"></g>
+</svg>`;
+}
