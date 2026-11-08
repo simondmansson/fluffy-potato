@@ -806,3 +806,253 @@ function lumberjack() {
       <circle cx="0" cy="60" r="9" fill="${skin}"/>
     </g></g>`;
 }
+
+// ---------- The church ----------
+
+// Tall arched stained-glass window. (x, top) is the top of the arch, w and h its size.
+function stainedWindow(x, top, w, h, seed) {
+  const rand = seededRandom(seed);
+  const colors = ['#c23a4a', '#3a6ac2', '#e0b44a', '#3f9a5a', '#8a4ac2', '#e07a3a'];
+  const x0 = x - w / 2;
+  const r = w / 2;
+  let panes = '';
+  const rows = 6;
+  const cols = 3;
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const px = x0 + (col * w) / cols;
+      const py = top + r + (row * (h - r)) / rows;
+      panes += `<rect x="${px.toFixed(1)}" y="${py.toFixed(1)}" width="${(w / cols).toFixed(1)}" height="${((h - r) / rows).toFixed(1)}" fill="${colors[Math.floor(rand() * colors.length)]}"/>`;
+    }
+  }
+  return `
+    <path d="M${x0 - 10},${top + h + 10} L${x0 - 10},${top + r} A${r + 10},${r + 10} 0 0 1 ${x0 + w + 10},${top + r} L${x0 + w + 10},${top + h + 10} Z" fill="#3a3040"/>
+    <path d="M${x0},${top + r} A${r},${r} 0 0 1 ${x0 + w},${top + r} Z" fill="${colors[Math.floor(rand() * colors.length)]}"/>
+    <circle cx="${x}" cy="${top + r * 0.7}" r="${r * 0.3}" fill="#ffe9a0"/>
+    ${panes}
+    <g stroke="#2a2230" stroke-width="4" fill="none">
+      <path d="M${x0},${top + r} A${r},${r} 0 0 1 ${x0 + w},${top + r} L${x0 + w},${top + h} L${x0},${top + h} Z"/>
+      <path d="M${x0 + w / 3},${top + r * 0.3} L${x0 + w / 3},${top + h} M${x0 + (2 * w) / 3},${top + r * 0.3} L${x0 + (2 * w) / 3},${top + h}"/>
+      <path d="M${x0},${top + r + (h - r) / 2} L${x0 + w},${top + r + (h - r) / 2}"/>
+    </g>`;
+}
+
+// Church pew seen from behind, from x0 to x1, with its back's top edge at y.
+function pew(x0, x1, y) {
+  return `
+    <rect x="${x0}" y="${y}" width="${x1 - x0}" height="70" rx="6" fill="#6b4626"/>
+    <rect x="${x0}" y="${y}" width="${x1 - x0}" height="12" rx="6" fill="#8a5e36"/>
+    <rect x="${x0 + 10}" y="${y + 70}" width="16" height="40" fill="#4a3018"/>
+    <rect x="${x1 - 26}" y="${y + 70}" width="16" height="40" fill="#4a3018"/>`;
+}
+
+// A lit candle standing on (x, y), h tall.
+function candle(x, y, h = 50) {
+  return `
+    <rect x="${x - 7}" y="${y - h}" width="14" height="${h}" rx="3" fill="#f3ecd8"/>
+    <rect x="${x - 7}" y="${y - h}" width="4" height="${h}" fill="#fffaf0"/>
+    <g transform="translate(${x} ${y - h - 2}) scale(0.32)"><g class="flame">
+      <path d="M0,-50 C-8,-34 -22,-24 -20,-8 C-18,4 -8,8 0,8 C8,8 18,4 20,-8 C22,-24 8,-30 4,-40 C2,-30 -4,-28 0,-50 Z" fill="#f07a1a"/>
+      <path d="M0,-30 C-6,-20 -12,-14 -10,-4 C-8,4 -4,6 0,6 C4,6 8,4 10,-4 C12,-14 4,-20 0,-30 Z" fill="#ffc94a"/>
+    </g></g>`;
+}
+
+// The wizard's suitcase, covered in travel stickers. (x, y) is the bottom centre.
+function suitcase(x, y) {
+  return `
+    <g transform="translate(${x} ${y})">
+      <path d="M-22,-86 L-22,-100 Q-22,-108 -14,-108 L14,-108 Q22,-108 22,-100 L22,-86" fill="none" stroke="#3a2414" stroke-width="7"/>
+      <rect x="-70" y="-88" width="140" height="88" rx="10" fill="#b8742e"/>
+      <rect x="-70" y="-88" width="140" height="88" rx="10" fill="none" stroke="#6b3e18" stroke-width="4"/>
+      <path d="M-40,-88 L-40,0 M40,-88 L40,0" stroke="#6b3e18" stroke-width="6"/>
+      <circle cx="-14" cy="-56" r="16" fill="#3a8ac2"/>
+      <path d="M-24,-52 Q-14,-60 -4,-52" fill="none" stroke="#e0b44a" stroke-width="4"/>
+      <rect x="2" y="-36" width="30" height="22" rx="3" fill="#e0b44a" transform="rotate(-12 17 -25)"/>
+      <path d="M-58,-24 L-50,-44 L-46,-30 Z" fill="#3f9a5a"/>
+      <circle cx="58" cy="-70" r="7" fill="#ffd977"/>
+    </g>`;
+}
+
+// Gem on top of the wizard's staff (scene size), centred on (0, 0).
+function staffRuby(glowFilter) {
+  return `
+    <g filter="url(#${glowFilter})"><polygon points="0,-22 17,0 0,22 -17,0" fill="#d8283f"/></g>
+    <polygon points="0,-22 17,0 0,0" fill="#ff7084"/>
+    <polygon points="0,0 0,22 -17,0" fill="#8e1426"/>`;
+}
+
+// The wizard, back from his holiday: purple robe with stars, pointed hat with sunglasses
+// pushed up on it, and a staff with the ruby at its top. Feet at (0, 0), about 360 units tall.
+// `ruby` is false once the ruby has been knocked off.
+function wizard(glowFilter, ruby = true) {
+  const robe = '#4b2f7a';
+  const dark = '#36205a';
+  const gold = '#e0b44a';
+  const skin = '#e6b48c';
+  const beard = '#eeeae0';
+  const star = (x, y, s) =>
+    `<path d="M${x},${y - s} L${x + s * 0.3},${y - s * 0.3} L${x + s},${y} L${x + s * 0.3},${y + s * 0.3} L${x},${y + s} L${x - s * 0.3},${y + s * 0.3} L${x - s},${y} L${x - s * 0.3},${y - s * 0.3} Z" fill="${gold}"/>`;
+  return `
+    <ellipse cx="0" cy="2" rx="80" ry="11" fill="rgba(0,0,0,0.3)"/>
+    <g class="wiz-staff">
+      <rect x="-91" y="-300" width="12" height="302" rx="5" fill="#6b4a2a"/>
+      <path d="M-85,-300 C-112,-306 -112,-340 -96,-352 M-85,-300 C-58,-306 -58,-340 -74,-352" fill="none" stroke="#6b4a2a" stroke-width="8" stroke-linecap="round"/>
+      ${ruby ? `<g transform="translate(-85 -326)">${staffRuby(glowFilter)}</g>` : ''}
+    </g>
+    <path d="M-44,-210 Q0,-224 44,-210 L78,0 L-78,0 Z" fill="${robe}"/>
+    <path d="M0,-214 L6,0 L-6,0 Z" fill="${dark}"/>
+    <rect x="-78" y="-12" width="156" height="12" fill="${gold}"/>
+    ${star(-40, -120, 10)}${star(36, -80, 12)}${star(-20, -40, 8)}${star(50, -170, 7)}${star(-56, -60, 6)}
+    <path d="M-40,-200 Q-70,-190 -88,-176 L-80,-160 Q-60,-170 -32,-176 Z" fill="${dark}"/>
+    <circle cx="-85" cy="-168" r="12" fill="${skin}"/>
+    <path d="M40,-200 Q66,-160 64,-112 L46,-112 Q46,-156 30,-180 Z" fill="${dark}"/>
+    <circle cx="56" cy="-106" r="11" fill="${skin}"/>
+    <circle cx="0" cy="-232" r="28" fill="${skin}"/>
+    <path d="M-26,-226 Q-30,-170 0,-120 Q30,-170 26,-226 Q14,-212 0,-214 Q-14,-212 -26,-226 Z" fill="${beard}"/>
+    <path d="M-12,-210 Q0,-202 12,-210" fill="none" stroke="#c9c2b0" stroke-width="3"/>
+    <circle cx="-10" cy="-238" r="3" fill="#1a1208"/>
+    <circle cx="10" cy="-238" r="3" fill="#1a1208"/>
+    <path d="M-20,-248 l14,3 M20,-248 l-14,3" stroke="${beard}" stroke-width="5" stroke-linecap="round"/>
+    <ellipse cx="0" cy="-226" rx="5" ry="7" fill="#d89a74"/>
+    <path d="M-38,-256 C-20,-300 0,-340 30,-372 C34,-376 40,-372 36,-366 C20,-330 26,-290 38,-256 Z" fill="${robe}"/>
+    ${star(4, -300, 9)}${star(22, -340, 6)}
+    <ellipse cx="0" cy="-256" rx="58" ry="12" fill="${dark}"/>
+    <g fill="#1a1a24" stroke="#c9a46a" stroke-width="2">
+      <circle cx="-14" cy="-270" r="10"/><circle cx="14" cy="-270" r="10"/>
+    </g>
+    <path d="M-4,-272 L4,-272" stroke="#c9a46a" stroke-width="3"/>`;
+}
+
+// The magic sword lying flat, glowing blue. (x, y) is the middle of the blade.
+function magicSword(x, y) {
+  return `
+    <g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="0" rx="190" ry="44" fill="url(#church-crypt-swordglow)" class="no-hit sword-aura"/>
+      <rect x="-170" y="-40" width="340" height="80" fill="transparent"/>
+      <polygon points="-110,-9 120,-9 150,0 120,9 -110,9" fill="#dfe8f2" stroke="#7a8ea6" stroke-width="2"/>
+      <path d="M-104,0 L128,0" stroke="#9ab4d8" stroke-width="3"/>
+      <g class="sword-runes" fill="#7fd8ff">
+        <rect x="-70" y="-3" width="8" height="6"/><rect x="-40" y="-3" width="6" height="6"/>
+        <rect x="-12" y="-3" width="9" height="6"/><rect x="20" y="-3" width="6" height="6"/>
+        <rect x="50" y="-3" width="8" height="6"/>
+      </g>
+      <rect x="-122" y="-34" width="14" height="68" rx="5" fill="#c9a46a" stroke="#7a5a2a" stroke-width="2"/>
+      <rect x="-166" y="-7" width="46" height="14" rx="5" fill="#4a2f6a"/>
+      <circle cx="-172" cy="0" r="11" fill="#c9a46a" stroke="#7a5a2a" stroke-width="2"/>
+      <circle cx="-172" cy="0" r="5" fill="#7fd8ff"/>
+    </g>`;
+}
+
+// Stone coffin of an old knight with a carved shield. (x, y) is the bottom centre.
+function sarcophagus(x, y) {
+  return `
+    <g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="6" rx="300" ry="22" fill="rgba(0,0,0,0.35)"/>
+      <rect x="-260" y="-150" width="520" height="150" fill="#6f6a72"/>
+      <rect x="-260" y="-150" width="520" height="150" fill="none" stroke="#4a464e" stroke-width="4"/>
+      <polygon points="-286,-150 286,-150 270,-186 -270,-186" fill="#8a8590"/>
+      <rect x="-286" y="-150" width="572" height="12" fill="#5c5860"/>
+      <g fill="none" stroke="#4a464e" stroke-width="4">
+        <rect x="-230" y="-122" width="140" height="94" rx="6"/>
+        <rect x="90" y="-122" width="140" height="94" rx="6"/>
+      </g>
+      <path d="M-38,-124 L38,-124 L38,-82 Q38,-40 0,-24 Q-38,-40 -38,-82 Z" fill="#5c5860" stroke="#4a464e" stroke-width="4"/>
+      <path d="M0,-116 L0,-36 M-28,-94 L28,-94" stroke="#8a8590" stroke-width="6"/>
+    </g>`;
+}
+
+// The wizard close up for the duel. The staff (.mg-staff, rotated by church.js) holds
+// the ruby (.mg-ruby-target); a shield (.mg-shield) can close around it.
+function wizardCloseUp() {
+  const robe = '#4b2f7a';
+  const dark = '#36205a';
+  const gold = '#e0b44a';
+  const skin = '#e6b48c';
+  const beard = '#eeeae0';
+  const crack = (d) => `<path class="mg-crack" d="${d}" fill="none" stroke="#fff4f4" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const star = (x, y, s) =>
+    `<path d="M${x},${y - s} L${x + s * 0.3},${y - s * 0.3} L${x + s},${y} L${x + s * 0.3},${y + s * 0.3} L${x},${y + s} L${x - s * 0.3},${y + s * 0.3} L${x - s},${y} L${x - s * 0.3},${y - s * 0.3} Z" fill="${gold}"/>`;
+  return `
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trollkarlen på nära håll">
+  <defs>
+    <radialGradient id="mgw-bg" cx="0.5" cy="0.5" r="0.7">
+      <stop offset="0" stop-color="#4a3a6a"/>
+      <stop offset="0.6" stop-color="#22183a"/>
+      <stop offset="1" stop-color="#0c0814"/>
+    </radialGradient>
+    <radialGradient id="mgw-shield">
+      <stop offset="0" stop-color="#9adcff" stop-opacity="0.25"/>
+      <stop offset="0.7" stop-color="#9adcff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#e6f6ff" stop-opacity="0.95"/>
+    </radialGradient>
+    <filter id="mgw-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g class="no-hit">
+    <rect x="-800" width="3200" height="900" fill="url(#mgw-bg)"/>
+    <g opacity="0.35">
+      ${stainedWindow(220, 120, 120, 420, 41)}
+      ${stainedWindow(1380, 120, 120, 420, 43)}
+    </g>
+    <rect x="-800" y="760" width="3200" height="140" fill="#1a1222"/>
+  </g>
+
+  <g class="mg-wizard" transform="translate(800 0)">
+    <g class="mg-wizard-body">
+      <path d="M-150,500 Q0,460 150,500 L250,900 L-250,900 Z" fill="${robe}"/>
+      <path d="M0,480 L14,900 L-14,900 Z" fill="${dark}"/>
+      ${star(-90, 640, 22)}${star(110, 720, 26)}${star(-40, 820, 18)}${star(150, 560, 14)}${star(-170, 760, 14)}
+      <path d="M130,510 Q230,470 290,380 L320,410 Q260,520 160,580 Z" fill="${dark}"/>
+      <circle cx="305" cy="392" r="28" fill="${skin}"/>
+      <g class="no-hit" transform="translate(305 380)"><g class="mg-spell">
+        ${star(0, -20, 26)}${star(-40, -60, 14)}${star(36, -70, 12)}
+      </g></g>
+      <circle cx="0" cy="410" r="78" fill="${skin}"/>
+      <path d="M-72,420 Q-84,600 0,740 Q84,600 72,420 Q40,460 0,456 Q-40,460 -72,420 Z" fill="${beard}"/>
+      <path d="M-34,476 Q0,500 34,476" fill="none" stroke="#c9c2b0" stroke-width="7"/>
+      <g class="mg-eyes">
+        <circle cx="-28" cy="396" r="9" fill="#1a1208"/>
+        <circle cx="28" cy="396" r="9" fill="#1a1208"/>
+      </g>
+      <path d="M-58,368 l40,10 M58,368 l-40,10" stroke="${beard}" stroke-width="13" stroke-linecap="round"/>
+      <ellipse cx="0" cy="430" rx="14" ry="20" fill="#d89a74"/>
+      <path d="M-110,346 C-60,230 0,140 90,60 C100,50 116,60 106,76 C60,160 70,250 110,346 Z" fill="${robe}"/>
+      ${star(10, 250, 20)}${star(56, 150, 13)}
+      <ellipse cx="0" cy="346" rx="170" ry="32" fill="${dark}"/>
+      <g fill="#1a1a24" stroke="#c9a46a" stroke-width="4">
+        <circle cx="-40" cy="306" r="28"/><circle cx="40" cy="306" r="28"/>
+      </g>
+      <path d="M-12,302 L12,302" stroke="#c9a46a" stroke-width="6"/>
+      <path d="M-130,510 Q-200,560 -230,640 L-190,670 Q-170,600 -110,570 Z" fill="${dark}"/>
+    </g>
+  </g>
+
+  <g class="mg-staff" transform="translate(570 660)">
+    <rect x="-14" y="-380" width="28" height="560" rx="12" fill="#6b4a2a"/>
+    <rect x="-14" y="-380" width="8" height="560" fill="#8a6a42"/>
+    <path d="M0,-370 C-60,-384 -64,-450 -30,-480 M0,-370 C60,-384 64,-450 30,-480" fill="none" stroke="#6b4a2a" stroke-width="18" stroke-linecap="round"/>
+    <g transform="translate(0 -420)">
+      <g class="mg-ruby">
+        <g filter="url(#mgw-glow)"><polygon points="0,-48 40,0 0,48 -40,0" fill="#d8283f"/></g>
+        <polygon points="0,-48 40,0 0,0" fill="#ff7084"/>
+        <polygon points="0,0 0,48 -40,0" fill="#8e1426"/>
+        <polygon points="-8,-30 -20,-12 -12,-12" fill="#ffd6dc"/>
+        ${crack('M-4,-40 L4,-18 L-8,-4 L2,12')}
+        ${crack('M30,-6 L12,4 L18,20 L4,34')}
+        ${crack('M-30,4 L-12,10 L-18,26 L-2,40')}
+        <circle class="mg-ruby-target" r="72" fill="transparent"/>
+      </g>
+      <g class="no-hit"><g class="mg-shield">
+        <circle r="100" fill="url(#mgw-shield)" stroke="#e6f6ff" stroke-width="8" filter="url(#mgw-glow)"/>
+        <path d="M-60,-50 Q-40,-80 0,-86" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity="0.8"/>
+      </g></g>
+    </g>
+    <circle cx="0" cy="0" r="34" fill="${skin}"/>
+    <path d="M-30,-14 Q0,-30 30,-14" fill="none" stroke="#d89a74" stroke-width="6"/>
+  </g>
+
+  <g class="mg-fx no-hit"></g>
+</svg>`;
+}

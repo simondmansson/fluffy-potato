@@ -78,11 +78,20 @@ body {
   background: #050404;
 }
 
+#scene[data-scene="church"] {
+  background: linear-gradient(#2a2232 0%, #5e5464 66%, #6b6058 66%, #2a221c 100%);
+}
+
+#scene[data-scene="church-crypt"] {
+  background: linear-gradient(#14121a 0%, #3e3a46 71%, #3e3a42 71%, #121014 100%);
+}
+
 /* Clickable places and things in a scene */
 .exit,
 .pickup,
 .readable,
 .spider-target,
+.wizard-target,
 .npc {
   cursor: pointer;
   outline: none;
@@ -97,6 +106,8 @@ body {
 .readable:focus-visible,
 .spider-target:hover,
 .spider-target:focus-visible,
+.wizard-target:hover,
+.wizard-target:focus-visible,
 .npc:hover,
 .npc:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 14px rgba(255, 236, 170, 0.7));
@@ -109,9 +120,9 @@ body {
 }
 
 /* Carrying the axe turns the cursor into one (hotspot on the blade edge).
-   Not at the lake or in the cave, where other tools are what the player uses. */
-body.has-axe #scene:not([data-scene^="lake"]):not([data-scene^="cave"]),
-body.has-axe #minigame:not(.lake):not(.cave) {
+   Not at the lake, in the cave or in the church, where other tools are what the player uses. */
+body.has-axe #scene:not([data-scene^="lake"]):not([data-scene^="cave"]):not([data-scene^="church"]),
+body.has-axe #minigame:not(.lake):not(.cave):not(.church) {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='27' y1='29' x2='11' y2='8' stroke='%23a0754a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M9 3 L18 10 L13 16 Q5 16 2 9 Q4 5 9 3 Z' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2'/%3E%3C/svg%3E") 3 9, crosshair;
 }
 
@@ -238,6 +249,33 @@ body.has-torch #scene[data-scene^="cave"] {
 .mg-thread.snapped { opacity: 0; }
 #minigame.cave .mg-ruby { animation: ruby-pulse 1.6s ease-in-out infinite; }
 #minigame.cave .mg-ruby.fall { animation: ruby-fall 1.6s ease-in forwards; }
+
+/* ---------- Village quest: the wizard in the church ---------- */
+
+/* Carrying the magic sword in the church turns the cursor into it (hotspot on the tip) */
+body.has-sword #scene[data-scene^="church"],
+#minigame.church {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpolygon points='3,3 9,4 22,17 17,22 4,9' fill='%23dfe8f2' stroke='%237a8ea6' stroke-width='1'/%3E%3Cpath d='M6,6 L19,19' stroke='%237fd8ff' stroke-width='1.5'/%3E%3Cline x1='16' y1='25' x2='25' y2='16' stroke='%23c9a46a' stroke-width='3.5' stroke-linecap='round'/%3E%3Cline x1='21' y1='21' x2='27' y2='27' stroke='%234a2f6a' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") 3 3, crosshair;
+}
+
+.wiz-sway { animation: wiz-sway 3s ease-in-out infinite alternate; transform-origin: 0 0; }
+.crypt-glow.pulse { animation: ruby-pulse 2.2s ease-in-out infinite; }
+.sword-aura { animation: ruby-pulse 1.8s ease-in-out infinite; }
+.sword-runes { filter: drop-shadow(0 0 3px #7fd8ff); }
+
+#minigame.church {
+  background: radial-gradient(ellipse at 50% 45%, #4a3a6a 0%, #22183a 55%, #0c0814 100%);
+}
+
+.mg-shield { opacity: 0; transform: scale(0.6); transition: opacity 0.2s ease, transform 0.2s ease; }
+.mg-shield.up { opacity: 1; transform: scale(1); }
+#minigame.church .mg-ruby.charging { filter: brightness(1.6) drop-shadow(0 0 16px #bfeaff); }
+.mg-spell { opacity: 0; }
+.mg-spell.cast { animation: spell 0.9s ease-out; }
+.mg-wizard-body.hurt { animation: shake 0.07s linear 4 alternate; }
+.mg-wizard-body.snarl { animation: snarl 0.3s ease-out; }
+.mg-wizard-body.defeated .mg-eyes { opacity: 0.3; transition: opacity 1.2s ease; }
+.mg-wizard-body.zap { animation: snarl 0.4s ease-out 2; }
 
 .mg-panel.riddle-panel {
   pointer-events: auto;
@@ -969,6 +1007,17 @@ body.has-torch #scene[data-scene^="cave"] {
 @keyframes lj-wave {
   from { transform: rotate(-150deg); }
   to { transform: rotate(-110deg); }
+}
+
+@keyframes wiz-sway {
+  from { transform: rotate(-1.5deg); }
+  to { transform: rotate(1.5deg); }
+}
+
+@keyframes spell {
+  0% { opacity: 0; transform: scale(0.4) rotate(0deg); }
+  30% { opacity: 1; transform: scale(1.2) rotate(40deg); }
+  100% { opacity: 0; transform: scale(1.6) rotate(120deg); }
 }
 
 @keyframes web-tremble {

@@ -27,6 +27,10 @@ SCENES.town = {
     <filter id="town-blur" x="-50%" y="-200%" width="200%" height="500%">
       <feGaussianBlur stdDeviation="10"/>
     </filter>
+    <radialGradient id="town-wizardlight" cx="0.5" cy="0.6" r="0.6">
+      <stop offset="0" stop-color="#d6b0ff"/>
+      <stop offset="1" stop-color="#6a3aa8"/>
+    </radialGradient>
     <filter id="town-glow" x="-50%" y="-50%" width="200%" height="200%">
       <feGaussianBlur stdDeviation="4" result="b"/>
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
@@ -125,15 +129,36 @@ SCENES.town = {
 
   ${house(870, 790, 120, 85, '#d8c7a3', '#5d3a2a', { chimney: true })}
 
-  <!-- Church -->
-  <rect x="1030" y="670" width="120" height="110" fill="#e2d6bd"/>
-  <polygon points="1020,670 1090,620 1160,670" fill="#4c3b4f"/>
-  <rect x="1065" y="590" width="50" height="80" fill="#e2d6bd"/>
-  <polygon points="1058,590 1090,520 1122,590" fill="#4c3b4f"/>
-  <rect x="1087" y="495" width="6" height="30" fill="#c9a46a"/>
-  <rect x="1078" y="503" width="24" height="6" fill="#c9a46a"/>
-  <circle class="window" cx="1090" cy="620" r="10" fill="#ffd977"/>
-  <path d="M1075,780 L1075,735 Q1090,715 1105,735 L1105,780 Z" fill="#4a2f1c"/>
+  <!-- Church: the wizard lives here. Closed (note on the door) until he is back, see church.js -->
+  <g class="exit church-door" tabindex="0" role="button" aria-label="Läs lappen på kyrkdörren">
+    <rect x="1015" y="490" width="150" height="295" fill="transparent"/>
+    <rect x="1030" y="670" width="120" height="110" fill="#e2d6bd"/>
+    <polygon points="1020,670 1090,620 1160,670" fill="#4c3b4f"/>
+    <rect x="1065" y="590" width="50" height="80" fill="#e2d6bd"/>
+    <polygon points="1058,590 1090,520 1122,590" fill="#4c3b4f"/>
+    <rect x="1087" y="495" width="6" height="30" fill="#c9a46a"/>
+    <rect x="1078" y="503" width="24" height="6" fill="#c9a46a"/>
+    <circle class="window church-window" cx="1090" cy="620" r="10" fill="#ffd977"/>
+    <g class="church-closed">
+      <path d="M1075,780 L1075,735 Q1090,715 1105,735 L1105,780 Z" fill="#4a2f1c"/>
+      <g class="church-note" transform="rotate(-6 1090 752)">
+        <rect x="1078" y="742" width="24" height="20" fill="#f3ecd8"/>
+        <path d="M1081,748 l18,0 M1081,753 l14,0 M1081,758 l16,0" stroke="#5a4a3a" stroke-width="1.5"/>
+      </g>
+    </g>
+    <g class="church-open" display="none">
+      <path d="M1075,780 L1075,735 Q1090,715 1105,735 L1105,780 Z" fill="#2a1840"/>
+      <path d="M1075,780 L1075,735 Q1090,715 1105,735 L1105,780 Z" fill="url(#town-wizardlight)" class="window"/>
+      <path d="M1075,780 L1075,735 L1066,740 L1066,784 Z" fill="#4a2f1c"/>
+      <g transform="translate(1060 711)"><g class="glint" fill="#e6d6ff">
+        <path d="M0,-11 l3,8 l8,3 l-8,3 l-3,8 l-3,-8 l-8,-3 l8,-3 Z"/>
+      </g></g>
+    </g>
+    <g class="exit-label">
+      <rect x="980" y="440" width="220" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="1090" y="467" font-size="22" text-anchor="middle" fill="#f3ecd8">Läs lappen</text>
+    </g>
+  </g>
 
   ${house(1200, 805, 140, 95, '#bfa57d', '#6b2f2a', { chimney: true })}
   ${house(1380, 775, 115, 82, '#cdb892', '#4f3324')}
@@ -858,5 +883,199 @@ SCENES['cave-nest'] = {
 
   ${caveDarkness('cave-nest', [], 0.93)}
   ${caveBack('cave-webs', 'Tillbaka till spindelgången')}
+</svg>`,
+};
+
+// ---------- The church in the village (see church.js) ----------
+
+SCENES.church = {
+  name: 'Kyrkan',
+  narration:
+    'Inne i den gamla kyrkan är det svalt och tyst. Ljuset faller i alla färger genom de höga fönstren, ' +
+    'och det luktar stearin och gammal sten.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inne i kyrkan">
+  <defs>
+    <linearGradient id="church-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2232"/>
+      <stop offset="0.7" stop-color="#5e5464"/>
+      <stop offset="1" stop-color="#4a4250"/>
+    </linearGradient>
+    <linearGradient id="church-floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b6058"/>
+      <stop offset="1" stop-color="#2a221c"/>
+    </linearGradient>
+    <linearGradient id="church-beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9c0" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#ffe9c0" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="church-crypt-glow" cx="0.5" cy="0.8" r="0.7">
+      <stop offset="0" stop-color="#7fd8ff" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#7fd8ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="church-daylight" cx="0.5" cy="0.6" r="0.7">
+      <stop offset="0" stop-color="#fff3d0"/>
+      <stop offset="1" stop-color="#c9b48f"/>
+    </radialGradient>
+    <filter id="church-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="-800" width="3200" height="900" fill="url(#church-wall)"/>
+  <g stroke="#3e3646" stroke-width="3" opacity="0.6">
+    <path d="M-800,140 L2400,140 M-800,260 L2400,260 M-800,380 L2400,380 M-800,500 L2400,500"/>
+  </g>
+  <!-- Vaulted ceiling -->
+  <g fill="none" stroke="#1e1824" stroke-width="22">
+    <path d="M60,600 L60,200 Q60,20 400,0 M1540,600 L1540,200 Q1540,20 1200,0"/>
+    <path d="M560,600 L560,260 Q560,60 800,40 Q1040,60 1040,260 L1040,600"/>
+  </g>
+
+  <!-- Windows and the light falling from them -->
+  ${stainedWindow(800, 90, 150, 260, 17)}
+  ${stainedWindow(420, 150, 110, 300, 23)}
+  ${stainedWindow(1180, 150, 110, 300, 29)}
+  <g class="no-hit" fill="url(#church-beam)">
+    <polygon points="365,450 475,450 620,900 300,900"/>
+    <polygon points="1125,450 1235,450 1300,900 980,900"/>
+    <polygon points="725,350 875,350 1000,900 600,900"/>
+  </g>
+
+  <!-- Floor -->
+  <rect x="-800" y="600" width="3200" height="300" fill="url(#church-floor)"/>
+  <path d="M-800,600 L2400,600" stroke="#2a2232" stroke-width="6"/>
+  <polygon points="755,600 845,600 990,900 610,900" fill="#8e1e2a"/>
+  <polygon points="765,600 835,600 970,900 630,900" fill="#a82838"/>
+
+  <!-- Altar -->
+  <rect x="640" y="560" width="320" height="40" fill="#7a7080"/>
+  <rect x="610" y="590" width="380" height="20" fill="#5c5462"/>
+  <rect x="690" y="470" width="220" height="92" fill="#e9e1cc"/>
+  <rect x="690" y="470" width="220" height="16" fill="#c9a46a"/>
+  <rect x="790" y="486" width="20" height="76" fill="#c9a46a"/>
+  ${candle(720, 470, 54)}
+  ${candle(880, 470, 54)}
+
+  <!-- Stairs down to the crypt (exit) -->
+  <g class="exit" data-goto="church-crypt" tabindex="0" role="button" aria-label="Gå ner i kryptan">
+    <path d="M140,610 L140,420 Q140,340 240,340 Q340,340 340,420 L340,610 Z" fill="#3a3040"/>
+    <path d="M160,610 L160,428 Q160,360 240,360 Q320,360 320,428 L320,610 Z" fill="#0c0a10"/>
+    <path class="crypt-glow" d="M160,610 L160,428 Q160,360 240,360 Q320,360 320,428 L320,610 Z" fill="url(#church-crypt-glow)"/>
+    <g fill="#4a4250">
+      <rect x="160" y="590" width="160" height="20"/>
+      <rect x="172" y="560" width="136" height="16"/>
+      <rect x="184" y="534" width="112" height="12"/>
+      <rect x="196" y="512" width="88" height="9"/>
+    </g>
+    <g class="exit-label">
+      <rect x="120" y="290" width="240" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="240" y="317" font-size="22" text-anchor="middle" fill="#f3ecd8">Ner i kryptan</text>
+    </g>
+  </g>
+
+  <!-- The church door, out to the village (exit) -->
+  <g class="exit" data-goto="town" tabindex="0" role="button" aria-label="Gå ut till byn">
+    <path d="M1270,610 L1270,410 Q1270,330 1370,330 Q1470,330 1470,410 L1470,610 Z" fill="#3a3040"/>
+    <path d="M1290,610 L1290,418 Q1290,350 1370,350 Q1450,350 1450,418 L1450,610 Z" fill="url(#church-daylight)"/>
+    <path d="M1290,610 L1290,418 L1250,400 L1250,640 Z" fill="#4a2f1c"/>
+    <path d="M1290,600 L1450,600 L1470,620 L1270,620 Z" fill="#5c5462"/>
+    <g class="exit-label">
+      <rect x="1250" y="280" width="240" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="1370" y="307" font-size="22" text-anchor="middle" fill="#f3ecd8">Ut till byn</text>
+    </g>
+  </g>
+
+  <!-- The wizard and his suitcase are added here by church.js -->
+  <g class="actors"></g>
+
+  <!-- Pews, in front of everything -->
+  ${pew(150, 610, 720)}
+  ${pew(990, 1450, 720)}
+  ${pew(100, 580, 820)}
+  ${pew(1020, 1500, 820)}
+</svg>`,
+};
+
+SCENES['church-crypt'] = {
+  name: 'Kryptan',
+  narration:
+    'En smal stentrappa leder ner i kryptan under kyrkan. Taket är lågt och välvt, och ljusen i nischerna ' +
+    'fladdrar. Mitt i rummet står en gammal riddares stenkista.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kryptan under kyrkan">
+  <defs>
+    <linearGradient id="church-crypt-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14121a"/>
+      <stop offset="0.65" stop-color="#3e3a46"/>
+      <stop offset="1" stop-color="#26232c"/>
+    </linearGradient>
+    <linearGradient id="church-crypt-floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3e3a42"/>
+      <stop offset="1" stop-color="#121014"/>
+    </linearGradient>
+    <radialGradient id="church-crypt-swordglow">
+      <stop offset="0" stop-color="#7fd8ff" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#7fd8ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="church-crypt-candle">
+      <stop offset="0" stop-color="#ffb050" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffb050" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="-800" width="3200" height="900" fill="url(#church-crypt-wall)"/>
+  <g stroke="#1e1c24" stroke-width="3" opacity="0.7">
+    <path d="M-800,200 L2400,200 M-800,320 L2400,320 M-800,440 L2400,440 M-800,560 L2400,560"/>
+    <path d="M300,200 L300,320 M700,320 L700,440 M1100,200 L1100,320 M500,440 L500,560 M900,440 L900,560 M1300,320 L1300,440"/>
+  </g>
+  <!-- Low vaults -->
+  <g fill="none" stroke="#0e0c12" stroke-width="30">
+    <path d="M40,640 L40,260 Q40,60 420,40 Q800,60 800,260 Q800,60 1180,40 Q1560,60 1560,260 L1560,640"/>
+  </g>
+  <rect x="-800" y="640" width="3200" height="260" fill="url(#church-crypt-floor)"/>
+  <path d="M-800,640 L2400,640" stroke="#121014" stroke-width="6"/>
+
+  <!-- Candles in niches -->
+  <g>
+    <path d="M520,520 L520,450 Q520,410 560,410 Q600,410 600,450 L600,520 Z" fill="#0e0c12"/>
+    ${candle(560, 515, 40)}
+    <circle cx="560" cy="470" r="140" fill="url(#church-crypt-candle)" class="no-hit"/>
+    <path d="M1000,520 L1000,450 Q1000,410 1040,410 Q1080,410 1080,450 L1080,520 Z" fill="#0e0c12"/>
+    ${candle(1040, 515, 40)}
+    <circle cx="1040" cy="470" r="140" fill="url(#church-crypt-candle)" class="no-hit"/>
+  </g>
+
+  <!-- An old knight's shield on the wall -->
+  <g transform="translate(1340 330)">
+    <path d="M-60,-70 L60,-70 L60,0 Q60,60 0,90 Q-60,60 -60,0 Z" fill="#2a3a6a" stroke="#8a8590" stroke-width="6"/>
+    <path d="M0,-60 L0,80 M-50,-10 L50,-10" stroke="#c9a46a" stroke-width="10"/>
+  </g>
+  ${cobweb(1600, 0, 1.0, -1)}
+  ${cobweb(0, 0, 0.8)}
+
+  ${sarcophagus(800, 790)}
+
+  <!-- Stairs back up into the church (exit) -->
+  <g class="exit" data-goto="church" tabindex="0" role="button" aria-label="Gå upp till kyrkan">
+    <rect x="90" y="380" width="260" height="400" fill="transparent"/>
+    <path d="M110,660 L110,440 Q110,380 220,380 Q330,380 330,440 L330,660 Z" fill="#0c0a10"/>
+    <g fill="#4a4250">
+      <rect x="110" y="640" width="220" height="20"/>
+      <rect x="130" y="600" width="200" height="20"/>
+      <rect x="150" y="560" width="180" height="20"/>
+      <rect x="170" y="520" width="160" height="20"/>
+      <rect x="190" y="480" width="140" height="20"/>
+    </g>
+    <path d="M220,470 l0,-60 M196,434 l24,-24 l24,24" fill="none" stroke="#e6e0d2" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <g class="exit-label">
+      <rect x="100" y="330" width="240" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="220" y="357" font-size="22" text-anchor="middle" fill="#f3ecd8">Upp till kyrkan</text>
+    </g>
+  </g>
+
+  <!-- The sword is added here by church.js -->
+  <g class="actors"></g>
 </svg>`,
 };

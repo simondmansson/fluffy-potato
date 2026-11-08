@@ -56,6 +56,20 @@ Grottan består av sju platser: Grottans mynning, Vägskälet, Droppstensgrottan
 - Fel svar visar det rätta svaret och kostar spindelns tålamod. Efter tre fel klättrar spindeln upp i taket, nätet slaknar och spelaren slits loss. Då kan spelaren gå tillbaka eller försöka igen.
 - När rubinen är vunnen skickas spelaren automatiskt tillbaka till byn med grottans rubin. Går man in i nästet igen hänger nätet tomt.
 
+## Byn
+
+Den fjärde rubinen har trollkarlen som bor i kyrkan i byn. Rubinen sitter högst upp på hans trollstav. Spelaren måste hitta ett magiskt svärd och slå av rubinen från trollstaven.
+
+Byn har två platser till: Kyrkan och Kryptan (under kyrkan).
+
+- Trollkarlen kommer hem först när spelaren har de tre andra rubinerna (3/4). Innan dess sitter en lapp på kyrkdörren där det står att han är på semester, och dörren är låst.
+- När han är hemma lyser kyrkans fönster lila och dörren står på glänt. Inne i kyrkan står trollkarlen vid altaret med sin stav och sin resväska.
+- Klickar man på trollkarlen utan svärd skrattar han: ingen vanlig klinga biter på staven, bara ett magiskt svärd.
+- Ett blått sken lyser upp trappan ner till kryptan. Där ligger det magiska svärdet på en gammal riddares stenkista. När spelaren har svärdet blir muspekaren ett svärd i kyrkan.
+- Med svärdet börjar ett minispel: trollkarlen svänger staven fram och tillbaka. Spelaren ska träffa rubinen tre gånger innan modet tar slut. Ibland lyser rubinen upp och en magisk sköld sluter sig runt den en stund. Slår man på skölden studsar svärdet. Missar och slag på skölden kostar mod, och varje träff gör att trollkarlen svänger snabbare och skölden kommer oftare. Efter varje slag tar det en liten stund innan svärdet kan svingas igen.
+- Tar modet slut trollar trollkarlen ut spelaren ur kyrkan till byn, och spelaren kan gå in och försöka igen.
+- När rubinen slås loss har spelaren byns rubin och alla fyra rubinerna. Trollkarlen åker på semester igen, och spelaren hamnar i byn. På kyrkdörren sitter då en ny semesterlapp.
+
 ### Tech stack
 
 Plain html, javascript and css. Runs in the browser and progress is saved to local storage.
