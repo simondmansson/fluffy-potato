@@ -52,7 +52,7 @@ Grottan består av sju platser: Grottans mynning, Vägskälet, Droppstensgrottan
 - Spindeln ställer räknegåtor (plus, minus och till sist gånger), och spelaren väljer rätt svar bland fyra. Inget tal i frågan eller svaret är större än 100, och frågorna blir svårare för varje rätt svar.
 - Varje rätt svar får spindeln att trassla in sig när hon räknar på benen, och en av trådarna runt rubinen går av. Fem rätta svar och rubinen faller ner till spelaren.
 - Fel svar visar det rätta svaret och kostar spindelns tålamod. Efter tre fel klättrar spindeln upp i taket och spelaren får börja om.
-- När rubinen är vunnen hänger nätet tomt och spelaren har grottans rubin.
+- När rubinen är vunnen skickas spelaren automatiskt tillbaka till byn med grottans rubin. Går man in i nästet igen hänger nätet tomt.
 
 ### Tech stack
 
