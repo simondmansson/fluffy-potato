@@ -25,7 +25,12 @@ function fitScene() {
 
 function setNarration(text) {
   narrationEl.textContent = text;
+  narrationEl.classList.remove('collapsed'); // new text is always shown in full
 }
+
+// Tapping the narration folds it down to one line, so it doesn't hide the scene
+// on small screens. Tapping again (or any new text) shows all of it.
+narrationEl.addEventListener('click', () => narrationEl.classList.toggle('collapsed'));
 
 function updateHud() {
   // textContent only: the name is typed by the player and must never be parsed as markup.

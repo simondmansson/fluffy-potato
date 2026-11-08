@@ -25,6 +25,9 @@ body {
   width: 100vw;
   height: 100vh;
   height: 100dvh;
+  /* No double-tap zoom, so quick taps in the minigames all count */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ---------- Scene ---------- */
@@ -472,7 +475,14 @@ body.has-sword #scene[data-scene^="church"],
   justify-content: space-between;
   gap: 12px;
   padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
   pointer-events: none;
+}
+
+.hud-left {
+  min-width: 0;
 }
 
 #location-name {
@@ -597,6 +607,7 @@ body.has-sword #scene[data-scene^="church"],
 }
 
 .hero-name {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -632,13 +643,38 @@ body.has-sword #scene[data-scene^="church"],
 #narration {
   position: absolute;
   left: 50%;
-  bottom: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   width: min(720px, calc(100% - 32px));
   margin: 0;
+  padding-right: 34px;
   font-size: 1.05rem;
   line-height: 1.5;
-  pointer-events: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+#narration:empty {
+  display: none;
+}
+
+/* Fold/unfold marker in the top right corner */
+#narration::after {
+  content: "▾";
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  opacity: 0.6;
+}
+
+#narration.collapsed {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#narration.collapsed::after {
+  content: "▴";
 }
 
 /* ---------- Start screen ---------- */
@@ -646,9 +682,9 @@ body.has-sword #scene[data-scene^="church"],
 #start {
   position: absolute;
   inset: 0;
-  display: grid;
-  place-items: center;
+  display: flex;
   padding: 16px;
+  overflow-y: auto;
   transition: opacity 0.4s ease;
 }
 
@@ -662,7 +698,7 @@ body.has-sword #scene[data-scene^="church"],
 }
 
 .start-bg {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
   filter: brightness(0.5) blur(2px);
@@ -676,6 +712,7 @@ body.has-sword #scene[data-scene^="church"],
 
 .start-panel {
   position: relative;
+  margin: auto; /* centred, but scrolls from the top when taller than the screen */
   width: min(440px, 100%);
   padding: 28px 28px 24px;
   text-align: center;
@@ -684,7 +721,7 @@ body.has-sword #scene[data-scene^="church"],
 
 #start-title {
   margin: 0 0 6px;
-  font-size: clamp(2rem, 7vw, 3rem);
+  font-size: clamp(1.7rem, 9vw, 3rem);
   font-weight: normal;
   letter-spacing: 0.06em;
   color: var(--accent);
@@ -752,6 +789,7 @@ body.has-sword #scene[data-scene^="church"],
 
 #start-players {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   max-height: 40vh;
   overflow-y: auto;
@@ -1059,12 +1097,72 @@ body.has-sword #scene[data-scene^="church"],
   }
 }
 
-@media (max-width: 600px) {
+/* Phones and other small screens, upright or on their side */
+@media (max-width: 760px), (max-height: 500px) {
+  #hud { gap: 6px; padding: 8px; padding-top: max(8px, env(safe-area-inset-top)); }
+  #hud .hud-right { gap: 6px; }
+  #hud .hud-box { padding: 6px 10px; }
   #location-name { font-size: 1rem; }
-  /* Icons only, so the HUD fits on narrow screens */
-  .inv-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  #narration { font-size: 0.95rem; }
-  #hero-btn { padding: 8px 10px; }
+  #player-name { font-size: 0.75rem; max-width: 9em; }
+  /* Icons only, and the ruby count without its label, so the HUD fits */
+  .inv-label,
+  .rubies-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  #inventory { gap: 8px; }
+  #rubies { gap: 6px; white-space: nowrap; }
+  #hero-btn { padding: 6px 10px; }
+  #narration { font-size: 0.95rem; line-height: 1.4; bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100% - 16px); }
+  .mg-panel { top: 64px; }
   .riddle-question { font-size: 1.3rem; }
   .riddle-choice { font-size: 1.1rem; }
+}
+
+/* Narrow (upright phones): the carried items get a row of their own under the rest */
+@media (max-width: 600px) {
+  #hud { flex-wrap: wrap; }
+  #hud .hud-right { display: contents; }
+  .hud-left { flex: 1 1 0; }
+  /* Line break before the items */
+  #hud::after { content: ""; flex-basis: 100%; height: 0; }
+  #inventory { order: 1; margin-left: auto; }
+  /* The item row would sit on the minigame panel */
+  #game:has(#minigame:not([hidden])) #inventory { display: none; }
+}
+
+/* Upright phones: the scenes and minigames are wide, so suggest turning the phone */
+.rotate-hint {
+  display: none;
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+  .rotate-hint {
+    display: block;
+    margin: 14px 0 0;
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
+  /* Just under the minigame picture, which is fitted to the screen width */
+  #minigame::after {
+    content: "↻ Vrid mobilen för större bild";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% + 28vw + 12px);
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+/* Low (phones on their side): smaller text so the scene isn't hidden */
+@media (max-height: 500px) {
+  #narration { font-size: 0.85rem; line-height: 1.35; padding-top: 5px; padding-bottom: 5px; width: min(640px, calc(100% - 16px)); }
+  .start-panel { padding: 16px 20px; }
+  #start-title { font-size: 1.8rem; }
+  .start-tagline { margin-bottom: 10px; }
+  .start-or { margin: 8px 0 10px; }
+  .mg-panel { top: 56px; gap: 2px; padding: 4px 10px; font-size: 0.85rem; }
+  .riddle-question { font-size: 1.1rem; margin: 0; }
+  .riddle-choice { font-size: 1rem; padding: 4px 8px; }
 }
