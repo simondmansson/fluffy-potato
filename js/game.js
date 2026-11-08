@@ -41,6 +41,8 @@ function updateHud() {
   const hasAxe = state.items.includes('axe');
   // The cursor turns into an axe once the player carries one.
   document.body.classList.toggle('has-axe', hasAxe);
+  // In the cave the cursor is the torch instead.
+  document.body.classList.toggle('has-torch', state.items.includes('torch'));
 }
 
 // Scenes may define enter(svg) to add interactive content after rendering.
@@ -117,6 +119,8 @@ function describeClickTarget(target) {
   if (el.closest('.mg-ruby-target')) return 'ruby';
   if (el.closest('.bobber')) return 'float';
   if (el.closest('.readable')) return 'note';
+  if (el.closest('.spider-target')) return 'spider';
+  if (el.closest('.riddle-choice')) return `answer ${el.closest('.riddle-choice').textContent}`;
   if (el.closest('.lake-cast, .mg-water')) return 'water';
   const cls = el.getAttribute('class');
   return cls ? `<${el.tagName.toLowerCase()} class="${cls}">` : `<${el.tagName.toLowerCase()}>`;
