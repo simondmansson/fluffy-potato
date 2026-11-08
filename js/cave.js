@@ -342,9 +342,13 @@ function startRiddles() {
           (state.name ? `Bra räknat, ${state.name}! ` : '') +
           'Du har vunnit grottans rubin!'
       );
-      caveNotice =
-        'Du lurade spindeln! Hon har klättrat upp i taket och surar, och grottans rubin är din.';
-      setTimeout(close, 2800);
+      // Done with the cave: the player walks back out to the village.
+      setTimeout(() => {
+        close('town');
+        setNarration(
+          'Du lurade spindeln och tog dig ut ur grottan med facklan högt. Nu är du tillbaka i byn med grottans rubin!'
+        );
+      }, 2800);
     } else {
       body.classList.add('angry');
       setNarration(`Fel igen – ${lastSum}! Spindeln fräser och klättrar upp i mörkret.`);
@@ -354,9 +358,9 @@ function startRiddles() {
     }
   }
 
-  function close() {
+  function close(sceneId = state.location) {
     sceneEl.inert = false;
-    render(state.location);
+    render(sceneId);
     overlay.classList.remove('open');
     setTimeout(() => {
       overlay.hidden = true;
