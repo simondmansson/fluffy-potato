@@ -762,3 +762,43 @@ function giantSpiderCloseUp() {
   <g class="mg-fx no-hit"></g>
 </svg>`;
 }
+
+// ---------- The village ----------
+
+// The lumberjack, facing right, feet at (0, 0), about 175 units tall.
+// Legs and the waving arm are inner <g>s so CSS can swing them.
+function lumberjack() {
+  const pants = '#3b4a6a';
+  const shirt = '#b8322e';
+  const check = '#5a1614';
+  const skin = '#e6b48c';
+  const beard = '#7a4a26';
+  const leg = (x, cls) => `
+    <g transform="translate(${x} -78)"><g class="${cls}">
+      <rect x="-9" y="0" width="18" height="66" rx="6" fill="${pants}"/>
+      <path d="M-11,62 L12,62 Q22,62 22,72 L22,78 L-11,78 Z" fill="#2a1d14"/>
+    </g></g>`;
+  return `
+    <ellipse cx="0" cy="2" rx="40" ry="7" fill="rgba(0,0,0,0.3)"/>
+    ${leg(-10, 'lj-leg back')}
+    <g transform="translate(-16 -146)"><g class="lj-arm back">
+      <rect x="-8" y="0" width="16" height="58" rx="7" fill="${check}"/>
+    </g></g>
+    <path d="M-34,-150 Q0,-164 34,-150 L30,-76 L-30,-76 Z" fill="${shirt}"/>
+    <path d="M-30,-130 L30,-130 M-31,-106 L31,-106 M-14,-156 L-12,-76 M12,-156 L12,-76" stroke="${check}" stroke-width="5"/>
+    <rect x="-32" y="-84" width="64" height="10" fill="#3a2a1c"/>
+    <rect x="-6" y="-84" width="12" height="10" fill="#c9a46a"/>
+    ${leg(10, 'lj-leg')}
+    <rect x="-8" y="-164" width="16" height="12" fill="${skin}"/>
+    <circle cx="2" cy="-180" r="20" fill="${skin}"/>
+    <path d="M-14,-176 Q-16,-148 4,-144 Q26,-146 22,-176 Q12,-166 2,-168 Q-6,-166 -14,-176 Z" fill="${beard}"/>
+    <circle cx="10" cy="-184" r="2.6" fill="#1a1208"/>
+    <path d="M4,-192 l10,-2" stroke="${beard}" stroke-width="3" stroke-linecap="round"/>
+    <path d="M-20,-188 Q-20,-212 2,-212 Q24,-212 22,-188 Z" fill="#c9302c"/>
+    <rect x="-22" y="-192" width="46" height="8" rx="3" fill="#8e1e1c"/>
+    <circle cx="0" cy="-214" r="6" fill="#efe6d0"/>
+    <g transform="translate(18 -146)"><g class="lj-arm wave">
+      <rect x="-8" y="0" width="16" height="58" rx="7" fill="${shirt}"/>
+      <circle cx="0" cy="60" r="9" fill="${skin}"/>
+    </g></g>`;
+}
