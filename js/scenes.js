@@ -127,7 +127,15 @@ SCENES.town = {
   <!-- Village -->
   ${house(160, 885, 150, 100, '#c9b48f', '#7a3b2e', { chimney: true })}
 
-  ${house(870, 790, 120, 85, '#d8c7a3', '#5d3a2a', { chimney: true })}
+  <!-- The smithy (exit) -->
+  <g class="exit" data-goto="forge" tabindex="0" role="button" aria-label="Gå in i smedjan">
+    <rect x="850" y="600" width="162" height="195" fill="transparent"/>
+    ${smithy(862, 792)}
+    <g class="exit-label">
+      <rect x="840" y="560" width="200" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="940" y="587" font-size="22" text-anchor="middle" fill="#f3ecd8">Gå till smedjan</text>
+    </g>
+  </g>
 
   <!-- Church: the wizard lives here. Closed (note on the door) until he is back, see church.js -->
   <g class="exit church-door" tabindex="0" role="button" aria-label="Läs lappen på kyrkdörren">
@@ -1076,6 +1084,118 @@ SCENES['church-crypt'] = {
   </g>
 
   <!-- The sword is added here by church.js -->
+  <g class="actors"></g>
+</svg>`,
+};
+
+SCENES.forge = {
+  name: 'Smedjan',
+  narration:
+    'Det är varmt och dånar i smedjan. Kolen i ässjan glöder, gnistor yr, och vid städet står smeden med sin stora hammare.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Smedjan i byn">
+  <defs>
+    <linearGradient id="forge-wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1e1412"/>
+      <stop offset="0.75" stop-color="#4a3428"/>
+      <stop offset="1" stop-color="#3a2820"/>
+    </linearGradient>
+    <linearGradient id="forge-floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4a3a30"/>
+      <stop offset="1" stop-color="#1a120e"/>
+    </linearGradient>
+    <radialGradient id="forge-fire" cx="0.5" cy="0.8" r="0.7">
+      <stop offset="0" stop-color="#ffe9a0"/>
+      <stop offset="0.35" stop-color="#ff8a2a"/>
+      <stop offset="1" stop-color="#ff5a1a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="forge-light" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ff9a3a" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ff9a3a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="forge-daylight" cx="0.5" cy="0.6" r="0.7">
+      <stop offset="0" stop-color="#d8d4ec"/>
+      <stop offset="1" stop-color="#7a74a0"/>
+    </radialGradient>
+  </defs>
+
+  <rect x="-800" width="3200" height="900" fill="url(#forge-wall)"/>
+  <!-- Plank wall and roof beams -->
+  <g stroke="#1a100c" stroke-width="4" opacity="0.6">
+    <path d="M-800,180 L2400,180 M-800,330 L2400,330 M-800,480 L2400,480 M-800,620 L2400,620"/>
+  </g>
+  <g fill="#2a1a12">
+    <rect x="-800" y="60" width="3200" height="34"/>
+    <rect x="590" y="94" width="30" height="606"/>
+    <rect x="1180" y="94" width="30" height="606"/>
+  </g>
+
+  <!-- Firelight on the walls -->
+  <ellipse class="forge-glow no-hit" cx="380" cy="520" rx="520" ry="380" fill="url(#forge-light)"/>
+
+  <!-- Tools on the wall -->
+  <g stroke="#14100e" stroke-width="10" stroke-linecap="round" fill="none">
+    <path d="M760,210 L760,380 M830,210 L840,370 M900,210 L890,350 M970,210 L970,360"/>
+  </g>
+  <g fill="#14100e">
+    <rect x="732" y="370" width="56" height="28" rx="4"/>
+    <rect x="950" y="350" width="40" height="36" rx="4"/>
+  </g>
+  <path d="M820,370 Q840,400 860,370 M880,350 Q890,380 900,350" stroke="#14100e" stroke-width="8" fill="none"/>
+  <rect x="740" y="200" width="250" height="14" rx="4" fill="#5a3a22"/>
+
+  <!-- Floor -->
+  <rect x="-800" y="700" width="3200" height="200" fill="url(#forge-floor)"/>
+  <path d="M-800,700 L2400,700" stroke="#1a100c" stroke-width="6"/>
+
+  <!-- The forge hearth with its hood -->
+  <path d="M170,700 L170,520 L560,520 L560,700 Z" fill="#5a4440"/>
+  <g fill="none" stroke="#3a2a28" stroke-width="3">
+    <path d="M170,560 L560,560 M170,600 L560,600 M170,640 L560,640 M170,680 L560,680"/>
+    <path d="M240,520 L240,560 M340,560 L340,600 M440,520 L440,560 M290,600 L290,640 M490,600 L490,640 M380,640 L380,680"/>
+  </g>
+  <path d="M140,520 L590,520 L520,250 L210,250 Z" fill="#3a2c2c"/>
+  <rect x="300" y="-10" width="130" height="262" fill="#3a2c2c"/>
+  <rect x="140" y="510" width="450" height="16" fill="#2a1e1e"/>
+  <path d="M210,520 L520,520 L500,470 L230,470 Z" fill="#1a0e0c"/>
+  <ellipse class="forge-glow" cx="365" cy="500" rx="150" ry="60" fill="url(#forge-fire)"/>
+  <g fill="#ffc94a">
+    <circle cx="300" cy="506" r="7"/><circle cx="350" cy="512" r="6"/><circle cx="410" cy="504" r="8"/>
+    <circle cx="450" cy="512" r="5"/><circle cx="270" cy="514" r="5"/>
+  </g>
+  <g class="forge-sparks" fill="#ffd977">
+    <circle cx="330" cy="460" r="3"/><circle cx="380" cy="450" r="2.5"/><circle cx="410" cy="470" r="2"/>
+  </g>
+  <!-- Bellows -->
+  <g transform="translate(600 610)">
+    <path d="M0,-40 L110,-20 L110,20 L0,40 Q-20,0 0,-40 Z" fill="#6b4426"/>
+    <path d="M10,-30 L100,-14 M10,30 L100,14" stroke="#4e3018" stroke-width="4"/>
+    <rect x="-40" y="-6" width="44" height="12" fill="#3a3e46"/>
+    <rect x="110" y="-6" width="60" height="12" rx="5" fill="#5a3a22"/>
+  </g>
+
+  <!-- Water barrel -->
+  <g transform="translate(700 790)">
+    <path d="M-50,0 L-56,-110 L56,-110 L50,0 Z" fill="#6b4426"/>
+    <path d="M-54,-90 L54,-90 M-52,-24 L52,-24" stroke="#3a3e46" stroke-width="8"/>
+    <ellipse cx="0" cy="-110" rx="56" ry="12" fill="#2a3a4a"/>
+  </g>
+
+  ${anvil(920, 800, 1.25)}
+
+  <!-- The door, out to the village (exit) -->
+  <g class="exit" data-goto="town" tabindex="0" role="button" aria-label="Gå ut till byn">
+    <path d="M1270,710 L1270,420 Q1270,340 1370,340 Q1470,340 1470,420 L1470,710 Z" fill="#2a1a12"/>
+    <path d="M1290,710 L1290,428 Q1290,360 1370,360 Q1450,360 1450,428 L1450,710 Z" fill="url(#forge-daylight)"/>
+    <path d="M1450,710 L1450,428 L1490,410 L1490,740 Z" fill="#4a2f1c"/>
+    <path d="M1290,700 L1450,700 L1470,720 L1270,720 Z" fill="#3a2a22"/>
+    <g class="exit-label">
+      <rect x="1250" y="290" width="240" height="40" rx="6" fill="rgba(14,16,32,0.85)" stroke="#e0b44a"/>
+      <text x="1370" y="317" font-size="22" text-anchor="middle" fill="#f3ecd8">Ut till byn</text>
+    </g>
+  </g>
+
+  <!-- The smith is added here by forge.js -->
   <g class="actors"></g>
 </svg>`,
 };

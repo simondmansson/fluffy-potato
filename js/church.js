@@ -322,7 +322,7 @@ function startDuel() {
       );
       churchNotice =
         '»Nåja«, suckar trollkarlen, »då åker jag på semester igen.« Han tar sin resväska och försvinner i ett lila moln. ' +
-        'Nu har du alla fyra rubinerna! De glöder varmt – med dem kan du smida rustning och vapen som står emot åskdraken på toppen av Mount Thunder.';
+        'Nu har du alla fyra rubinerna! De glöder varmt – gå till smedjan, där kan smeden smida dem till rustning och ett spjut som står emot åskdraken på toppen av Mount Thunder.';
       setTimeout(() => close('town'), 2800);
     } else {
       restartAnimation(spell, 'cast');
