@@ -13,7 +13,7 @@ Spelet börjar med en startskärm där spelaren namnger sin hjälte. Namnet visa
 
 Uppe till höger finns menyn »Byt hjälte«. Där väljer man en annan sparad hjälte och fortsätter direkt där den var, eller väljer »Ny hjälte« för att skapa en till. Mitt i en strid (ett minispel) går det inte att byta hjälte.
 
-Spelaren börjar i byn vid Mount Thunders fot. När ett nytt spel startar kommer en skogshuggare springande från skogen och berättar att varulven har tagit hans yxa och sprungit in i skogen med den. Skogshuggaren stannar sedan kvar i byn, och klickar man på honom säger han något om hur det går med yxan och varulven. Från byn ger spelaren sig ut till 4a platser för att samla rubiner, dessa är skogen, sjön, byn, grottan i berget. På varje plats ska spelare besegra ett monster för att få en rubin.
+Spelaren börjar i byn vid Mount Thunders fot. När ett nytt spel startar kommer en skogshuggare springande från skogen och berättar att varulven har tagit hans yxa och sprungit in i skogen med den. Skogshuggaren stannar sedan kvar i byn, och klickar man på honom säger han något om hur det går med yxan och varulven. Från byn ger spelaren sig ut till 4a platser för att samla rubiner, dessa är skogen, sjön, byn, grottan i berget. På varje plats ska spelare besegra ett monster för att få en rubin. Med alla fyra rubinerna går spelaren till smedjan i byn, där de smids om till rustning och ett spjut. Sedan går stigen upp till bergets topp, där den sista striden mot åskdraken sker en natt.
 
 ### Skogen
 Skogen är en tät blandskog med en tjock dimma. I skogen springer varulven runt med rubinen på bröstet. I skogen måste spelaren hitta skogshuggarens yxa, som varulven har lämnat fastkilad i en stubbe, sedan måste de fånga varulvens svans och slå av rubinen på bröstet för att stoppa den.
@@ -69,6 +69,35 @@ Byn har två platser till: Kyrkan och Kryptan (under kyrkan).
 - Med svärdet börjar ett minispel: trollkarlen svänger staven fram och tillbaka. Spelaren ska träffa rubinen tre gånger innan modet tar slut. Ibland lyser rubinen upp och en magisk sköld sluter sig runt den en stund. Slår man på skölden studsar svärdet. Missar och slag på skölden kostar mod, och varje träff gör att trollkarlen svänger snabbare och skölden kommer oftare. Efter varje slag tar det en liten stund innan svärdet kan svingas igen.
 - Tar modet slut trollar trollkarlen ut spelaren ur kyrkan till byn, och spelaren kan gå in och försöka igen.
 - När rubinen slås loss har spelaren byns rubin och alla fyra rubinerna. Trollkarlen åker på semester igen, och spelaren hamnar i byn. På kyrkdörren sitter då en ny semesterlapp.
+
+## Smedjan
+
+Smedjan ligger i byn. Där förvandlar smeden rubinerna till rustning och ett spjut som kan stå emot kraften från drakens smaragder.
+
+- Har spelaren färre än fyra rubiner säger smeden: »Kom tillbaka när du har alla fyra rubinerna.«
+- Med alla fyra börjar ett minispel: smeden lägger en rubin i ässjan och spelaren slår med hammaren på städet. Rubinen glöder upp och slocknar om och om igen, och spelaren ska slå när den glöder som starkast. Slår man fel svalnar rubinen och får värmas igen.
+- En rubin i taget blir hjälm, bröstplåt, sköld och till sist spjutet.
+- När allt är smitt har spelaren rustningen och spjutet, och stigen upp till bergets topp öppnas från byn.
+
+## Bergstoppen
+
+Åskdraken bor på Mount Thunders topp. Den sista striden sker på natten. Det är mörkt, och draken syns knappt. Det enda man ser är de fyra stulna smaragderna som skimrar på hans rygg. Ibland blixtrar det, och då syns hela draken en kort stund.
+
+- Spelaren ska stöta spjutet i smaragderna, en i taget, och slå loss alla fyra. När spelaren har spjutet blir muspekaren ett spjut.
+- Rustningen är spelarens liv. Varje gång draken träffar spricker en del av rustningen (hjälm, bröstplåt, sköld). Spricker alla tre har spelaren förlorat.
+- Draken har flera attacker. Fler läggs till senare.
+
+### Ringelattacken
+
+- Draken ringlar fram i S-kurvor mot spelaren och blir större för varje sväng. I mörkret syns bara smaragderna, så spelaren får följa dem för att se vägen han tar.
+- Precis innan anfallet lyser en blixt upp drakens huvud och visar vilken sida han kommer från. Spelaren väjer genom att klicka på andra sidan. Klickar man för tidigt svänger draken efter, och klickar man för sent blir man träffad.
+- Väjer spelaren rätt glider drakens rygg förbi tätt intill, och en kort stund kan spjutet stötas i en smaragd.
+- Med varje smaragd som lossnar ringlar draken snabbare, och blixten kommer senare.
+
+### Förlust och seger
+
+- Förlorar spelaren blåser draken ner hen till byn. Smeden lagar rustningen, och spelaren kan gå upp och försöka igen.
+- När den sista smaragden lossnar är draken besegrad. Spelaren kommer ner till byn med smaragderna, och det blir fest.
 
 ## Mobil
 
