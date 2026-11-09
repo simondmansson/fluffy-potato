@@ -85,6 +85,10 @@ body {
   background: linear-gradient(#2a2232 0%, #5e5464 66%, #6b6058 66%, #2a221c 100%);
 }
 
+#scene[data-scene="forge"] {
+  background: linear-gradient(#1e1412 0%, #4a3428 78%, #4a3a30 78%, #1a120e 100%);
+}
+
 #scene[data-scene="church-crypt"] {
   background: linear-gradient(#14121a 0%, #3e3a46 71%, #3e3a42 71%, #121014 100%);
 }
@@ -280,6 +284,37 @@ body.has-sword #scene[data-scene^="church"],
 .mg-wizard-body.defeated .mg-eyes { opacity: 0.3; transition: opacity 1.2s ease; }
 .mg-wizard-body.zap { animation: snarl 0.4s ease-out 2; }
 
+/* ---------- The forge ---------- */
+
+.forge-glow { animation: forge-flicker 1.4s ease-in-out infinite alternate; }
+.forge-sparks circle { animation: forge-spark 1.6s ease-out infinite; }
+.forge-sparks circle:nth-child(2) { animation-delay: 0.55s; }
+.forge-sparks circle:nth-child(3) { animation-delay: 1.1s; }
+
+/* In the forging minigame the cursor is a hammer (hotspot on the face) */
+#minigame.forge {
+  background: radial-gradient(ellipse at 40% 55%, #6a3418 0%, #2a1610 55%, #0e0806 100%);
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='12' y1='12' x2='29' y2='29' stroke='%238a6a42' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='1' y='7' width='18' height='9' rx='2' fill='%234a4e58' transform='rotate(45 10 11.5)'/%3E%3C/svg%3E") 4 4, pointer;
+}
+
+.mg-fire { animation: forge-flicker 0.9s ease-in-out infinite alternate; }
+.mg-hammer { transform: rotate(55deg); }
+.mg-hammer.strike { animation: hammer-strike 0.4s ease-in; }
+.mg-work.struck { animation: shake 0.06s linear 4 alternate; }
+
+/* The glow bar: the mark shows how hot the ruby must glow to be struck */
+.mg-glow-bar { position: relative; }
+.mg-glow-bar .mg-fill { width: 0; background: linear-gradient(90deg, #6a1a14, #d8283f); }
+.mg-glow-bar .mg-fill.hot { background: linear-gradient(90deg, #d8283f, #ffd977); }
+.mg-zone {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: #fff6d0;
+  box-shadow: 0 0 6px #ffd977;
+}
+
 .mg-panel.riddle-panel {
   pointer-events: auto;
   min-width: min(440px, calc(100% - 32px));
@@ -438,7 +473,8 @@ body.has-sword #scene[data-scene^="church"],
 .mg-spark { animation: spark 0.5s ease-out forwards; }
 .mg-miss { animation: float-up 0.7s ease-out forwards; }
 
-#rubies.gain { animation: gain 0.6s ease-in-out 3; }
+#rubies.gain,
+#inventory.gain { animation: gain 0.6s ease-in-out 3; }
 
 .exit .exit-label {
   opacity: 0;
@@ -1045,6 +1081,23 @@ body.has-sword #scene[data-scene^="church"],
 @keyframes lj-wave {
   from { transform: rotate(-150deg); }
   to { transform: rotate(-110deg); }
+}
+
+@keyframes forge-flicker {
+  from { opacity: 0.75; }
+  to { opacity: 1; }
+}
+
+@keyframes forge-spark {
+  from { transform: translate(0, 0); opacity: 1; }
+  to { transform: translate(6px, -60px); opacity: 0; }
+}
+
+@keyframes hammer-strike {
+  0% { transform: rotate(55deg); }
+  45% { transform: rotate(0deg); }
+  60% { transform: rotate(4deg); }
+  100% { transform: rotate(55deg); }
 }
 
 @keyframes wiz-sway {

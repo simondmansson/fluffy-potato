@@ -127,6 +127,8 @@ function describeClickTarget(target) {
   if (el.closest('.readable')) return 'note';
   if (el.closest('.spider-target')) return 'spider';
   if (el.closest('.wizard-target')) return 'wizard';
+  if (el.closest('.smith-target')) return 'smith';
+  if (el.closest('.mg-anvil-target')) return 'anvil';
   if (el.closest('.church-door')) return 'church door';
   if (el.closest('.npc')) return 'lumberjack';
   if (el.closest('.riddle-choice')) return `answer ${el.closest('.riddle-choice').textContent}`;
@@ -182,6 +184,7 @@ function useState(next) {
   lakeNotice = '';
   caveNotice = '';
   churchNotice = '';
+  forgeNotice = '';
   nestFreed = false;
   lumberjackIntro = false;
 }

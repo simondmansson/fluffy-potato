@@ -1056,3 +1056,197 @@ function wizardCloseUp() {
   <g class="mg-fx no-hit"></g>
 </svg>`;
 }
+
+// ---------- The forge ----------
+
+// The smithy in the village: a stone house with a wide open front where the forge glows.
+// (x, groundY) is the bottom-left corner, about 150 wide.
+function smithy(x, groundY) {
+  return `
+    <g transform="translate(${x} ${groundY})">
+      <rect x="104" y="-170" width="22" height="70" fill="#4a4048"/>
+      <rect x="100" y="-176" width="30" height="10" fill="#3a3038"/>
+      <g class="forge-sparks" fill="#ffc94a">
+        <circle cx="112" cy="-182" r="2.5"/><circle cx="120" cy="-186" r="2"/><circle cx="106" cy="-190" r="1.8"/>
+      </g>
+      ${smoke(115, -184)}
+      <rect x="0" y="-92" width="150" height="92" fill="#7a7078"/>
+      <g fill="#8a8088" stroke="#5a5058" stroke-width="2">
+        <rect x="4" y="-86" width="30" height="16"/><rect x="40" y="-86" width="34" height="16"/>
+        <rect x="80" y="-86" width="30" height="16"/><rect x="116" y="-86" width="30" height="16"/>
+        <rect x="4" y="-30" width="22" height="16"/><rect x="124" y="-30" width="22" height="16"/>
+      </g>
+      <polygon points="-14,-92 75,-150 164,-92" fill="#3e3236"/>
+      <rect x="-14" y="-96" width="178" height="8" fill="#2c2226"/>
+      <path d="M34,0 L34,-56 Q75,-82 116,-56 L116,0 Z" fill="#1a1012"/>
+      <path class="forge-glow" d="M34,0 L34,-56 Q75,-82 116,-56 L116,0 Z" fill="#ff8a2a" opacity="0.55"/>
+      <rect x="44" y="-30" width="34" height="18" fill="#3a2a22"/>
+      <ellipse class="forge-glow" cx="61" cy="-32" rx="16" ry="5" fill="#ffc94a"/>
+      <g transform="translate(94 0)">
+        <rect x="-6" y="-16" width="12" height="16" fill="#4a3322"/>
+        <path d="M-16,-26 L18,-26 L14,-18 L6,-16 L-6,-16 L-12,-20 L-22,-22 Z" fill="#3a3e44"/>
+      </g>
+      <g transform="translate(-6 -64)">
+        <rect x="0" y="0" width="68" height="28" rx="4" fill="#c9a46a" stroke="#5b3d22" stroke-width="3"/>
+        <text class="sign-text" x="34" y="20" font-size="15" text-anchor="middle">Smedjan</text>
+      </g>
+    </g>`;
+}
+
+// Anvil on a wooden block. (x, y) is the foot of the block; s scales it.
+function anvil(x, y, s = 1) {
+  return `
+    <g transform="translate(${x} ${y}) scale(${s})">
+      <ellipse cx="0" cy="4" rx="90" ry="12" fill="rgba(0,0,0,0.35)"/>
+      <rect x="-50" y="-70" width="100" height="70" fill="#5a3a22"/>
+      <path d="M-50,-50 L50,-50 M-50,-24 L50,-24" stroke="#46301c" stroke-width="3"/>
+      <path d="M-40,-70 L40,-70 L30,-96 L-30,-96 Z" fill="#2e3238"/>
+      <path d="M-28,-96 L28,-96 L36,-118 L-36,-118 Z" fill="#3a3e46"/>
+      <path d="M-70,-130 L80,-130 Q120,-130 130,-118 L-60,-118 Q-70,-122 -70,-130 Z" fill="#3a3e46"/>
+      <rect x="-70" y="-140" width="150" height="12" rx="3" fill="#565c66"/>
+      <path d="M80,-140 Q118,-138 136,-122 L130,-118 Q114,-128 80,-128 Z" fill="#565c66"/>
+    </g>`;
+}
+
+// The smith, facing left: leather apron, rolled-up sleeves, a big hammer resting on
+// his shoulder. Feet at (0, 0), about 240 units tall.
+function smith() {
+  const skin = '#d9a07a';
+  const shirt = '#7a8a9a';
+  const apron = '#6b4426';
+  const beard = '#2a1a12';
+  return `
+    <ellipse cx="0" cy="2" rx="56" ry="9" fill="rgba(0,0,0,0.3)"/>
+    <rect x="-30" y="-92" width="24" height="88" rx="8" fill="#3a3030"/>
+    <rect x="6" y="-92" width="24" height="88" rx="8" fill="#3a3030"/>
+    <path d="M-36,-8 L-4,-8 L-4,4 L-44,4 Q-44,-8 -36,-8 Z" fill="#1e1612"/>
+    <path d="M4,-8 L36,-8 Q44,-8 44,4 L4,4 Z" fill="#1e1612"/>
+    <path d="M-48,-196 Q0,-214 48,-196 L44,-86 L-44,-86 Z" fill="${shirt}"/>
+    <path d="M-34,-180 L34,-180 L40,-50 L-40,-50 Z" fill="${apron}"/>
+    <path d="M-34,-180 L-44,-200 M34,-180 L44,-200" stroke="${apron}" stroke-width="6"/>
+    <rect x="-12" y="-130" width="24" height="18" rx="3" fill="#4e3018"/>
+    <g transform="translate(46 -190)">
+      <rect x="-12" y="0" width="24" height="44" rx="10" fill="${shirt}"/>
+      <rect x="-11" y="38" width="22" height="50" rx="10" fill="${skin}"/>
+      <circle cx="0" cy="92" r="13" fill="${skin}"/>
+    </g>
+    <g transform="translate(-46 -190)">
+      <rect x="-12" y="0" width="24" height="40" rx="10" fill="${shirt}"/>
+      <path d="M-11,34 L11,34 L-10,-14 L-30,-6 Z" fill="${skin}"/>
+      <circle cx="-22" cy="-14" r="13" fill="${skin}"/>
+      <rect x="-28" y="-60" width="10" height="110" rx="4" fill="#6b4a2a" transform="rotate(28 -22 -14)"/>
+      <rect x="-48" y="-82" width="54" height="30" rx="4" fill="#3a3e46" transform="rotate(28 -22 -14)"/>
+    </g>
+    <rect x="-10" y="-218" width="20" height="16" fill="${skin}"/>
+    <circle cx="0" cy="-236" r="25" fill="${skin}"/>
+    <path d="M-24,-234 Q-26,-192 0,-186 Q26,-192 24,-234 Q12,-220 0,-222 Q-12,-220 -24,-234 Z" fill="${beard}"/>
+    <path d="M-26,-240 Q-24,-266 0,-266 Q24,-266 26,-240 Q14,-254 0,-254 Q-14,-254 -26,-240 Z" fill="${beard}"/>
+    <circle cx="-10" cy="-240" r="3" fill="#1a1208"/>
+    <circle cx="8" cy="-240" r="3" fill="#1a1208"/>
+    <path d="M-18,-248 l12,2 M16,-248 l-12,2" stroke="${beard}" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="-2" cy="-230" rx="5" ry="7" fill="#c08060"/>`;
+}
+
+// What each ruby is forged into, drawn on the anvil in the close-up, centred on (0, 0).
+const FORGED_SHAPES = {
+  helmet: `
+    <path d="M-80,30 Q-84,-70 0,-76 Q84,-70 80,30 L56,30 L56,-6 L-56,-6 L-56,30 Z" fill="#c8283c"/>
+    <path d="M-8,-6 L8,-6 L6,40 L-6,40 Z" fill="#c8283c"/>
+    <path d="M-60,-40 Q-40,-66 0,-68" fill="none" stroke="#ff8a9a" stroke-width="8" stroke-linecap="round"/>
+    <path d="M0,-76 L0,-6" stroke="#8e1426" stroke-width="6"/>`,
+  breastplate: `
+    <path d="M-80,-60 Q-40,-76 0,-62 Q40,-76 80,-60 L72,30 Q40,62 0,66 Q-40,62 -72,30 Z" fill="#c8283c"/>
+    <path d="M0,-62 L0,66" stroke="#8e1426" stroke-width="6"/>
+    <path d="M-60,-40 Q-50,0 -36,30" fill="none" stroke="#ff8a9a" stroke-width="8" stroke-linecap="round"/>
+    <path d="M-80,-60 Q-90,-40 -96,-30 M80,-60 Q90,-40 96,-30" stroke="#8e1426" stroke-width="10" stroke-linecap="round"/>`,
+  shield: `
+    <path d="M-76,-70 L76,-70 L76,0 Q76,56 0,84 Q-76,56 -76,0 Z" fill="#c8283c" stroke="#8e1426" stroke-width="6"/>
+    <path d="M0,-60 L0,74 M-66,-12 L66,-12" stroke="#e0b44a" stroke-width="10"/>
+    <path d="M-60,-54 L-60,0" stroke="#ff8a9a" stroke-width="8" stroke-linecap="round"/>`,
+  spear: `
+    <rect x="-150" y="-6" width="200" height="12" rx="5" fill="#8a6a42"/>
+    <polygon points="50,-22 150,0 50,22 66,0" fill="#c8283c" stroke="#8e1426" stroke-width="4"/>
+    <path d="M70,-6 L130,0" stroke="#ff8a9a" stroke-width="5" stroke-linecap="round"/>
+    <rect x="40" y="-12" width="14" height="24" rx="3" fill="#e0b44a"/>`,
+};
+
+// The anvil close up for the forging minigame. The ruby (.mg-lump) lies on the anvil and
+// shrinks while the forged piece (.mg-shape[data-shape]) grows out of it. forge.js sets
+// the opacity of .mg-heat to how hot it glows. The hammer (.mg-hammer) swings down
+// on every strike.
+function forgeCloseUp() {
+  const shapes = Object.keys(FORGED_SHAPES)
+    .map((id) => `<g class="mg-shape" data-shape="${id}" opacity="0">${FORGED_SHAPES[id]}</g>`)
+    .join('');
+  return `
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Städet i smedjan på nära håll">
+  <defs>
+    <radialGradient id="mgf-bg" cx="0.3" cy="0.55" r="0.8">
+      <stop offset="0" stop-color="#6a3418"/>
+      <stop offset="0.5" stop-color="#2a1610"/>
+      <stop offset="1" stop-color="#0e0806"/>
+    </radialGradient>
+    <radialGradient id="mgf-fire" cx="0.5" cy="0.7" r="0.6">
+      <stop offset="0" stop-color="#ffe9a0"/>
+      <stop offset="0.4" stop-color="#ff8a2a"/>
+      <stop offset="1" stop-color="#ff8a2a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="mgf-heat">
+      <stop offset="0" stop-color="#fff6d0" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#ffc94a" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#ff6a1a" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="mgf-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g class="no-hit">
+    <rect x="-800" width="3200" height="900" fill="url(#mgf-bg)"/>
+    <!-- The forge hearth in the background -->
+    <path d="M140,900 L140,520 L460,520 L460,900 Z" fill="#3a2c28"/>
+    <path d="M110,520 L490,520 L430,240 L170,240 Z" fill="#2a2024"/>
+    <rect x="170" y="560" width="260" height="90" fill="#1a1010"/>
+    <ellipse class="mg-fire" cx="300" cy="610" rx="150" ry="70" fill="url(#mgf-fire)"/>
+    <g class="mg-embers" fill="#ffc94a">
+      <circle cx="250" cy="560" r="4"/><circle cx="310" cy="540" r="3"/><circle cx="350" cy="570" r="3.5"/>
+    </g>
+    <!-- Tools on the wall -->
+    <g stroke="#1e1416" stroke-width="10" stroke-linecap="round" fill="none">
+      <path d="M1200,160 L1200,360 M1280,160 L1290,350 M1360,160 L1350,330"/>
+    </g>
+    <rect x="1170" y="350" width="60" height="30" rx="4" fill="#1e1416"/>
+    <path d="M1270,350 Q1290,380 1310,350" stroke="#1e1416" stroke-width="8" fill="none"/>
+    <rect x="-800" y="800" width="3200" height="100" fill="#1a100c"/>
+  </g>
+
+  <g transform="translate(860 840)">${anvil(0, 0, 2.6)}</g>
+
+  <!-- The work on the anvil face -->
+  <g transform="translate(860 446)">
+    <ellipse class="mg-heat no-hit" cx="0" cy="0" rx="230" ry="150" fill="url(#mgf-heat)" opacity="0"/>
+    <g class="mg-work">
+      <g class="mg-lump">
+        <g filter="url(#mgf-glow)"><polygon points="0,-46 52,-8 30,40 -34,42 -54,-6" fill="#d8283f"/></g>
+        <polygon points="0,-46 52,-8 0,-4" fill="#ff7084"/>
+        <polygon points="0,-4 30,40 -34,42" fill="#8e1426"/>
+      </g>
+      ${shapes}
+    </g>
+    <circle class="mg-anvil-target" r="200" fill="transparent"/>
+  </g>
+
+  <!-- The hammer. Its grip is the origin, and at rotation 0 the head lands on the work.
+       CSS raises it (.mg-hammer) and swings it down (.strike). -->
+  <g class="no-hit" transform="translate(1160 506) rotate(11.3)">
+    <g class="mg-hammer">
+      <rect x="-300" y="-67" width="320" height="24" rx="10" fill="#8a6a42"/>
+      <rect x="-300" y="-67" width="320" height="7" rx="3" fill="#a88a5a"/>
+      <rect x="-340" y="-118" width="80" height="118" rx="8" fill="#4a4e58"/>
+      <rect x="-340" y="-118" width="18" height="118" rx="6" fill="#6a707c"/>
+    </g>
+  </g>
+
+  <g class="mg-fx no-hit"></g>
+</svg>`;
+}
