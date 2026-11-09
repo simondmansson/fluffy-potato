@@ -84,7 +84,7 @@ Smedjan ligger i byn. Där förvandlar smeden rubinerna till rustning och ett sp
 Åskdraken bor på Mount Thunders topp. Den sista striden sker på natten. Det är mörkt, och draken syns knappt. Det enda man ser är de fyra stulna smaragderna som skimrar på hans rygg. Ibland blixtrar det, och då syns hela draken en kort stund.
 
 - Spelaren ska stöta spjutet i smaragderna, en i taget, och slå loss alla fyra. När spelaren har spjutet blir muspekaren ett spjut.
-- Rustningen är spelarens liv. Varje gång draken träffar spricker en del av rustningen (hjälm, bröstplåt, sköld). Spricker alla tre har spelaren förlorat.
+- Rustningen ger spelaren 5 liv. Varje gång draken träffar förlorar spelaren liv, och tar alla liv slut har spelaren förlorat.
 - Draken har flera attacker. Fler läggs till senare.
 
 ### Ringelattacken
@@ -93,6 +93,15 @@ Smedjan ligger i byn. Där förvandlar smeden rubinerna till rustning och ett sp
 - Precis innan anfallet lyser en blixt upp drakens huvud och visar vilken sida han kommer från. Spelaren väjer genom att klicka på andra sidan. Klickar man för tidigt svänger draken efter, och klickar man för sent blir man träffad.
 - Väjer spelaren rätt glider drakens rygg förbi tätt intill, och en kort stund kan spjutet stötas i en smaragd.
 - Med varje smaragd som lossnar ringlar draken snabbare, och blixten kommer senare.
+
+### Legendary Thunder
+
+Drakens starkaste attack. Den kommer sällan, men när den kommer är den farlig.
+
+- Himlen blir kolsvart, smaragderna lyser starkt och åskan mullrar. Draken reser sig, och ett klot av blixtar växer mellan hans horn. Texten ropar »LEGENDARY THUNDER!«.
+- En sköldknapp, »Rubinskölden«, dyker upp. Spelaren klickar på den för att lyfta rubinskölden precis innan den jättestora blixten slår ner. Skölden är bara uppe en kort stund: klickar man för tidigt har den sjunkit igen när blixten kommer, och klickar man för sent hinner den inte upp.
+- Träffar blixten förlorar spelaren 2 av sina 5 liv.
+- Tar skölden emot blixten studsar den tillbaka mot draken. Han blir bedövad en stund och en smaragd lyser upp, så att spelaren kan stöta spjutet i den.
 
 ### Förlust och seger
 
