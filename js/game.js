@@ -49,6 +49,7 @@ function updateHud() {
   // In the cave the cursor is the torch instead, and in the church the magic sword.
   document.body.classList.toggle('has-torch', state.items.includes('torch'));
   document.body.classList.toggle('has-sword', state.items.includes('sword'));
+  document.body.classList.toggle('has-spear', state.items.includes('spear'));
 }
 
 // Scenes may define enter(svg) to add interactive content after rendering.
@@ -128,6 +129,10 @@ function describeClickTarget(target) {
   if (el.closest('.spider-target')) return 'spider';
   if (el.closest('.wizard-target')) return 'wizard';
   if (el.closest('.smith-target')) return 'smith';
+  if (el.closest('.zombie-target')) return 'zombie';
+  if (el.closest('.mg-zombie-target')) return 'zombie (fight)';
+  if (el.closest('.dragon-target')) return 'dragon';
+  if (el.closest('.mountain-path')) return 'mountain path';
   if (el.closest('.mg-anvil-target')) return 'anvil';
   if (el.closest('.church-door')) return 'church door';
   if (el.closest('.npc')) return 'lumberjack';
@@ -185,6 +190,7 @@ function useState(next) {
   caveNotice = '';
   churchNotice = '';
   forgeNotice = '';
+  mountainNotice = '';
   nestFreed = false;
   lumberjackIntro = false;
 }

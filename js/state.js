@@ -13,6 +13,7 @@ function defaultState() {
     rubies: [], // ids of locations whose ruby has been won, e.g. 'forest'
     items: [], // items the player carries, e.g. 'axe'
     forest: null, // random layout of the forest quest, rolled on first visit (see forest.js)
+    zombies: [], // scenes on the way up the mountain whose zombie is beaten (see mountain.js)
   };
 }
 
@@ -44,6 +45,7 @@ function cleanState(saved) {
   if (typeof saved.location === 'string') state.location = saved.location;
   state.rubies = stringList(saved.rubies);
   state.items = stringList(saved.items);
+  state.zombies = stringList(saved.zombies);
   const f = saved.forest;
   if (f && typeof f === 'object') {
     state.forest = { axeScene: f.axeScene, axeSpot: f.axeSpot, wolfScene: f.wolfScene };

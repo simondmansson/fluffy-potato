@@ -1250,3 +1250,189 @@ function forgeCloseUp() {
   <g class="mg-fx no-hit"></g>
 </svg>`;
 }
+
+// ---------- The mountain ----------
+
+// Looks of the two zombies on the way up.
+const ZOMBIE_LOOKS = {
+  miner: { skin: '#93ad7c', shirt: '#4e6488', pants: '#36405a', rag: '#3a4a6a' },
+  warrior: { skin: '#86a48a', shirt: '#6a5440', pants: '#3a3028', rag: '#7a2a2a' },
+};
+
+// A zombie seen from the front, arms reaching for the player. Feet at (0, 0), about
+// 250 units tall. The arms are inner <g>s (.zb-arm) so CSS can swing them.
+// look is a key of ZOMBIE_LOOKS: 'miner' wears a helmet with a lamp, 'warrior' a dented
+// iron helmet and a torn cloak.
+function zombie(look) {
+  const c = ZOMBIE_LOOKS[look];
+  const arm = (side) => `
+    <g transform="translate(${side * 40} -192)"><g class="zb-arm${side > 0 ? ' right' : ''}">
+      <g transform="rotate(${side * -62})">
+        <rect x="-11" y="0" width="22" height="78" rx="9" fill="${c.shirt}"/>
+        <path d="M-11,52 L11,52 L11,66 L4,60 L-2,70 L-11,62 Z" fill="${c.rag}"/>
+        <rect x="-8" y="66" width="16" height="40" rx="7" fill="${c.skin}"/>
+        <path d="M-9,104 l-3,16 M-3,106 l-1,18 M3,106 l1,18 M9,104 l3,16" stroke="${c.skin}" stroke-width="5" stroke-linecap="round"/>
+      </g>
+    </g></g>`;
+  const extra =
+    look === 'miner'
+      ? `
+    <path d="M-36,-246 Q-36,-284 0,-286 Q36,-284 36,-246 Z" fill="#e0b44a"/>
+    <rect x="-42" y="-250" width="84" height="9" rx="4" fill="#b88a2a"/>
+    <rect x="-9" y="-284" width="18" height="16" rx="4" fill="#5a5a5a"/>
+    <circle class="zb-lamp" cx="0" cy="-276" r="6" fill="#fff6b0"/>`
+      : `
+    <path d="M-38,-244 Q-40,-288 0,-290 Q40,-288 38,-244 Z" fill="#7a7e86"/>
+    <path d="M-38,-244 L38,-244 L36,-236 L-36,-236 Z" fill="#5a5e66"/>
+    <path d="M0,-290 L0,-244" stroke="#5a5e66" stroke-width="6"/>
+    <path d="M16,-280 l8,10 l-10,4 Z" fill="#4a4e56"/>`;
+  const cloak =
+    look === 'warrior'
+      ? `<path d="M-46,-200 L46,-200 L70,-10 L50,-22 L36,-4 L18,-20 L0,-2 L-18,-20 L-36,-4 L-50,-22 L-70,-10 Z" fill="${c.rag}"/>`
+      : '';
+  return `
+    <ellipse cx="0" cy="2" rx="56" ry="9" fill="rgba(0,0,0,0.35)"/>
+    ${cloak}
+    <rect x="-30" y="-108" width="24" height="104" rx="8" fill="${c.pants}"/>
+    <rect x="6" y="-108" width="24" height="104" rx="8" fill="${c.pants}"/>
+    <path d="M-30,-30 L-6,-30 L-6,-14 L-12,-20 L-18,-10 L-24,-18 L-30,-12 Z" fill="${c.skin}"/>
+    <path d="M-36,-6 L-2,-6 L-2,4 L-40,4 Z" fill="#2a2420"/>
+    <path d="M4,-6 L38,-6 L42,4 L4,4 Z" fill="#2a2420"/>
+    <path d="M-46,-206 Q0,-218 46,-206 L42,-108 L32,-96 L22,-110 L8,-94 L-6,-108 L-20,-94 L-32,-108 L-42,-98 Z" fill="${c.shirt}"/>
+    <path d="M-20,-180 l14,10 M10,-150 l16,-6 M-26,-136 l12,4" stroke="${c.rag}" stroke-width="4" stroke-linecap="round"/>
+    <rect x="-10" y="-222" width="20" height="18" fill="${c.skin}"/>
+    <g transform="rotate(-10 0 -236)">
+      <circle cx="0" cy="-238" r="34" fill="${c.skin}"/>
+      <path d="M-18,-262 l10,6 M-4,-268 l4,8 M14,-262 l-8,6" stroke="#4a5a3a" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="-13" cy="-244" r="10" fill="#f6f0c0"/>
+      <circle cx="14" cy="-242" r="7" fill="#f6f0c0"/>
+      <circle class="zb-eye" cx="-11" cy="-242" r="4" fill="#d8b020"/>
+      <circle class="zb-eye" cx="15" cy="-241" r="3" fill="#d8b020"/>
+      <path d="M-16,-218 Q0,-208 18,-220 L16,-214 Q0,-204 -14,-212 Z" fill="#3a2020"/>
+      <path d="M-10,-217 l0,5 M-2,-215 l0,6 M7,-216 l0,5" stroke="#f6f0c0" stroke-width="3"/>
+      <path d="M20,-228 l10,-4 M22,-222 l10,-2" stroke="#4a5a3a" stroke-width="2"/>
+    </g>
+    ${extra}
+    ${arm(-1)}
+    ${arm(1)}`;
+}
+
+// What is left of a defeated zombie: a heap of rags with its helmet on top. (x, y) is the middle.
+function zombieRemains(x, y, look) {
+  const c = ZOMBIE_LOOKS[look];
+  const helmet = look === 'miner' ? '#e0b44a' : '#7a7e86';
+  return `
+    <g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="4" rx="80" ry="12" fill="rgba(0,0,0,0.3)"/>
+      <path d="M-70,0 Q-60,-30 -20,-34 Q10,-44 40,-30 Q72,-22 74,0 Z" fill="${c.shirt}"/>
+      <path d="M-40,-4 Q-20,-24 10,-20 Q30,-18 44,-4 Z" fill="${c.rag}"/>
+      <path d="M-20,-30 Q-20,-58 6,-60 Q32,-58 32,-30 Z" fill="${helmet}"/>
+      <path d="M50,-6 l22,-6 M54,0 l20,2" stroke="${c.skin}" stroke-width="5" stroke-linecap="round"/>
+    </g>`;
+}
+
+// A zombie close up for the spear fight, walking up the path towards the player.
+// mountain.js moves .mg-zombie (translate + scale); .mg-zombie-body shakes when hit.
+// sky0/sky1 colour the sky behind it.
+function zombieCloseUp(look, sky0, sky1) {
+  const rand = seededRandom(look === 'miner' ? 61 : 67);
+  let stars = '';
+  for (let i = 0; i < 30; i++) {
+    stars += `<circle cx="${(rand() * 1600).toFixed(0)}" cy="${(rand() * 320).toFixed(0)}" r="${(1 + rand() * 1.5).toFixed(1)}"/>`;
+  }
+  return `
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En zombie på stigen, på nära håll">
+  <defs>
+    <linearGradient id="mgz-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${sky0}"/>
+      <stop offset="1" stop-color="${sky1}"/>
+    </linearGradient>
+  </defs>
+  <g class="no-hit">
+    <rect x="-800" width="3200" height="900" fill="url(#mgz-sky)"/>
+    <g fill="#e8e6ff" opacity="0.7">${stars}</g>
+    <polygon fill="#2a2c44" points="-800,560 0,520 200,380 380,470 560,330 760,450 980,300 1180,440 1400,360 1600,480 2400,520 2400,900 -800,900"/>
+    <polygon fill="#d8dcea" opacity="0.5" points="560,330 610,370 590,372 560,350 530,375 515,368"/>
+    <polygon fill="#d8dcea" opacity="0.5" points="980,300 1030,340 1005,344 980,322 955,346 935,338"/>
+    <path d="M-800,620 L560,560 L1040,560 L2400,620 L2400,900 L-800,900 Z" fill="#3a3a4a"/>
+    <path d="M700,560 L900,560 L1300,900 L300,900 Z" fill="#6a6058"/>
+    <path d="M-800,700 L380,700 L200,900 L-800,900 Z M1220,700 L2400,700 L2400,900 L1400,900 Z" fill="#26283a"/>
+  </g>
+  <g class="mg-zombie" transform="translate(800 560) scale(0.9)">
+    <g class="mg-zombie-body">
+      <rect class="mg-zombie-target" x="-150" y="-310" width="300" height="320" fill="transparent"/>
+      <g class="no-hit">${zombie(look)}</g>
+    </g>
+  </g>
+  <g class="mg-fx no-hit"></g>
+</svg>`;
+}
+
+// The thunder dragon asleep, coiled around the summit rocks, with the four stolen
+// emeralds (.emerald) shimmering on his back. (x, y) is where he lies on the ground.
+// The emeralds use the filter #summit-glow from the summit scene.
+function sleepingDragon(x, y) {
+  const body = '#1c1c34';
+  const dark = '#121226';
+  const belly = '#34345a';
+  const scale = '#2a2a4a';
+  const emerald = (ex, ey, delay) => `
+    <g transform="translate(${ex} ${ey})"><g class="emerald" style="animation-delay:${delay}s">
+      <polygon points="0,-22 16,-5 10,17 -10,17 -16,-5" fill="#2fd47a" filter="url(#summit-glow)"/>
+      <polygon points="0,-22 16,-5 0,-3" fill="#a8ffd0"/>
+      <polygon points="0,-3 10,17 -10,17" fill="#118a48"/>
+    </g></g>`;
+  const spikes = [
+    [-330, -118], [-260, -146], [-180, -164], [-100, -174], [-20, -178], [60, -174], [140, -164], [220, -146], [300, -118], [360, -86],
+  ]
+    .map(([sx, sy]) => `<path d="M${sx - 18},${sy + 14} L${sx + 4},${sy - 26} L${sx + 18},${sy + 14} Z" fill="${dark}"/>`)
+    .join('');
+  let scales = '';
+  for (let row = 0; row < 3; row++) {
+    for (let i = 0; i < 12; i++) {
+      const sx = -300 + i * 56 + (row % 2) * 28;
+      const sy = -120 + row * 34 + Math.abs(sx) * 0.08;
+      scales += `M${sx - 16},${sy} Q${sx},${sy + 16} ${sx + 16},${sy} `;
+    }
+  }
+  const claws = (cx, cy) =>
+    `<path d="M${cx - 20},${cy} l-8,10 M${cx - 6},${cy + 2} l-4,12 M${cx + 8},${cy + 2} l0,12" stroke="#c8c8d8" stroke-width="5" stroke-linecap="round"/>`;
+  return `
+    <g transform="translate(${x} ${y})">
+      <ellipse cx="0" cy="6" rx="560" ry="40" fill="rgba(0,0,0,0.4)"/>
+      <!-- Tail curling round to the front -->
+      <path d="M380,-60 Q560,-20 540,40 Q500,90 380,70 Q290,58 250,86" fill="none" stroke="${body}" stroke-width="50" stroke-linecap="round"/>
+      <path d="M252,86 L210,62 L218,118 Z" fill="${dark}"/>
+      <!-- Back leg -->
+      <path d="M180,-60 Q300,-110 330,-20 Q340,10 300,10 L200,10 Z" fill="${dark}"/>
+      ${claws(300, 6)}
+      <!-- The long body -->
+      <path d="M-400,-20 Q-380,-120 -260,-150 Q-100,-190 60,-182 Q240,-176 360,-110 Q440,-60 410,-10 Q380,10 200,10 L-300,10 Q-400,14 -400,-20 Z" fill="${body}"/>
+      <path d="${scales}" fill="none" stroke="${scale}" stroke-width="4"/>
+      <path d="M-380,-4 Q-200,-40 0,-30 Q240,-34 400,-16 Q380,6 200,8 L-300,8 Q-370,10 -380,-4 Z" fill="${belly}"/>
+      <path d="M-300,-30 l0,30 M-200,-38 l0,40 M-100,-34 l0,40 M0,-32 l0,40 M100,-34 l0,40 M200,-34 l0,40 M300,-26 l0,30" stroke="${body}" stroke-width="3" opacity="0.6"/>
+      ${spikes}
+      <!-- Wing folded on his back -->
+      <path d="M-120,-160 L-180,-330 Q-120,-300 -80,-250 Q-40,-300 10,-320 Q20,-260 60,-200 Q90,-260 150,-280 Q130,-210 120,-166 Z" fill="${dark}"/>
+      <path d="M-120,-160 L-180,-330 M-110,-170 L10,-320 M-100,-168 L150,-280" stroke="#2e2e52" stroke-width="5" fill="none"/>
+      <!-- Front leg and neck, his head resting on his paw -->
+      <path d="M-330,-20 Q-360,10 -420,14 L-470,14 Q-480,-4 -450,-10 Q-400,-14 -380,-60 Z" fill="${dark}"/>
+      ${claws(-460, 12)}
+      <path d="M-260,-150 Q-400,-170 -470,-110 Q-500,-80 -480,-40 L-380,-20 Q-380,-80 -300,-100 Z" fill="${body}"/>
+      <g transform="translate(-520 -50) scale(1.25)">
+        <path d="M70,-30 Q20,-64 -60,-56 Q-140,-46 -176,-20 Q-186,-6 -170,4 Q-120,20 -40,22 Q30,24 70,14 Z" fill="${body}"/>
+        <path d="M-170,4 Q-120,24 -40,22 Q20,22 60,10" fill="none" stroke="${dark}" stroke-width="5"/>
+        <path d="M-150,-8 L-142,6 M-128,-4 L-122,10 M-106,-2 L-100,12" stroke="#d8d8e8" stroke-width="3" stroke-linecap="round"/>
+        <path d="M10,-50 Q40,-100 100,-110 Q60,-80 46,-40 Z" fill="${dark}"/>
+        <path d="M-20,-54 Q0,-110 50,-130 Q24,-90 18,-50 Z" fill="${dark}"/>
+        <path d="M-60,-56 Q-40,-70 -10,-60" fill="none" stroke="${dark}" stroke-width="8" stroke-linecap="round"/>
+        <path d="M-56,-38 Q-40,-30 -22,-38" fill="none" stroke="#7a7ab0" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="-160" cy="-24" r="5" fill="#08080f"/>
+        <path d="M-166,-30 Q-210,-50 -240,-30 M-160,-14 Q-200,0 -230,30" fill="none" stroke="${body}" stroke-width="4" stroke-linecap="round"/>
+        <g class="no-hit"><g class="dragon-snore" fill="#b0b6e0" opacity="0">
+          <text x="-200" y="-90" font-size="30">z</text><text x="-236" y="-130" font-size="42">Z</text>
+        </g></g>
+      </g>
+      ${emerald(-200, -170, 0)}${emerald(-40, -186, 0.6)}${emerald(120, -178, 1.2)}${emerald(270, -138, 1.8)}
+    </g>`;
+}
