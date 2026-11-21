@@ -87,6 +87,18 @@ Smedjan ligger i byn. Där förvandlar smeden rubinerna till rustning och ett sp
 - Rustningen ger spelaren 5 liv. Varje gång draken träffar förlorar spelaren liv, och tar alla liv slut har spelaren förlorat.
 - Draken har flera attacker. Fler läggs till senare.
 
+### Vägen upp
+
+Stigen upp till toppen börjar i byn, till höger om kyrkan. Utan rustning och spjut vågar spelaren inte gå upp. Vägen är lång, och solen går ner medan spelaren klättrar, så att det är natt när hen kommer fram.
+
+Vägen består av fem platser: Bergsstigen, Ravinen, Snögränsen, Bergskammen och Bergstoppen.
+
+- I Ravinen och på Bergskammen står en zombie mitt på stigen och släpper inte förbi spelaren. I Ravinen är det en gammal gruvarbetare med hjälm och lampa, på Bergskammen en stor krigare i bucklig järnhjälm och trasig mantel.
+- Klickar man på zombien börjar ett minispel: zombien vinglar fram mot spelaren och blir större och större. Spelaren ska stöta spjutet i den innan den hinner fram, tre gånger i Ravinen och fyra gånger på Bergskammen. Varje stöt knuffar zombien bakåt, men den går fortare efter varje stöt.
+- Hinner zombien fram knuffar den ner spelaren till platsen nedanför, och spelaren kan gå upp och försöka igen.
+- En besegrad zombie faller ihop till en hög med trasor och kommer inte tillbaka.
+- På Bergstoppen sover åskdraken hoprullad runt klipporna, med smaragderna skimrande på ryggen.
+
 ### Ringelattacken
 
 - Draken ringlar fram i S-kurvor mot spelaren och blir större för varje sväng. I mörkret syns bara smaragderna, så spelaren får följa dem för att se vägen han tar.

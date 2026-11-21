@@ -40,7 +40,8 @@ function smithLine() {
   if (gearForged()) {
     return (
       '»Rustningen sitter som gjuten!«, säger smeden. »Rubinerna i den står emot kraften från drakens smaragder. ' +
-      'Åskdraken visar sig på toppen av Mount Thunder när natten faller – akta dig för hans smaragder!«'
+      'Åskdraken visar sig på toppen av Mount Thunder när natten faller – akta dig för hans smaragder! ' +
+      'Stigen upp till toppen börjar i byn, till höger om kyrkan.«'
     );
   }
   if (hasAllRubies()) return null; // he gets to work
@@ -250,7 +251,7 @@ function startForging() {
     );
     forgeNotice =
       'Du sätter på dig rustningen. Den är lätt och varm, och rubinerna i den glöder svagt. ' +
-      '»Den står emot kraften från drakens smaragder«, säger smeden. »Åskdraken visar sig på toppen av Mount Thunder när natten faller. Lycka till!«';
+      '»Den står emot kraften från drakens smaragder«, säger smeden. »Åskdraken visar sig på toppen av Mount Thunder när natten faller. Stigen upp börjar i byn, till höger om kyrkan. Lycka till!«';
     setTimeout(close, 2800);
   }
 

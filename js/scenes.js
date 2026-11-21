@@ -93,6 +93,17 @@ SCENES.town = {
   <path fill="#3a5a30" d="M0,650 Q300,590 600,645 T1200,630 T1600,615 L1600,900 L0,900 Z"/>
   <path fill="url(#town-ground)" d="M0,730 Q400,690 800,715 T1600,705 L1600,900 L0,900 Z"/>
 
+  <!-- The path up the mountain (exit). Locked until the armour is forged, see mountain.js -->
+  <g class="exit mountain-path" tabindex="0" role="button" aria-label="Stigen upp till toppen">
+    <path d="M1290,690 L1290,640 L1180,565 L1250,520 L1120,445 L1160,415 L1045,335 L1035,292 L965,225" fill="none" stroke="rgba(0,0,0,0)" stroke-width="60" stroke-linejoin="round"/>
+    <path d="M1290,640 L1180,565 L1250,520 L1120,445 L1160,415 L1045,335 L1035,292 L965,225" fill="none" stroke="#c8b89a" stroke-width="5" stroke-dasharray="10 8" stroke-linejoin="round" opacity="0.8"/>
+    ${signpost(1290, 700, 'Toppen ↑', { width: 140 })}
+    <g class="exit-label">
+      <rect x="1160" y="350" width="280" height="40" rx="6" fill="rgba(14,16,32,0.8)" stroke="#e0b44a"/>
+      <text x="1300" y="377" font-size="22" text-anchor="middle" fill="#f3ecd8">Stigen upp till toppen</text>
+    </g>
+  </g>
+
   <!-- Road from the village to the forest -->
   <path fill="#9b8458" d="M860,900 C820,830 650,785 470,758 C430,752 395,748 360,746 L355,760 C400,765 560,800 720,900 Z"/>
 
@@ -1197,5 +1208,238 @@ SCENES.forge = {
 
   <!-- The smith is added here by forge.js -->
   <g class="actors"></g>
+</svg>`,
+};
+
+// The way up Mount Thunder: Bergsstigen – Ravinen (a zombie) – Snögränsen – Bergskammen
+// (a zombie) – Bergstoppen. The sun sets on the way up, and it is night at the top.
+// mountain.js adds the zombies and blocks the way on while they are there.
+
+// Shared defs, sky and distant peaks of a mountain screen. Ids are prefixed with the scene id.
+// `behind` is drawn between the sky and the peaks (the sun, the moon).
+function mountainBackdrop(id, seed, { sky0, sky1, far, snow = false, stars = 0, behind = '' }) {
+  const rand = seededRandom(seed);
+  let dots = '';
+  for (let i = 0; i < stars; i++) {
+    dots += `<circle cx="${(rand() * 1800 - 100).toFixed(0)}" cy="${(rand() * 380).toFixed(0)}" r="${(0.8 + rand() * 1.4).toFixed(1)}"/>`;
+  }
+  let points = '-800,900 ';
+  let caps = '';
+  for (let x = -800; x <= 2400; x += 150 + rand() * 120) {
+    const y = 330 + rand() * 160;
+    points += `${x.toFixed(0)},${y.toFixed(0)} `;
+    if (snow && y < 400) {
+      caps += `<polygon points="${x.toFixed(0)},${y.toFixed(0)} ${(x + 34).toFixed(0)},${(y + 30).toFixed(0)} ${(x + 12).toFixed(0)},${(y + 24).toFixed(0)} ${(x - 8).toFixed(0)},${(y + 34).toFixed(0)} ${(x - 30).toFixed(0)},${(y + 28).toFixed(0)}"/>`;
+    }
+  }
+  points += '2400,900';
+  return `
+  <defs>
+    <linearGradient id="${id}-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${sky0}"/>
+      <stop offset="1" stop-color="${sky1}"/>
+    </linearGradient>
+    <linearGradient id="${id}-rock" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5a5468"/>
+      <stop offset="1" stop-color="#2a2636"/>
+    </linearGradient>
+    <filter id="${id}-blur" x="-50%" y="-200%" width="200%" height="500%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+    <filter id="${id}-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect x="-800" width="3200" height="900" fill="url(#${id}-sky)"/>
+  <g fill="#e8e6ff" opacity="0.75">${dots}</g>
+  ${behind}
+  <polygon fill="${far}" points="${points}"/>
+  <g fill="#d8dcea" opacity="0.55">${caps}</g>`;
+}
+
+SCENES.mountain = {
+  name: 'Bergsstigen',
+  narration:
+    'Stigen upp mot toppen av Mount Thunder är lång och brant. Solen håller på att gå ner, och byn ser liten ut där nere. ' +
+    'Högt ovanför mullrar åskan.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Stigen uppför berget i solnedgången">
+  ${mountainBackdrop('mountain', 81, {
+    sky0: '#2a2050',
+    sky1: '#f0905a',
+    far: '#6a5070',
+    behind: '<circle cx="380" cy="360" r="80" fill="#ffd59a" opacity="0.9"/><circle cx="380" cy="360" r="140" fill="#ffd59a" opacity="0.2"/>',
+  })}
+  <!-- The valley far below, with the village -->
+  <path d="M-800,700 Q200,640 700,680 L700,900 L-800,900 Z" fill="#3a4a3a"/>
+  <g fill="#2a2430">
+    <rect x="300" y="676" width="26" height="18"/><polygon points="296,676 313,662 330,676"/>
+    <rect x="350" y="680" width="22" height="16"/><polygon points="346,680 361,668 376,680"/>
+    <rect x="400" y="670" width="16" height="26"/><polygon points="398,670 408,646 418,670"/>
+    <rect x="440" y="682" width="24" height="16"/><polygon points="436,682 452,670 468,682"/>
+  </g>
+  <g class="window" fill="#ffd977">
+    <rect x="306" y="682" width="5" height="5"/><rect x="356" y="685" width="4" height="4"/>
+    <rect x="452" y="687" width="4" height="4"/><circle cx="408" cy="662" r="3" fill="#c9a0ff"/>
+  </g>
+
+  <!-- The mountainside -->
+  <path d="M300,900 Q420,780 520,720 Q700,640 860,560 Q1000,470 1100,360 Q1200,250 1320,200 L2400,160 L2400,900 Z" fill="url(#mountain-rock)"/>
+  <path d="M1320,200 Q1400,320 1500,380 L2400,400 L2400,160 Z" fill="#3a3448" opacity="0.6"/>
+  <!-- The path winding up -->
+  <path d="M820,920 C700,800 1040,740 960,640 C900,570 1180,560 1150,470" fill="none" stroke="#8a7458" stroke-width="64" stroke-linecap="round"/>
+  <path d="M820,920 C700,800 1040,740 960,640 C900,570 1180,560 1150,470" fill="none" stroke="#a88e68" stroke-width="40" stroke-linecap="round"/>
+  ${rock(640, 860, 150, 90, '#4a4458', '#5a6a4a')}
+  ${rock(1350, 720, 220, 130, '#3e3a4c', '#4a5a40')}
+  ${pine(1180, 840, 260, '#22302a')}
+  ${pine(1500, 880, 330, '#1c2822')}
+  ${pine(560, 760, 170, '#2a382e')}
+
+  ${signExit('town', 250, 850, '← Till byn', 'Tillbaka till byn')}
+  ${signExit('mountain-ravine', 1180, 480, 'Uppåt ↑', 'Gå uppför stigen', { width: 150 })}
+</svg>`,
+};
+
+SCENES['mountain-ravine'] = {
+  name: 'Ravinen',
+  narration:
+    'Stigen går in i en smal ravin mellan branta klippväggar. I väggen gapar en gammal gruvgång, igenspikad med plankor. Det skymmer.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En smal ravin på väg upp för berget">
+  ${mountainBackdrop('mountain-ravine', 83, { sky0: '#1e1c40', sky1: '#9a5a78', far: '#4e3e5e', stars: 8 })}
+  <!-- Cliff walls -->
+  <path d="M-800,0 L420,0 Q500,260 560,420 Q600,520 700,560 L540,900 L-800,900 Z" fill="#2e2a3a"/>
+  <path d="M2400,0 L1180,0 Q1100,260 1040,420 Q1000,520 900,560 L1060,900 L2400,900 Z" fill="#26222f"/>
+  <path d="M420,0 Q500,260 560,420 Q600,520 700,560" fill="none" stroke="#4a4458" stroke-width="10"/>
+  <path d="M1180,0 Q1100,260 1040,420 Q1000,520 900,560" fill="none" stroke="#3e3a4c" stroke-width="10"/>
+  <!-- The path through the ravine -->
+  <path d="M540,900 L1060,900 L880,560 L720,560 Z" fill="#6a5a4a"/>
+  <path d="M640,900 L960,900 L840,560 L760,560 Z" fill="#7e6c56"/>
+  <!-- The old mine, nailed shut -->
+  <g transform="translate(300 640)">
+    <path d="M-90,0 L-90,-150 Q0,-210 90,-150 L90,0 Z" fill="#0e0c12"/>
+    <rect x="-104" y="-170" width="22" height="170" fill="#6b4a2a"/>
+    <rect x="82" y="-170" width="22" height="170" fill="#6b4a2a"/>
+    <rect x="-112" y="-186" width="224" height="24" fill="#7a5632"/>
+    <g fill="#8a6440">
+      <rect x="-96" y="-120" width="192" height="16" transform="rotate(-8)"/>
+      <rect x="-96" y="-70" width="192" height="16" transform="rotate(6)"/>
+    </g>
+  </g>
+  ${rock(560, 880, 180, 110, '#3a3446', '#4a4a3a')}
+  ${rock(1120, 860, 160, 90, '#34303f', '#4a4a3a')}
+  ${bones(1180, 800, 0.8)}
+
+  ${signExit('mountain', 250, 850, '↓ Nedåt', 'Gå nedför stigen', { width: 150 })}
+  ${signExit('mountain-snow', 1020, 600, 'Uppåt ↑', 'Gå vidare uppför stigen', { width: 150 })}
+
+  <!-- The zombie is added here by mountain.js -->
+  <g class="actors"></g>
+</svg>`,
+};
+
+SCENES['mountain-snow'] = {
+  name: 'Snögränsen',
+  narration:
+    'Här uppe ligger snön djup och knarrar under fötterna. De första stjärnorna tänds. Någon har byggt ett stenröse vid stigen.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Snötäckt sluttning högt upp på berget">
+  ${mountainBackdrop('mountain-snow', 87, { sky0: '#10163a', sky1: '#4a5a8a', far: '#3a4266', snow: true, stars: 40 })}
+  <path d="M-800,640 Q200,580 800,620 Q1300,560 2400,600 L2400,900 L-800,900 Z" fill="#c8d2e4"/>
+  <path d="M-800,720 Q300,680 900,720 Q1300,690 2400,700 L2400,900 L-800,900 Z" fill="#dde4f0"/>
+  <!-- Footprints in the snow, up the slope -->
+  <g fill="#9aa8c4">
+    <ellipse cx="420" cy="860" rx="16" ry="7"/><ellipse cx="480" cy="830" rx="15" ry="6"/>
+    <ellipse cx="560" cy="806" rx="14" ry="6"/><ellipse cx="640" cy="780" rx="13" ry="5"/>
+    <ellipse cx="740" cy="760" rx="12" ry="5"/><ellipse cx="840" cy="740" rx="11" ry="5"/>
+    <ellipse cx="950" cy="722" rx="10" ry="4"/><ellipse cx="1060" cy="706" rx="10" ry="4"/>
+    <ellipse cx="1160" cy="690" rx="9" ry="4"/>
+  </g>
+  ${pine(300, 660, 220, '#2a3a4a')}${pine(380, 680, 170, '#26364a')}
+  ${pine(1420, 650, 240, '#24344a')}${pine(1500, 700, 190, '#203044')}
+  <g fill="#eef2fa">
+    <polygon points="300,440 330,500 270,500"/><polygon points="1420,410 1452,476 1388,476"/>
+  </g>
+  <!-- A cairn by the path -->
+  <g transform="translate(760 700)">
+    <ellipse cx="0" cy="0" rx="70" ry="12" fill="#9aa8c4"/>
+    <g fill="#6a6a7a" stroke="#4a4a5a" stroke-width="3">
+      <ellipse cx="0" cy="-16" rx="60" ry="22"/><ellipse cx="-6" cy="-50" rx="46" ry="18"/>
+      <ellipse cx="4" cy="-80" rx="32" ry="14"/><ellipse cx="0" cy="-104" rx="18" ry="10"/>
+    </g>
+    <path d="M-60,-28 Q0,-40 60,-28 M-48,-62 Q0,-70 44,-60" stroke="#eef2fa" stroke-width="6" fill="none"/>
+  </g>
+
+  ${signExit('mountain-ravine', 250, 850, '↓ Nedåt', 'Gå nedför stigen', { width: 150 })}
+  ${signExit('mountain-ridge', 1220, 690, 'Uppåt ↑', 'Gå vidare uppför stigen', { width: 150 })}
+</svg>`,
+};
+
+SCENES['mountain-ridge'] = {
+  name: 'Bergskammen',
+  narration:
+    'Stigen går längs en smal bergskam. Det har blivit natt, och månen lyser. På båda sidor stupar berget ner i ett hav av moln.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="En smal bergskam i månsken">
+  ${mountainBackdrop('mountain-ridge', 89, {
+    sky0: '#060818',
+    sky1: '#1e2448',
+    far: '#262c4c',
+    snow: true,
+    stars: 70,
+    behind: '<circle cx="1260" cy="140" r="54" fill="#f2f0dc"/><circle cx="1278" cy="128" r="10" fill="#d8d4bc"/><circle cx="1246" cy="160" r="7" fill="#d8d4bc"/><circle cx="1260" cy="140" r="110" fill="#f2f0dc" opacity="0.08"/>',
+  })}
+  <!-- Sea of clouds below -->
+  <g filter="url(#mountain-ridge-blur)" fill="#8a90b8" opacity="0.55">
+    <ellipse cx="200" cy="640" rx="500" ry="60"/><ellipse cx="1200" cy="660" rx="600" ry="70"/>
+  </g>
+  <!-- The ridge -->
+  <path d="M-800,790 L200,770 L560,720 L900,700 L1200,610 L1500,500 L2400,470 L2400,900 L-800,900 Z" fill="#3a3650"/>
+  <path d="M-800,790 L200,770 L560,720 L900,700 L1200,610 L1500,500 L2400,470" fill="none" stroke="#c8d0e4" stroke-width="8" opacity="0.6"/>
+  <path d="M-800,840 L300,820 L700,790 L1100,720 L1500,620 L2400,600 L2400,900 L-800,900 Z" fill="#2a2840"/>
+  <g filter="url(#mountain-ridge-blur)" fill="#9aa0c8" opacity="0.5" class="fog slow">
+    <ellipse cx="400" cy="880" rx="600" ry="50"/><ellipse cx="1300" cy="900" rx="600" ry="60"/>
+  </g>
+
+  ${signExit('mountain-snow', 250, 780, '↓ Nedåt', 'Gå nedför stigen', { width: 150 })}
+  ${signExit('summit', 1370, 560, 'Toppen ↑', 'Gå upp till toppen', { width: 150 })}
+
+  <!-- The zombie is added here by mountain.js -->
+  <g class="actors"></g>
+</svg>`,
+};
+
+SCENES.summit = {
+  name: 'Bergstoppen',
+  narration:
+    'Du är uppe på toppen av Mount Thunder. Det är natt, åskmolnen tornar upp sig och blixtarna lyser upp himlen. ' +
+    'Där, hoprullad runt klipporna, sover åskdraken. Smaragderna på hans rygg skimrar i mörkret.',
+  svg: `
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Toppen av Mount Thunder, där åskdraken sover">
+  ${mountainBackdrop('summit', 97, { sky0: '#04050f', sky1: '#1a1c3a', far: '#1c2040', snow: true, stars: 50 })}
+  <rect class="sky-flash" x="-800" width="3200" height="900" fill="#e8e6ff"/>
+  <g class="storm-clouds">
+    <g filter="url(#summit-blur)" fill="#2a2c4a">
+      <ellipse cx="400" cy="120" rx="320" ry="60"/><ellipse cx="900" cy="80" rx="380" ry="70"/>
+      <ellipse cx="1350" cy="130" rx="300" ry="56"/>
+    </g>
+  </g>
+  <g class="bolt" filter="url(#summit-glow)">
+    <polyline points="1180,110 1140,200 1176,208 1120,330" fill="none" stroke="#fff6b0" stroke-width="6" stroke-linejoin="round"/>
+    <polyline points="340,140 362,200 336,206 356,270" fill="none" stroke="#fff6b0" stroke-width="4" stroke-linejoin="round"/>
+  </g>
+  <!-- The top of the mountain -->
+  <path d="M-800,900 L-800,720 L60,660 Q300,600 800,610 Q1300,600 1540,660 L2400,720 L2400,900 Z" fill="#3a3a52"/>
+  <path d="M60,660 Q300,600 800,610 Q1300,600 1540,660 Q1300,640 800,640 Q300,640 60,660 Z" fill="#dde4f0" opacity="0.8"/>
+  ${rock(150, 700, 200, 120, '#2e2e44', '#c8d0e4')}
+  ${rock(1450, 720, 220, 140, '#2a2a40', '#c8d0e4')}
+
+  <g class="dragon-target" tabindex="0" role="button" aria-label="Smyg fram till åskdraken">
+    <rect x="130" y="300" width="1300" height="400" fill="transparent"/>
+    ${sleepingDragon(860, 650)}
+  </g>
+
+  ${signExit('mountain-ridge', 1400, 870, '↓ Nedåt', 'Gå ner från toppen', { width: 150 })}
 </svg>`,
 };

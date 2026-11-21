@@ -89,6 +89,26 @@ body {
   background: linear-gradient(#1e1412 0%, #4a3428 78%, #4a3a30 78%, #1a120e 100%);
 }
 
+#scene[data-scene="mountain"] {
+  background: linear-gradient(#2a2050 0%, #f0905a 45%, #4a4458 45%, #2a2636 100%);
+}
+
+#scene[data-scene="mountain-ravine"] {
+  background: linear-gradient(#1e1c40 0%, #9a5a78 50%, #2e2a3a 50%, #1e1a26 100%);
+}
+
+#scene[data-scene="mountain-snow"] {
+  background: linear-gradient(#10163a 0%, #4a5a8a 50%, #c8d2e4 50%, #dde4f0 100%);
+}
+
+#scene[data-scene="mountain-ridge"] {
+  background: linear-gradient(#060818 0%, #1e2448 55%, #3a3650 55%, #2a2840 100%);
+}
+
+#scene[data-scene="summit"] {
+  background: linear-gradient(#04050f 0%, #1a1c3a 55%, #3a3a52 55%, #2a2a40 100%);
+}
+
 #scene[data-scene="church-crypt"] {
   background: linear-gradient(#14121a 0%, #3e3a46 71%, #3e3a42 71%, #121014 100%);
 }
@@ -99,6 +119,8 @@ body {
 .readable,
 .spider-target,
 .wizard-target,
+.zombie-target,
+.dragon-target,
 .npc {
   cursor: pointer;
   outline: none;
@@ -115,6 +137,10 @@ body {
 .spider-target:focus-visible,
 .wizard-target:hover,
 .wizard-target:focus-visible,
+.zombie-target:hover,
+.zombie-target:focus-visible,
+.dragon-target:hover,
+.dragon-target:focus-visible,
 .npc:hover,
 .npc:focus-visible {
   filter: brightness(1.3) drop-shadow(0 0 14px rgba(255, 236, 170, 0.7));
@@ -128,8 +154,8 @@ body {
 
 /* Carrying the axe turns the cursor into one (hotspot on the blade edge).
    Not at the lake, in the cave or in the church, where other tools are what the player uses. */
-body.has-axe #scene:not([data-scene^="lake"]):not([data-scene^="cave"]):not([data-scene^="church"]),
-body.has-axe #minigame:not(.lake):not(.cave):not(.church) {
+body.has-axe #scene:not([data-scene^="lake"]):not([data-scene^="cave"]):not([data-scene^="church"]):not([data-scene^="mountain"]):not([data-scene="summit"]),
+body.has-axe #minigame:not(.lake):not(.cave):not(.church):not(.forge):not(.mountain) {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='27' y1='29' x2='11' y2='8' stroke='%23a0754a' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M9 3 L18 10 L13 16 Q5 16 2 9 Q4 5 9 3 Z' fill='%23cfd6dc' stroke='%234a4f55' stroke-width='1.2'/%3E%3C/svg%3E") 3 9, crosshair;
 }
 
@@ -315,6 +341,29 @@ body.has-sword #scene[data-scene^="church"],
   box-shadow: 0 0 6px #ffd977;
 }
 
+/* ---------- The way up the mountain ---------- */
+
+/* Carrying the spear on the mountain turns the cursor into it (hotspot on the tip) */
+body.has-spear #scene[data-scene^="mountain"],
+body.has-spear #scene[data-scene="summit"],
+#minigame.mountain {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cline x1='29' y1='29' x2='11' y2='11' stroke='%238a6a42' stroke-width='3' stroke-linecap='round'/%3E%3Cpolygon points='2,2 15,6 12,9 9,12 6,15' fill='%23c8283c' stroke='%238e1426' stroke-width='1.2' stroke-linejoin='round'/%3E%3Cline x1='10' y1='13' x2='13' y2='10' stroke='%23e0b44a' stroke-width='3'/%3E%3C/svg%3E") 2 2, crosshair;
+}
+
+#minigame.mountain {
+  background: radial-gradient(ellipse at 50% 45%, #3a3a5a 0%, #1a1a30 55%, #08080f 100%);
+}
+
+.zb-lurch { animation: zb-lurch 1.6s ease-in-out infinite alternate; transform-origin: 0 0; }
+.zb-arm { animation: zb-arm 0.9s ease-in-out infinite alternate; }
+.zb-arm.right { animation-delay: -0.45s; }
+.zb-lamp { animation: torch-flicker 0.4s ease-in-out infinite alternate; }
+.mg-zombie-body.hurt { animation: shake 0.07s linear 4 alternate; }
+.mg-zombie-body.defeated { animation: zb-collapse 1.4s ease-in forwards; transform-origin: 0 0; }
+
+.emerald { animation: emerald-shimmer 2.4s ease-in-out infinite; }
+.dragon-snore.snoring { animation: dragon-snore 2s ease-out; }
+
 .mg-panel.riddle-panel {
   pointer-events: auto;
   min-width: min(440px, calc(100% - 32px));
@@ -479,6 +528,8 @@ body.has-sword #scene[data-scene^="church"],
 .exit .exit-label {
   opacity: 0;
   transition: opacity 0.2s ease;
+  /* Hidden labels must not catch clicks meant for exits under them */
+  pointer-events: none;
 }
 
 .exit:hover .exit-label,
@@ -1098,6 +1149,33 @@ body.has-sword #scene[data-scene^="church"],
   45% { transform: rotate(0deg); }
   60% { transform: rotate(4deg); }
   100% { transform: rotate(55deg); }
+}
+
+@keyframes zb-lurch {
+  from { transform: rotate(-4deg); }
+  to { transform: rotate(4deg); }
+}
+
+@keyframes zb-arm {
+  from { transform: rotate(-8deg); }
+  to { transform: rotate(10deg); }
+}
+
+@keyframes zb-collapse {
+  0% { transform: none; opacity: 1; }
+  40% { transform: rotate(8deg) translateY(10px); opacity: 1; }
+  100% { transform: rotate(20deg) translateY(160px) scale(1, 0.2); opacity: 0; }
+}
+
+@keyframes emerald-shimmer {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+@keyframes dragon-snore {
+  0% { opacity: 0; transform: translate(0, 0); }
+  30% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-20px, -40px); }
 }
 
 @keyframes wiz-sway {
