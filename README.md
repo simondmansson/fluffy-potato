@@ -85,7 +85,7 @@ Smedjan ligger i byn. Där förvandlar smeden rubinerna till rustning och ett sp
 
 - Spelaren ska stöta spjutet i smaragderna, en i taget, och slå loss alla fyra. När spelaren har spjutet blir muspekaren ett spjut.
 - Rustningen ger spelaren 5 liv. Varje gång draken träffar förlorar spelaren liv, och tar alla liv slut har spelaren förlorat.
-- Draken har flera attacker. Fler läggs till senare.
+- Striden börjar när spelaren klickar på den sovande draken. Draken har flera attacker. Fler läggs till senare.
 
 ### Vägen upp
 
@@ -102,7 +102,7 @@ Vägen består av fem platser: Bergsstigen, Ravinen, Snögränsen, Bergskammen o
 ### Ringelattacken
 
 - Draken ringlar fram i S-kurvor mot spelaren och blir större för varje sväng. I mörkret syns bara smaragderna, så spelaren får följa dem för att se vägen han tar.
-- Precis innan anfallet lyser en blixt upp drakens huvud och visar vilken sida han kommer från. Spelaren väjer genom att klicka på andra sidan. Klickar man för tidigt svänger draken efter, och klickar man för sent blir man träffad.
+- Precis innan anfallet lyser en blixt upp drakens huvud och visar vilken sida han kommer från. Spelaren väjer genom att klicka på andra halvan av bilden. Klickar man för tidigt svänger draken efter, och klickar man för sent blir man träffad.
 - Väjer spelaren rätt glider drakens rygg förbi tätt intill, och en kort stund kan spjutet stötas i en smaragd.
 - Med varje smaragd som lossnar ringlar draken snabbare, och blixten kommer senare.
 
@@ -118,7 +118,8 @@ Drakens starkaste attack. Den kommer sällan, men när den kommer är den farlig
 ### Förlust och seger
 
 - Förlorar spelaren blåser draken ner hen till byn. Smeden lagar rustningen, och spelaren kan gå upp och försöka igen.
-- När den sista smaragden lossnar är draken besegrad. Spelaren kommer ner till byn med smaragderna, och det blir fest.
+- När den sista smaragden lossnar är draken besegrad. Han krymper och flyger sin väg, och åskmolnen skingras. Spelaren kommer ner till byn med smaragderna, och det blir fest: flaggor mellan husen, lyktor och fyrverkerier över berget. Åskan har tystnat och draken cirklar inte längre runt toppen.
+- Går man upp till toppen efteråt är den tom och stilla.
 
 ## Mobil
 
