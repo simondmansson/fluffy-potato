@@ -132,6 +132,8 @@ function describeClickTarget(target) {
   if (el.closest('.zombie-target')) return 'zombie';
   if (el.closest('.mg-zombie-target')) return 'zombie (fight)';
   if (el.closest('.dragon-target')) return 'dragon';
+  if (el.closest('.mg-em-target, .mg-rem-target')) return 'emerald';
+  if (el.closest('.shield-btn')) return 'shield button';
   if (el.closest('.mountain-path')) return 'mountain path';
   if (el.closest('.mg-anvil-target')) return 'anvil';
   if (el.closest('.church-door')) return 'church door';
@@ -191,6 +193,7 @@ function useState(next) {
   churchNotice = '';
   forgeNotice = '';
   mountainNotice = '';
+  dragonNotice = '';
   nestFreed = false;
   lumberjackIntro = false;
 }

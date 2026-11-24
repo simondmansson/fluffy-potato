@@ -1436,3 +1436,218 @@ function sleepingDragon(x, y) {
       ${emerald(-200, -170, 0)}${emerald(-40, -186, 0.6)}${emerald(120, -178, 1.2)}${emerald(270, -138, 1.8)}
     </g>`;
 }
+
+// ---------- The dragon fight ----------
+
+// An emerald, centred on (0, 0), about 44 units tall. Glows with the given filter.
+function emeraldGem(glowFilter) {
+  return `
+    <polygon points="0,-22 16,-5 10,17 -10,17 -16,-5" fill="#2fd47a" filter="url(#${glowFilter})"/>
+    <polygon points="0,-22 16,-5 0,-3" fill="#a8ffd0"/>
+    <polygon points="0,-3 10,17 -10,17" fill="#118a48"/>`;
+}
+
+// The dragon's head seen from the front, centred on (0, 0), about 220 units wide with the
+// horns. .mg-head-lit is the same head lit up by lightning (dragon.js sets its opacity).
+function dragonHeadFront(glowFilter) {
+  const shape = (skin, horn, eye) => `
+    <path d="M-44,-34 Q-90,-96 -124,-118 Q-84,-70 -62,-18 Z M44,-34 Q90,-96 124,-118 Q84,-70 62,-18 Z" fill="${horn}"/>
+    <path d="M-64,-30 Q-62,-66 0,-70 Q62,-66 64,-30 L46,42 Q30,76 0,80 Q-30,76 -46,42 Z" fill="${skin}"/>
+    <path d="M-90,-6 L-64,-20 L-58,6 Z M90,-6 L64,-20 L58,6 Z" fill="${horn}"/>
+    <ellipse cx="-28" cy="-14" rx="13" ry="8" fill="${eye}"/>
+    <ellipse cx="28" cy="-14" rx="13" ry="8" fill="${eye}"/>
+    <ellipse cx="-12" cy="58" rx="5" ry="3" fill="#08080f"/>
+    <ellipse cx="12" cy="58" rx="5" ry="3" fill="#08080f"/>
+    <path d="M-40,40 Q-90,60 -130,40 M40,40 Q90,60 130,40" fill="none" stroke="${horn}" stroke-width="5" stroke-linecap="round"/>`;
+  return `
+    ${shape('#1c1c38', '#121226', '#0a0a18')}
+    <g class="mg-head-lit" opacity="0">
+      <circle r="170" fill="#fff6c0" opacity="0.18"/>
+      ${shape('#6a6aa8', '#4a4a80', '#ffe066')}
+      <g filter="url(#${glowFilter})" fill="#ffe066">
+        <ellipse cx="-28" cy="-14" rx="10" ry="6"/><ellipse cx="28" cy="-14" rx="10" ry="6"/>
+      </g>
+      <path d="M-22,70 l6,10 l6,-10 M10,70 l6,10 l6,-10" fill="#f6f0d8"/>
+    </g>`;
+}
+
+// The dragon rearing up for Legendary Thunder, seen from the front: neck and shoulders from the
+// bottom, the head high up and a ball of lightning (.mg-ball) between the horns. The emeralds
+// on his shoulders are .mg-rem (index = data-em); .mg-rising-lit is him lit up.
+const RISING_EMERALDS = [
+  { x: 640, y: 700 },
+  { x: 960, y: 700 },
+  { x: 700, y: 560 },
+  { x: 900, y: 560 },
+];
+
+function risingDragon() {
+  const shape = (skin, dark) => `
+    <path d="M420,900 Q500,700 640,640 Q700,560 720,420 L880,420 Q900,560 960,640 Q1100,700 1180,900 Z" fill="${skin}"/>
+    <path d="M520,900 Q600,760 700,720 Q760,680 800,600 Q840,680 900,720 Q1000,760 1080,900 Z" fill="${dark}" opacity="0.5"/>
+    <path d="M430,880 L330,640 L400,700 L380,560 L470,680 L500,580 L540,720 Z M1170,880 L1270,640 L1200,700 L1220,560 L1130,680 L1100,580 L1060,720 Z" fill="${dark}"/>`;
+  const emeralds = RISING_EMERALDS.map(
+    (p, i) => `
+      <g transform="translate(${p.x} ${p.y})"><g class="mg-rem" data-em="${i}">
+        <g transform="scale(2)">${emeraldGem('mgd-glow')}</g>
+        <circle class="mg-rem-target" r="70" fill="transparent"/>
+      </g></g>`
+  ).join('');
+  return `
+    ${shape('#181834', '#0e0e22')}
+    <g class="mg-rising-lit" opacity="0">${shape('#5a5a98', '#3a3a70')}</g>
+    <g transform="translate(800 330) scale(2.2)">${dragonHeadFront('mgd-glow')}</g>
+    <g transform="translate(800 140)"><g class="mg-ball" transform="scale(0)">
+      <circle r="80" fill="url(#mgd-ball)"/>
+      <path d="M-60,-10 L-20,-30 L0,10 L30,-20 L60,10 M-40,40 L-10,10 L20,40 L50,20" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+    </g></g>
+    ${emeralds}`;
+}
+
+// The dragon's flank gliding past close up after the player dodges. The emerald on it
+// (.mg-em-target) can be stabbed. dragon.js moves .mg-flank sideways.
+function dragonFlank() {
+  let spikes = '';
+  let scales = '';
+  for (let x = -1300; x <= 1300; x += 110) {
+    spikes += `<path d="M${x - 34},-96 L${x + 10},-176 L${x + 34},-96 Z"/>`;
+  }
+  for (let row = 0; row < 3; row++) {
+    for (let x = -1300; x <= 1300; x += 90) {
+      const sx = x + (row % 2) * 45;
+      const sy = -50 + row * 50;
+      scales += `M${sx - 30},${sy} Q${sx},${sy + 30} ${sx + 30},${sy} `;
+    }
+  }
+  return `
+    <g fill="#14142c">${spikes}</g>
+    <path d="M-1400,-90 Q-700,-120 0,-104 Q700,-90 1400,-110 L1400,240 L-1400,240 Z" fill="#24244a"/>
+    <path d="${scales}" fill="none" stroke="#33335e" stroke-width="6"/>
+    <path d="M-1400,120 Q0,100 1400,120 L1400,240 L-1400,240 Z" fill="#3a3a68"/>
+    <g transform="translate(0 -60)">
+      <g class="mg-flank-em" transform="scale(2.6)">${emeraldGem('mgd-glow')}</g>
+      <circle class="mg-em-target" r="96" fill="transparent"/>
+    </g>`;
+}
+
+// The arena for the dragon fight: the summit at night. dragon.js fills .mg-serpent with the
+// body segments and moves everything; see the comments there.
+function dragonArena() {
+  const rand = seededRandom(101);
+  let stars = '';
+  for (let i = 0; i < 70; i++) {
+    stars += `<circle cx="${(rand() * 1800 - 100).toFixed(0)}" cy="${(rand() * 420).toFixed(0)}" r="${(0.8 + rand() * 1.4).toFixed(1)}"/>`;
+  }
+  return `
+<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Striden mot åskdraken på bergets topp">
+  <defs>
+    <linearGradient id="mgd-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#04050f"/>
+      <stop offset="1" stop-color="#151735"/>
+    </linearGradient>
+    <radialGradient id="mgd-ball">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.4" stop-color="#fff6b0"/>
+      <stop offset="0.8" stop-color="#7fd8ff" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#7fd8ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="mgd-glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="mgd-blur" x="-50%" y="-200%" width="200%" height="500%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <g class="no-hit">
+    <rect x="-800" width="3200" height="900" fill="url(#mgd-sky)"/>
+    <g class="mg-stars" fill="#e8e6ff" opacity="0.75">${stars}</g>
+    <g class="mg-clouds" filter="url(#mgd-blur)" fill="#24264a">
+      <ellipse cx="300" cy="110" rx="380" ry="60"/><ellipse cx="900" cy="70" rx="420" ry="70"/>
+      <ellipse cx="1400" cy="120" rx="360" ry="60"/>
+    </g>
+    <rect class="mg-dark" x="-800" width="3200" height="900" fill="#000" opacity="0"/>
+    <rect class="mg-flash" x="-800" width="3200" height="900" fill="#c8ccff" opacity="0"/>
+    <path d="M-800,900 L-800,790 Q200,750 800,760 Q1400,750 2400,790 L2400,900 Z" fill="#20203a"/>
+    <path d="M-800,790 Q200,750 800,760 Q1400,750 2400,790" fill="none" stroke="#c8d0e4" stroke-width="6" opacity="0.5"/>
+  </g>
+
+  <g class="mg-serpent"></g>
+  <g class="mg-head no-hit" display="none">${dragonHeadFront('mgd-glow')}</g>
+
+  <g class="mg-rising" display="none"><g class="mg-rise">${risingDragon()}</g></g>
+
+  <g class="mg-flank" display="none" transform="translate(2000 640)">${dragonFlank()}</g>
+
+  <g class="no-hit">
+    <polyline class="mg-bolt" display="none" points="800,140 760,300 830,330 740,520 820,560 790,800" fill="none" stroke="#fff6b0" stroke-width="22" stroke-linejoin="round" filter="url(#mgd-glow)"/>
+    <polyline class="mg-bounce" display="none" points="790,780 840,600 770,560 830,400 800,340" fill="none" stroke="#ff8a9a" stroke-width="16" stroke-linejoin="round" filter="url(#mgd-glow)"/>
+  </g>
+
+  <g class="mg-player no-hit" transform="translate(800 840)">
+    <line x1="60" y1="40" x2="150" y2="-120" stroke="#8a6a42" stroke-width="12" stroke-linecap="round"/>
+    <polygon points="150,-120 186,-190 170,-112" fill="#c8283c" stroke="#8e1426" stroke-width="3"/>
+    <g class="mg-pshield">
+      <path d="M-60,-56 L60,-56 L60,0 Q60,46 0,68 Q-60,46 -60,0 Z" fill="#c8283c" stroke="#8e1426" stroke-width="6"/>
+      <path d="M0,-48 L0,60 M-52,-10 L52,-10" stroke="#e0b44a" stroke-width="8"/>
+      <circle class="mg-pshield-glow" r="110" fill="#ff8a9a" opacity="0"/>
+    </g>
+  </g>
+
+  <g class="mg-hints no-hit" opacity="0" font-size="40" fill="#f3ecd8" stroke="#0a0a18" stroke-width="2">
+    <text x="220" y="870" text-anchor="middle">◀ Väj</text>
+    <text x="1380" y="870" text-anchor="middle">Väj ▶</text>
+  </g>
+
+  <text class="mg-legend no-hit" display="none" x="800" y="250" font-size="64" font-weight="bold" text-anchor="middle"
+        fill="#fff6b0" stroke="#3a2a00" stroke-width="3" filter="url(#mgd-glow)">LEGENDARY THUNDER!</text>
+
+  <rect class="mg-hurt no-hit" x="-800" width="3200" height="900" fill="#d8283f" opacity="0"/>
+  <g class="mg-fx no-hit"></g>
+</svg>`;
+}
+
+// The party in the village after the dragon is beaten: flags between the houses, lanterns
+// and fireworks over the mountain. Drawn into the town's actors layer by dragon.js.
+function villageParty() {
+  const colors = ['#d8283f', '#e0b44a', '#2fd47a', '#3a8ac2', '#c9a0ff'];
+  const bunting = (x1, y1, x2, y2, sag, n) => {
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2 + sag;
+    let flags = '';
+    for (let i = 1; i < n; i++) {
+      const t = i / n;
+      const x = (1 - t) ** 2 * x1 + 2 * (1 - t) * t * mx + t * t * x2;
+      const y = (1 - t) ** 2 * y1 + 2 * (1 - t) * t * my + t * t * y2;
+      flags += `<polygon points="${(x - 9).toFixed(0)},${y.toFixed(0)} ${(x + 9).toFixed(0)},${y.toFixed(0)} ${x.toFixed(0)},${(y + 20).toFixed(0)}" fill="${colors[i % colors.length]}"/>`;
+    }
+    return `<path d="M${x1},${y1} Q${mx},${my} ${x2},${y2}" fill="none" stroke="#3a2a1c" stroke-width="2"/>${flags}`;
+  };
+  const lantern = (x, y, delay) => `
+    <line x1="${x}" y1="${y - 18}" x2="${x}" y2="${y - 8}" stroke="#3a2a1c" stroke-width="2"/>
+    <g class="lantern" style="animation-delay:${delay}s">
+      <circle cx="${x}" cy="${y}" r="20" fill="#ffd977" opacity="0.25"/>
+      <rect x="${x - 8}" y="${y - 10}" width="16" height="20" rx="5" fill="#ffb347"/>
+    </g>`;
+  const firework = (x, y, color, delay) => {
+    let rays = '';
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      rays += `M${(Math.cos(a) * 14).toFixed(1)},${(Math.sin(a) * 14).toFixed(1)} L${(Math.cos(a) * 60).toFixed(1)},${(Math.sin(a) * 60).toFixed(1)} `;
+    }
+    return `<g transform="translate(${x} ${y})"><g class="firework" style="animation-delay:${delay}s">
+      <path d="${rays}" stroke="${color}" stroke-width="5" stroke-linecap="round"/>
+      <circle r="6" fill="#fff6d0"/>
+    </g></g>`;
+  };
+  return `
+    <g class="party no-hit">
+      ${firework(260, 190, '#ff7084', 0)}${firework(1340, 150, '#a8ffd0', 0.8)}${firework(560, 120, '#ffd977', 1.6)}
+      ${firework(1150, 260, '#c9a0ff', 2.3)}
+      ${bunting(1090, 560, 1270, 648, 30, 8)}
+      ${bunting(1270, 648, 1437, 700, 24, 7)}
+      ${bunting(937, 650, 1090, 560, 30, 7)}
+      ${bunting(235, 690, 420, 640, 30, 7)}
+      ${lantern(1010, 640, 0)}${lantern(1180, 640, 0.5)}${lantern(1350, 700, 1)}${lantern(330, 690, 1.5)}
+    </g>`;
+}
